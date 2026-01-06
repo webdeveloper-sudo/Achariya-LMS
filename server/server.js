@@ -28,6 +28,15 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Routes
 app.use("/api/v1/auth", require("./routes/authRoutes"));
 app.use("/api/v1/admin/students", require("./routes/studentRoutes"));
+app.use("/api/v1/students", require("./routes/studentRoutes")); // Student App Routes
+app.get(
+  "/api/v1/courses",
+  require("./controllers/studentController").getCourses
+); // Public/Student Course List
+app.get(
+  "/api/v1/courses/:id",
+  require("./controllers/studentController").getCourse
+); // Public/Student Course Detail
 app.use("/api/v1/admin/teachers", require("./routes/teacherRoutes"));
 
 // LMS Admin Routes

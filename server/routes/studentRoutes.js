@@ -57,12 +57,12 @@ router.post(
 );
 
 // Save students data (Admin-only) - Bulk
-router.post(
-  "/save",
-  authenticate,
-  requireAdmin,
-  studentController.saveStudents
-);
+// router.post(
+//   "/save",
+//   authenticate,
+//   requireAdmin,
+//   studentController.saveStudents
+// );
 
 // Create single student (Admin-only)
 router.post(
@@ -76,14 +76,38 @@ router.post(
 router.put("/:id", authenticate, requireAdmin, studentController.updateStudent);
 
 // Delete student (Admin-only)
-router.delete(
-  "/:id",
-  authenticate,
-  requireAdmin,
-  studentController.deleteStudent
-);
+// router.delete(
+//   "/:id",
+//   authenticate,
+//   requireAdmin,
+//   studentController.deleteStudent
+// );
 
 // Get all students (no role restriction for now, read-only)
 router.get("/", studentController.getStudents);
+
+// --- Student App Routes ---
+
+// Verify Admission
+router.post("/verify-admission", studentController.verifyAdmission);
+
+// OTP
+router.post("/send-otp", studentController.sendOtp);
+router.post("/verify-otp", studentController.verifyOtp);
+
+// Onboarding
+router.post("/complete-onboarding", studentController.completeOnboarding);
+
+// Login
+router.post("/login", studentController.login);
+
+// Dashboard (Protected)
+router.get("/dashboard", authenticate, studentController.getDashboard);
+
+// Courses for students
+router.get("/courses", authenticate, studentController.getCourses);
+
+// Enroll in a course
+router.post("/enroll", authenticate, studentController.enrollCourse);
 
 module.exports = router;

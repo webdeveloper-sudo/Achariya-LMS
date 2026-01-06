@@ -134,6 +134,37 @@ const AdminEditUserForm = ({
 
           <div>
             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={editFormData.email || ""}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+
+          {/* Password - Only show if onboarded */}
+          {editFormData.onboarded && (
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                Reset Password (Leave empty to keep)
+              </label>
+              <input
+                type="text" // Visible text for admin to see what they set
+                name="password"
+                value={editFormData.password || ""} // This will be empty initially unless they type
+                onChange={handleInputChange}
+                placeholder="Enter new password"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-yellow-50"
+                autoComplete="off"
+              />
+            </div>
+          )}
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
               Status
             </label>
             <select

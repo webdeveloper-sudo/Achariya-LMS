@@ -1,6 +1,9 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Login from "./pages/Login";
+import LandingPage from "./pages/LandingPage";
+import StudentLogin from "./pages/student/StudentLogin";
+import StudentOnboarding from "./pages/student/StudentOnboarding";
 import RoleSelection from "./pages/RoleSelection";
 import Layout from "./components/Layout";
 import RequireAdmin from "./components/RequireAdmin";
@@ -75,7 +78,14 @@ function App() {
   return (
     <ThemeProvider>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* Student Auth Routes */}
+        <Route path="/student/login" element={<StudentLogin />} />
+        <Route path="/student/onboarding" element={<StudentOnboarding />} />
+
+        {/* Legacy Role Selection (Keeping just in case, or remove) */}
         <Route path="/select-role" element={<RoleSelection />} />
 
         <Route element={<Layout />}>

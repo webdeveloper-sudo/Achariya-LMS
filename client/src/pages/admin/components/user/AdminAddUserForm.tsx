@@ -17,6 +17,7 @@ const AdminAddUserForm = ({
   const [formData, setFormData] = useState({
     name: "",
     admissionNo: "",
+    email: "",
     class: "",
     section: "",
     mobileNo: "",
@@ -43,6 +44,7 @@ const AdminAddUserForm = ({
     if (
       !formData.name ||
       !formData.admissionNo ||
+      !formData.email || // Check Email
       !formData.class ||
       !formData.section ||
       !formData.mobileNo ||
@@ -63,6 +65,7 @@ const AdminAddUserForm = ({
       setFormData({
         name: "",
         admissionNo: "",
+        email: "",
         class: "",
         section: "",
         mobileNo: "",
@@ -123,6 +126,20 @@ const AdminAddUserForm = ({
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="e.g. ADM123"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+              Email <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="student@achariya.org"
             />
           </div>
 

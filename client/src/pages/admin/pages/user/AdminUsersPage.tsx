@@ -16,11 +16,14 @@ interface User {
   class: string;
   section: string;
   mobileNo: string;
-  credits?: number;
+  credits?: any[]; // Changed from number to array as per schema
+  totalCredits?: number; // Added field
   school: string;
   status: string;
   role?: string;
   department?: string; // Handle legacy case
+  email?: string;
+  onboarded?: boolean;
 }
 
 const AdminUsersPage = () => {
@@ -72,6 +75,7 @@ const AdminUsersPage = () => {
         allUsers
           .map((u) => {
             if (key === "class") return u.class || u.department;
+            // Handle array/object properties safely if they are used here (though mostly strings)
             return u[key as keyof User];
           })
           .filter(Boolean)
@@ -210,10 +214,10 @@ const AdminUsersPage = () => {
       </Link>
 
       <div className="flex justify-between items-center mb-6">
-<div>
+        <div>
           <h1 className="text-3xl font-bold text-gray-800">User Management</h1>
-                <p className="text-sm">Total Students: {allUsers.length}</p>
-</div>
+          <p className="text-sm">Total Students: {allUsers.length}</p>
+        </div>
         <div className="flex gap-3">
           <Link
             to="/admin/users/upload"
@@ -324,7 +328,7 @@ const AdminUsersPage = () => {
                       {user.mobileNo}
                     </td>
                     <td className="py-3 px-4 text-left text-sm font-semibold text-purple-600">
-                      {user.credits}
+                      {user.totalCredits || 0}
                     </td>
                     <td className="py-3 px-4 text-left text-sm">
                       {user.school}
