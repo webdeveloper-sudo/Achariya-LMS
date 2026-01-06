@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electromagnetism - Whiteboard Explainer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #ffffff;
+            font-family: 'Comic Sans MS', 'Segoe Print', cursive;
+            overflow: hidden;
+        }
+
+        #canvas {
+            display: block;
+            width: 1280px;
+            height: 720px;
+            margin: 0 auto;
+            background: white;
+        }
+
+        .slide {
+            position: absolute;
+            width: 1280px;
+            height: 720px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .title {
+            font-size: 80px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: #000;
+        }
+
+        .subtitle {
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .formula {
+            font-size: 64px;
+            font-family: 'Times New Roman', serif;
+            color: #000;
+            margin: 20px 0;
+        }
+
+        .text {
+            font-size: 42px;
+            color: #222;
+            margin: 15px 0;
+            text-align: center;
+            max-width: 900px;
+            line-height: 1.4;
+        }
+
+        .drawing {
+            width: 600px;
+            height: 400px;
+            border: 3px solid #000;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 150px;
+        }
+
+        .small-text {
+            font-size: 32px;
+            color: #444;
+            margin: 10px 0;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fade-in 0.8s forwards;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="slides-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active" id="slide1">
+            <div class="title fade-in">Electromagnetism</div>
+            <div class="subtitle fade-in" style="animation-delay: 0.5s;">The Dance of Electricity & Magnetism</div>
+        </div>
+
+        <!-- Slide 2: Introduction -->
+        <div class="slide" id="slide2">
+            <div class="subtitle">What is Electromagnetism?</div>
+            <div class="drawing">⚡🧲</div>
+            <div class="text">One of the 4 fundamental forces</div>
+        </div>
+
+        <!-- Slide 3: Electric Charges -->
+        <div class="slide" id="slide3">
+            <div class="subtitle">Electric Charges</div>
+            <div style="font-size: 72px; margin: 40px 0;">
+                ➕ (Positive) ➖ (Negative)
+            </div>
+            <div class="text">Opposite charges attract<br>Like charges repel</div>
+        </div>
+
+        <!-- Slide 4: Electric Field -->
+        <div class="slide" id="slide4">
+            <div class="subtitle">Electric Field (E)</div>
+            <div class="text">Force per unit charge</div>
+            <div class="formula" style="margin: 50px 0;">
+                E = F / q
+            </div>
+            <div class="small-text">Units: Newtons per Coulomb (N/C)</div>
+        </div>
+
+        <!-- Slide 5: Field Lines -->
+        <div class="slide" id="slide5">
+            <div class="subtitle">Electric Field Lines</div>
+            <div style="font-size: 60px; margin: 40px 0;">
+                ➕ → → → → ➖
+            </div>
+            <div class="text">From positive to negative</div>
+            <div class="small-text">Shows direction of force</div>
+        </div>
+
+        <!-- Slide 6: Magnetic Fields -->
+        <div class="slide" id="slide6">
+            <div class="subtitle">Magnetic Fields (B)</div>
+            <div class="text">Created by moving charges</div>
+            <div style="font-size: 100px; margin: 40px 0;">🧲</div>
+            <div class="small-text">Electric current makes magnets!</div>
+        </div>
+
+        <!-- Slide 7: Lorentz Force -->
+        <div class="slide" id="slide7">
+            <div class="subtitle">Lorentz Force</div>
+            <div class="text">Force on a moving charge</div>
+            <div class="formula">
+                F = q(v × B)
+            </div>
+            <div class="small-text">Depends on charge, velocity, and field</div>
+        </div>
+
+        <!-- Slide 8: Right-Hand Rule -->
+        <div class="slide" id="slide8">
+            <div class="subtitle">Right-Hand Rule</div>
+            <div style="font-size: 100px; margin: 40px 0;">✋</div>
+            <div class="text">Thumb = velocity<br>Fingers = magnetic field<br>Palm = force direction</div>
+        </div>
+
+        <!-- Slide 9: Maxwell's Equations -->
+        <div class="slide" id="slide9">
+            <div class="subtitle">Maxwell's 4 Equations</div>
+            <div style="font-size: 42px; text-align: left; max-width: 800px; line-height: 1.8;">
+                1️⃣ Gauss's Law (Electric)<br>
+                2️⃣ Gauss's Law (Magnetic)<br>
+                3️⃣ Faraday's Law<br>
+                4️⃣ Ampère-Maxwell Law
+            </div>
+        </div>
+
+        <!-- Slide 10: EM Waves -->
+        <div class="slide" id="slide10">
+            <div class="subtitle">Electromagnetic Waves</div>
+            <div class="text">E and B fields oscillate</div>
+            <div style="font-size: 80px; margin: 40px 0;">
+                〰️ 〰️ 〰️
+            </div>
+            <div class="small-text">Travel at speed of light!</div>
+        </div>
+
+        <!-- Slide 11: Light is EM! -->
+        <div class="slide" id="slide11">
+            <div class="subtitle">Light = EM Wave!</div>
+            <div style="font-size: 100px; margin: 40px 0;">💡 = ⚡🧲</div>
+            <div class="text">Visible light is electromagnetic radiation</div>
+            <div class="small-text">Radio, X-rays, microwaves too!</div>
+        </div>
+
+        <!-- Slide 12: Applications -->
+        <div class="slide" id="slide12">
+            <div class="subtitle">Real-World Applications</div>
+            <div style="font-size: 50px; margin: 40px 0; line-height: 1.8;">
+                🔌 Electric Motors<br>
+                ⚙️ Generators<br>
+                📡 Wireless Communication<br>
+                🏥 MRI Machines
+            </div>
+        </div>
+
+        <!-- Slide 13: Summary -->
+        <div class="slide" id="slide13">
+            <div class="subtitle">Key Takeaways</div>
+            <div style="font-size: 42px; text-align: left; max-width: 900px; line-height: 1.8;">
+                ✓ Electric & Magnetic fields interact<br>
+                ✓ Moving charges create magnetism<br>
+                ✓ E = F/q, F = q(v × B)<br>
+                ✓ Light is an EM wave
+            </div>
+        </div>
+
+        <!-- Slide 14: Practice -->
+        <div class="slide" id="slide14">
+            <div class="title">Ready to Practice?</div>
+            <div class="text" style="margin-top: 50px;">Now try the quiz to test your understanding!</div>
+            <div style="font-size: 100px; margin-top: 40px;">🎯</div>
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+        const slideDuration = 3000; // 3 seconds per slide
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            if (currentSlide >= slides.length) {
+                currentSlide = 0; // Loop back to start
+            }
+            showSlide(currentSlide);
+        }
+
+        // Auto-advance slides
+        setInterval(nextSlide, slideDuration);
+
+        // Start animation
+        document.addEventListener('DOMContentLoaded', () => {
+            showSlide(0);
+        });
+    </script>
+</body>
+
+</html>

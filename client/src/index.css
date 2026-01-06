@@ -1,0 +1,391 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Prevent animations on theme change */
+*,
+*::before,
+*::after {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* Light theme variables (default) */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --border-color: #e5e7eb;
+  --border-hover: #d1d5db;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark theme - WARM, SOFT colors to prevent eye strain */
+[data-theme="dark"] {
+  /* Warm dark backgrounds - NO pure black */
+  --bg-primary: #1e1e1e;
+  /* Soft charcoal, not pure black */
+  --bg-secondary: #252525;
+  /* Slightly lighter warm gray */
+  --bg-tertiary: #2d2d2d;
+  /* Card backgrounds */
+
+  /* Warm, soft text - NO pure white */
+  --text-primary: #e8e6e3;
+  /* Warm off-white */
+  --text-secondary: #b8b5b2;
+  /* Soft warm gray */
+  --text-tertiary: #8a8784;
+  /* Muted warm gray */
+
+  /* Subtle borders */
+  --border-color: #3a3a3a;
+  --border-hover: #4a4a4a;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* Colorful theme - BOLD, VIBRANT, ENERGETIC */
+[data-theme="colorful"] {
+  /* Bright, saturated backgrounds - CLEARLY DIFFERENT */
+  --bg-primary: #ffe4f9;      /* Bright pink tint */
+  --bg-secondary: #ccf2ff;    /* Vibrant sky blue */
+  --bg-tertiary: #fff0db;     /* Bright peach */
+  
+  /* High contrast, vivid text */
+  --text-primary: #9333ea;    /* Vibrant purple */
+  --text-secondary: #ec4899;  /* Bright pink */
+  --text-tertiary: #f97316;   /* Bold orange */
+  
+  /* Eye-catching borders and accents */
+  --border-color: #f0abfc;    /* Bright fuchsia */
+  --border-hover: #818cf8;    /* Vibrant indigo */
+  --shadow: rgba(236, 72, 153, 0.3);
+}
+
+/* Apply theme variables to common elements */
+body {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Exclude login page from dark theme */
+[data-theme="dark"] body:has([class*="login"]) {
+  background-color: #f9fafb;
+  color: #1f2937;
+}
+
+/* Dark theme - NUCLEAR OPTION: Override ALL backgrounds except gradients */
+[data-theme="dark"] [class*="bg-"]:not([class*="bg-gradient"]):not([class*="bg-blue"]):not([class*="bg-purple"]):not([class*="bg-green-5"]):not([class*="bg-red"]):not([class*="bg-orange"]):not([class*="bg-yellow"]) {
+  background-color: var(--bg-primary) !important;
+}
+
+/* Dark theme overrides - ULTRA AGGRESSIVE for all portal sections */
+[data-theme="dark"] .bg-white,
+[data-theme="dark"].bg-white,
+[data-theme="dark"] div.bg-white,
+[data-theme="dark"] section.bg-white,
+[data-theme="dark"] main .bg-white {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .bg-gray-50,
+[data-theme="dark"] .bg-gray-100,
+[data-theme="dark"].bg-gray-50,
+[data-theme="dark"].bg-gray-100,
+[data-theme="dark"] div.bg-gray-50,
+[data-theme="dark"] div.bg-gray-100,
+[data-theme="dark"] main .bg-gray-50,
+[data-theme="dark"] main .bg-gray-100 {
+  background-color: var(--bg-secondary) !important;
+}
+
+[data-theme="dark"] .bg-gray-200,
+[data-theme="dark"].bg-gray-200,
+[data-theme="dark"] div.bg-gray-200,
+[data-theme="dark"] main .bg-gray-200 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Override light green backgrounds specifically */
+[data-theme="dark"] .bg-green-50,
+[data-theme="dark"] .bg-green-100 {
+  background-color: var(--bg-primary) !important;
+}
+
+/* CRITICAL: Fix ALL buttons visibility */
+[data-theme="dark"] button,
+[data-theme="dark"] .btn,
+[data-theme="dark"] [role="button"] {
+  border-color: var(--border-hover) !important;
+}
+
+[data-theme="dark"] button:not(.bg-blue-600):not(.bg-green-600):not(.bg-red-600):not(.bg-purple-600):not(.bg-yellow-500):not(.bg-orange-500),
+[data-theme="dark"] .text-white {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Ensure colored buttons stay visible but with better contrast */
+[data-theme="dark"] .bg-blue-600,
+[data-theme="dark"] .bg-blue-500 {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .bg-green-600,
+[data-theme="dark"] .bg-green-500 {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .bg-purple-600,
+[data-theme="dark"] .bg-purple-500 {
+  background-color: #9333ea !important;
+  color: #ffffff !important;
+}
+
+
+
+/* ============================================ */
+/* COLORFUL THEME OVERRIDES - Apply to ALL elements */
+/* ============================================ */
+
+/* Colorful theme - Override ALL white backgrounds */
+[data-theme="colorful"] [class*="bg-"]:not([class*="bg-gradient"]):not([class*="bg-blue"]):not([class*="bg-purple"]):not([class*="bg-green-5"]):not([class*="bg-red"]):not([class*="bg-orange"]):not([class*="bg-yellow"]) {
+  background-color: var(--bg-primary) !important;
+}
+
+[data-theme="colorful"] .bg-white,
+[data-theme="colorful"] div.bg-white,
+[data-theme="colorful"] section.bg-white,
+[data-theme="colorful"] main .bg-white {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="colorful"] .bg-gray-50,
+[data-theme="colorful"] .bg-gray-100,
+[data-theme="colorful"] div.bg-gray-50,
+[data-theme="colorful"] div.bg-gray-100,
+[data-theme="colorful"] main,
+[data-theme="colorful"] body {
+  background-color: var(--bg-secondary) !important;
+}
+
+[data-theme="colorful"] .bg-gray-200,
+[data-theme="colorful"] div.bg-gray-200 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Colorful theme text overrides */
+[data-theme="colorful"] .text-gray-800,
+[data-theme="colorful"] .text-gray-900,
+[data-theme="colorful"] h1,
+[data-theme="colorful"] h2,
+[data-theme="colorful"] h3,
+[data-theme="colorful"] h4 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="colorful"] .text-gray-600,
+[data-theme="colorful"] .text-gray-700,
+[data-theme="colorful"] p,
+[data-theme="colorful"] span {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="colorful"] .text-gray-500,
+[data-theme="colorful"] .text-sm {
+  color: var(--text-tertiary) !important;
+}
+
+/* Colorful theme borders */
+[data-theme="colorful"] .border-gray-200,
+[data-theme="colorful"] .border-gray-300 {
+  border-color: var(--border-color) !important;
+}
+
+/* CRITICAL: Fix text contrast - Use SOFT, WARM colors */
+[data-theme="dark"] .text-black,
+[data-theme="dark"] .text-gray-900,
+[data-theme="dark"] .text-gray-800,
+[data-theme="dark"].text-gray-800,
+[data-theme="dark"].text-gray-900,
+[data-theme="dark"].text-black,
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] p.text-gray-800,
+[data-theme="dark"] span.text-gray-800,
+[data-theme="dark"] div.text-gray-900,
+[data-theme="dark"] div.text-gray-800,
+[data-theme="dark"] main h1,
+[data-theme="dark"] main h2,
+[data-theme="dark"] main h3,
+[data-theme="dark"] main h4,
+[data-theme="dark"] main p,
+[data-theme="dark"] main span,
+[data-theme="dark"] main div,
+[data-theme="dark"] label,
+[data-theme="dark"] strong,
+[data-theme="dark"] b {
+  color: var(--text-primary) !important;
+}
+
+/* Make headings warm, soft - NOT bright white */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5 {
+  color: #e8e6e3 !important;
+  /* Warm off-white, not harsh white */
+}
+
+/* Fix ALL badges and pills */
+[data-theme="dark"] .bg-green-100,
+[data-theme="dark"] .bg-blue-100,
+[data-theme="dark"] .bg-purple-100,
+[data-theme="dark"] .bg-yellow-100,
+[data-theme="dark"] .bg-red-100,
+[data-theme="dark"] .bg-orange-100 {
+  background-color: var(--bg-tertiary) !important;
+  color: #ffffff !important;
+  border: 1px solid var(--border-hover) !important;
+}
+
+/* Text colors for badges */
+[data-theme="dark"] .text-green-800,
+[data-theme="dark"] .text-blue-800,
+[data-theme="dark"] .text-purple-800,
+[data-theme="dark"] .text-yellow-800,
+[data-theme="dark"] .text-red-800 {
+  color: #ffffff !important;
+}
+
+/* Fix icons and emojis visibility - SOFTER brightness */
+[data-theme="dark"] svg,
+[data-theme="dark"] .lucide {
+  opacity: 0.95;
+  filter: brightness(1.2) !important;
+  /* Reduced from 1.5 - less harsh */
+}
+
+/* Soften overall visual harshness */
+[data-theme="dark"] {
+  filter: brightness(0.98);
+  /* Slightly reduce overall brightness */
+}
+
+[data-theme="dark"] .text-sm,
+[data-theme="dark"] .text-xs,
+[data-theme="dark"] small {
+  color: #d1d5db !important;
+  /* Much brighter gray */
+  opacity: 1 !important;
+}
+
+/* Fix white button text in dark mode */
+[data-theme="dark"] button.bg-white,
+[data-theme="dark"] .bg-white button {
+  color: #1f2937 !important;
+  /* Dark text on white button */
+}
+
+[data-theme="dark"] .text-gray-600,
+[data-theme="dark"] .text-gray-700,
+[data-theme="dark"].text-gray-600,
+[data-theme="dark"].text-gray-700,
+[data-theme="dark"] p.text-gray-600,
+[data-theme="dark"] p.text-gray-700,
+[data-theme="dark"] p,
+[data-theme="dark"] span {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .text-gray-500,
+[data-theme="dark"].text-gray-500,
+[data-theme="dark"] .text-sm {
+  color: var(--text-tertiary) !important;
+}
+
+/* Fix icons and emojis visibility */
+[data-theme="dark"] svg,
+[data-theme="dark"] .lucide {
+  opacity: 0.9;
+  filter: brightness(1.2);
+}
+
+[data-theme="dark"] .border-gray-200,
+[data-theme="dark"] .border-gray-300,
+[data-theme="dark"] .border,
+[data-theme="dark"].border-gray-200,
+[data-theme="dark"].border-gray-300,
+[data-theme="dark"].border {
+  border-color: var(--border-color) !important;
+}
+
+:root {
+  /* Achariya Brand Colors (Inferred/Standardized) */
+  --color-primary: #0056b3;
+  /* Deep Blue */
+  --color-primary-light: #e6f0fa;
+  /* Light Blue Background */
+  --color-secondary: #f8f9fa;
+  /* Light Gray */
+  --color-accent: #ffc107;
+  /* Gold/Yellow Accent */
+  --color-text-main: #333333;
+  --color-text-muted: #666666;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-secondary);
+  color: var(--color-text-main);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Utility Classes */
+.card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-100 p-6;
+}
+
+.btn-primary {
+  @apply bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition-colors font-medium;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors font-medium;
+}
+
+.input-field {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow;
+}

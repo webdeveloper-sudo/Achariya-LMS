@@ -1,0 +1,46 @@
+1
+00:00:00,000 --> 00:00:04,911
+Dynamic Programming solves problems efficiently by
+remembering past results.
+
+2
+00:00:04,911 --> 00:00:08,051
+Consider calculating 1 + 1 + 1 + 1 + 1.
+
+3
+00:00:08,051 --> 00:00:12,382
+A computer might calculate this step-by-step.
+
+4
+00:00:12,382 --> 00:00:19,383
+Without memoization, each time it needs a sum, like 1+1, it
+recalculates it from scratch.
+
+5
+00:00:19,383 --> 00:00:25,469
+Memoization stores results of expensive calls, returning cached
+results for the same inputs.
+
+6
+00:00:25,469 --> 00:00:31,018
+For 1+1+1+1+1, after 1+1=2, it remembers '2'.
+
+7
+00:00:31,018 --> 00:00:35,997
+When 2+1 is needed, it uses the stored '2'.
+
+8
+00:00:35,997 --> 00:00:41,038
+This trades a little memory to store results for a significant boost
+in processing speed.
+
+9
+00:00:41,038 --> 00:00:47,752
+This fundamental concept, trading memory for speed, is the essence of
+Dynamic Programming.
+
+10
+00:00:47,752 --> 00:00:54,700
+Understanding memoization optimizes algorithms, a crucial skill for
+any developer or student.
+

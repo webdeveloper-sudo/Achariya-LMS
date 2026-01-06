@@ -1,0 +1,126 @@
+export const allschoolsdata = [
+  "ACHARIYA ARTS AND SCIENCE COLLEGE (AASC) - VILLIANUR, PUDUCHERRY",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) ADYAR - ADYAR, CHENNAI",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) ALPKM - ALAPAKKAM, CHENNAI",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) KKN - KK NAGAR, CHENNAI",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT PP - THENGATHITTU, PUDUCHERRY",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) KP - KALAPET, PUDUCHERRY",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) MVL CHENNAI - MADURAVOYAL, CHENNAI",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) - NOLAMBUR",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) PBN - PADMANAB NAGAR",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) RKN - RK NAGAR",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) SGM - SALIGRAMAM, CHENNAI",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) THIRU NAGAR - THIRUNAGAR",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) TRICHY - TRICHY",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) VGM - VIRUGAMBAKKAM, CHENNAI",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) VN - VENKATA NAGAR",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) VVK - VALASARAVAKKAM, CHENNAI",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM)-GM - GORIMEDU",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM)-LP - LAWSPET, PUDUCHERRY",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM)-MLP - MUTHIALPET, PUDUCHERRY",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT - THENGATHITTU, PUDUCHERRY",
+  "ACHARIYA CENTRE FOR EXCELLENCE IN TEACHING (ACET) - VILLIANUR, PUDUCHERRY",
+  "AKLAVYA INTERNATIONAL SCHOOL - THENGAITITTU, PUDUCHERRY",
+  "ANUGRAHA TOWNSHIP MANDIR (TKM) - THAVALAKUPPAM, PUDUCHERRY",
+  "ACHARIYA SIKSHA MANDIR (ASM) - ALAPAKKAM, CHENNAI",
+  "ACHARIYA SIKSHA MANDIR (ASM) - KKL - KARAIKAL",
+  "ACHARIYA SIKSHA MANDIR (ASM) - TRICHY - TRICHY",
+  "ACHARIYA SIKSHA MANDIR (ASM) - WESTERN GHATS INTERNATIONAL - ETTIMADAI, COIMBATORE",
+  "ACHARIYA SIKSHA MANDIR (ASM) ERODE - ERODE",
+  "ACHARIYA SIKSHA MANDIR (ASM) ERODE - FEEDER CENTER - ERODE",
+  "ACHARIYA SIKSHA MANDIR (ASM) ERODE - PERUNDURAI CENTER - ERODE",
+  "ACHARIYA SIKSHA MANDIR (ASM)-HSC",
+  "ACHARIYA SIKSHA MANDIR (ASM)-MKM - MOOLAKULAM, PUDUCHERRY",
+  "ACHARIYA SIKSHA MANDIR (ASM)-MP - MUTHIRAYARPALAYAM, PUDUCHERRY",
+  "AKLAVYA RP - REDDIARPALAYAM, PUDUCHERRY",
+  "ACHARIYA SIKSHA MANDIR (ASM)-TKM - THAVALAKUPPAM, PUDUCHERRY",
+  "ACHARIYA SIKSHA MANDIR (ASM)-VL (9 to 12) - VILLIANUR, PUDUCHERRY",
+  "ACHARIYA SIKSHA MANDIR (ASM)-VL (1 to 8) - VILLIANUR, PUDUCHERRY",
+  "ACHARIYA SIKHA THIRUMANDIRAM (ASTHM) - PATHUKANNU",
+  "SRI SAMPOORNA VIDYALAYAM (SSV)-VL - VILLIANUR, PUDUCHERRY",
+  "ACHARIYA BALA SIKSHA MANDIR (ABSM) - TINDIVANAM",
+  "ACHARIYA SIKSHA MANDIR (ASM) - VILLUPURAM",
+];
+
+export const allboards = ["CBSE", "State Board"] as const;
+
+export const allsubjects = [
+  // Core Subjects (All Grades)
+  "English",
+  "Mathematics",
+  "Science",
+  "Social Science",
+  "Hindi",
+  "Tamil",
+
+  // Languages & Skills
+  "Sanskrit",
+  "French",
+  "Computer Science",
+  "Information Technology",
+  "General Knowledge",
+
+  // Primary/Middle School
+  "Environmental Studies (EVS)",
+  "Moral Science",
+  "Value Education",
+
+  // Senior Secondary Streams
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "Accountancy",
+  "Business Studies",
+  "Economics",
+  "History",
+  "Political Science",
+  "Psychology",
+  "Sociology",
+  "Informatics Practices",
+
+  // Achariya 5 Arts Program
+  "Yoga",
+  "Meditation",
+  "Mallakhamb",
+  "Silambam",
+  "Chess",
+
+  // Activities
+  "Physical Education",
+  "Art & Craft",
+  "Music",
+  "Dance",
+  "Life Skills",
+] as const;
+
+export const ALL_CLASSES = [
+  // Pre-Primary (Achariya Bala Siksha Mandir focus)
+  "MONT 2",
+  "MONT 1",
+  "PRE MONT",
+  "PRE MONT TD",
+
+  // Primary (All branches)
+  "Grade I",
+  "Grade II",
+  "Grade III",
+  "Grade IV",
+  "Grade V",
+
+  // Middle School
+  "Grade VI",
+  "Grade VII",
+  "Grade VIII",
+
+  // Secondary
+  "Grade IX",
+  "Grade X",
+
+  // Senior Secondary (Achariya Siksha Mandir & International schools)
+  "Grade XI (Science)",
+  "Grade XI (Commerce)",
+  "Grade XI (Humanities)",
+  "Grade XII (Science)",
+  "Grade XII (Commerce)",
+  "Grade XII (Humanities)",
+] as const;

@@ -1,0 +1,401 @@
+{
+    "version": "1.0",
+    "categories": {
+        "profanity": {
+            "action": "BLOCK",
+            "keywords": [
+                "fuck",
+                "fucking",
+                "motherfucker",
+                "mf",
+                "shit",
+                "bullshit",
+                "asshole",
+                "ass hole",
+                "bastard",
+                "bitch",
+                "slut",
+                "whore",
+                "cunt",
+                "dick",
+                "cock",
+                "pussy",
+                "tits",
+                "boob",
+                "boobs",
+                "blowjob",
+                "handjob"
+            ],
+            "variants": [
+                "fck",
+                "fuk",
+                "fu*k",
+                "f**k",
+                "sh!t",
+                "bi7ch",
+                "btch",
+                "a$$",
+                "d1ck",
+                "pu$$y"
+            ],
+            "tamil": [
+                "punda",
+                "pundai",
+                "sunni",
+                "oombu",
+                "thevidiya",
+                "thevdiya",
+                "panni",
+                "poda"
+            ],
+            "hindi": [
+                "madarchod",
+                "behenchod",
+                "bhenchod",
+                "chutiya",
+                "gaandu",
+                "randi",
+                "bhosdike",
+                "lauda",
+                "lund"
+            ]
+        },
+        "sexual_content": {
+            "action": "BLOCK",
+            "keywords": [
+                "porn",
+                "porno",
+                "xxx",
+                "xvideos",
+                "xnxx",
+                "pornhub",
+                "sexvideo",
+                "nude",
+                "nudes",
+                "naked pics",
+                "sext",
+                "sexting",
+                "dick pic",
+                "send nudes",
+                "show boobs",
+                "show body",
+                "onlyfans",
+                "anal sex",
+                "oral sex",
+                "threesome",
+                "incest",
+                "gangbang"
+            ],
+            "grooming": [
+                "are you alone",
+                "send photo",
+                "meet me",
+                "age",
+                "asl",
+                "snap id",
+                "insta id",
+                "whatsapp number",
+                "dm me"
+            ]
+        },
+        "minors_sexual": {
+            "action": "ESCALATE",
+            "keywords": [
+                "minor nude",
+                "underage",
+                "child porn",
+                "cp",
+                "school girl nude",
+                "teen nude",
+                "14yo",
+                "15yo",
+                "16yo nude"
+            ],
+            "phrases": [
+                "don't tell anyone",
+                "our secret",
+                "send your uniform pic",
+                "video call me at night"
+            ]
+        },
+        "self_harm": {
+            "action": "ESCALATE",
+            "keywords": [
+                "suicide",
+                "kill myself",
+                "end my life",
+                "want to die",
+                "slit wrist",
+                "hang myself",
+                "jump off",
+                "overdose",
+                "self harm",
+                "cut myself",
+                "rope",
+                "noose",
+                "blades",
+                "poison",
+                "cyanide",
+                "sleeping pills",
+                "painkiller overdose"
+            ],
+            "phrases": [
+                "no reason to live",
+                "life is pointless",
+                "goodbye forever"
+            ]
+        },
+        "violence": {
+            "action": "BLOCK",
+            "keywords": [
+                "kill you",
+                "murder you",
+                "shoot you",
+                "stab you",
+                "bomb",
+                "explode",
+                "burn you alive",
+                "gun",
+                "pistol",
+                "revolver",
+                "rifle",
+                "shotgun",
+                "ammo",
+                "bullets",
+                "knife attack",
+                "machete",
+                "grenade",
+                "detonator",
+                "molotov",
+                "acid attack",
+                "terrorist attack",
+                "mass shooting",
+                "school shooting"
+            ]
+        },
+        "hate": {
+            "action": "BLOCK",
+            "keywords": [
+                "kill all",
+                "hate all",
+                "exterminate",
+                "gas them",
+                "go back to",
+                "dirty",
+                "vermin",
+                "idiot",
+                "loser",
+                "ugly",
+                "dumb",
+                "you are useless",
+                "go die",
+                "shut up",
+                "i will ruin you",
+                "doxx",
+                "expose you"
+            ]
+        },
+        "drugs": {
+            "action": "BLOCK",
+            "keywords": [
+                "weed",
+                "marijuana",
+                "ganja",
+                "hash",
+                "charas",
+                "cocaine",
+                "crack",
+                "heroin",
+                "smack",
+                "meth",
+                "mdma",
+                "ecstasy",
+                "lsd",
+                "acid trip",
+                "ketamine",
+                "buy",
+                "dealer",
+                "score",
+                "deliver",
+                "shipped",
+                "darknet",
+                "telegram dealer",
+                "vodka",
+                "whiskey",
+                "rum",
+                "beer",
+                "wine",
+                "cigarettes",
+                "vape",
+                "e-liquid",
+                "nicotine"
+            ]
+        },
+        "cheating": {
+            "action": "BLOCK",
+            "keywords": [
+                "answer key",
+                "leaked paper",
+                "question paper leak",
+                "exam leak",
+                "solve this test for me",
+                "take my exam",
+                "proxy exam",
+                "write my assignment",
+                "do my homework",
+                "complete my project",
+                "turnitin bypass",
+                "plagiarism remover",
+                "change marks",
+                "edit grade",
+                "hack portal"
+            ]
+        },
+        "illegal": {
+            "action": "BLOCK",
+            "keywords": [
+                "hack",
+                "exploit",
+                "payload",
+                "keylogger",
+                "malware",
+                "ransomware",
+                "phishing",
+                "fake certificate",
+                "forged mark sheet",
+                "fake id",
+                "duplicate aadhaar",
+                "OTP",
+                "bank login",
+                "UPI pin",
+                "card CVV",
+                "send OTP",
+                "share password"
+            ]
+        },
+        "pii": {
+            "action": "BLOCK",
+            "keywords": [
+                "password",
+                "passcode",
+                "pin",
+                "CVV",
+                "card number",
+                "bank account",
+                "IFSC",
+                "aadhaar",
+                "PAN",
+                "phone number",
+                "mobile number",
+                "email id",
+                "whatsapp",
+                "telegram",
+                "instagram handle",
+                "address",
+                "location",
+                "where do you live"
+            ]
+        },
+        "offtopic": {
+            "action": "SAFE_REDIRECT",
+            "keywords": [
+                "crush",
+                "date me",
+                "girlfriend",
+                "boyfriend",
+                "i love you",
+                "kiss",
+                "hug",
+                "marry me",
+                "boredom",
+                "timepass",
+                "entertain me",
+                "roast me",
+                "tell jokes",
+                "sing a song",
+                "movie story",
+                "lingerie",
+                "condoms",
+                "hookup",
+                "one night stand"
+            ]
+        }
+    },
+    "allowlist": {
+        "biology": [
+            "reproduction",
+            "puberty",
+            "menstruation",
+            "contraception",
+            "sti",
+            "hiv",
+            "anatomy",
+            "breast cancer",
+            "sexual health",
+            "consent"
+        ],
+        "psychology": [
+            "self-harm prevention",
+            "suicide prevention",
+            "bullying prevention",
+            "harassment policy"
+        ],
+        "history": [
+            "war",
+            "genocide",
+            "terrorism",
+            "weapons",
+            "violence"
+        ],
+        "chemistry": [
+            "alcohol",
+            "drug",
+            "morphine",
+            "opioid",
+            "toxin",
+            "poison"
+        ]
+    },
+    "patterns": {
+        "leetspeak": {
+            "a": [
+                "4",
+                "@"
+            ],
+            "e": [
+                "3"
+            ],
+            "i": [
+                "1",
+                "!"
+            ],
+            "o": [
+                "0"
+            ],
+            "s": [
+                "5",
+                "$"
+            ],
+            "t": [
+                "7"
+            ]
+        },
+        "separators": [
+            ".",
+            "-",
+            "_",
+            " "
+        ],
+        "repeated_chars_threshold": 3
+    },
+    "messages": {
+        "BLOCK_profanity": "I'm here to help with your studies! Let's keep our conversation focused on learning. How can I assist with your coursework?",
+        "BLOCK_sexual": "I'm designed to help with academics only. Let's discuss your studies instead. What subject can I help you with?",
+        "BLOCK_violence": "This conversation violates our community guidelines. Please keep discussions educational and respectful.",
+        "BLOCK_drugs": "I can only help with educational topics. If you have questions about health or biology, I'm happy to explain in an academic context.",
+        "BLOCK_cheating": "I can help you learn and understand concepts, but I can't assist with academic dishonesty. Let me explain how to solve this yourself!",
+        "SAFE_REDIRECT": "That's an interesting topic, but I'm designed to help with academics. Would you like help with your current course, homework, or exam preparation?",
+        "ESCALATE_self_harm": "I'm concerned about what you've shared. Please reach out to a trusted adult, teacher, or counselor. You can also call KIRAN helpline: 1800-599-0019. I'm here if you'd like to discuss your coursework.",
+        "ESCALATE_minors": "This conversation violates our safety guidelines. A staff member will review this immediately. If you need academic help, please ask appropriate questions."
+    }
+}

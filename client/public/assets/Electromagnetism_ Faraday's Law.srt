@@ -1,0 +1,56 @@
+1
+00:00:00,000 --> 00:00:02,617
+Electromagnetism is a fundamental force.
+
+2
+00:00:02,617 --> 00:00:08,359
+Faraday's Law of Induction explains how changing magnetic fields
+create electric currents.
+
+3
+00:00:08,359 --> 00:00:13,307
+Consider a simple setup: a wire coil connected to a
+meter and a bar magnet.
+
+4
+00:00:13,307 --> 00:00:16,065
+Stationary, the meter shows no current.
+
+5
+00:00:16,065 --> 00:00:22,779
+But move the magnet near or through the coil, and the meter registers
+current with 'energy ripples' around the coil.
+
+6
+00:00:22,779 --> 00:00:27,299
+This is electromagnetic induction, core of Faraday's Law: changing
+
+7
+00:00:27,299 --> 00:00:32,209
+magnetic flux through a circuit induces
+electromotive force, or voltage.
+
+8
+00:00:32,209 --> 00:00:38,296
+Not just a curiosity, it's the principle behind modern technologies
+like wireless charging for devices.
+
+9
+00:00:38,296 --> 00:00:41,965
+In wireless charging, the pad's transmitting coil creates a
+
+10
+00:00:41,965 --> 00:00:46,785
+fluctuating magnetic field, inducing current in the
+device's receiving coil.
+
+11
+00:00:46,785 --> 00:00:56,059
+This energy transfer, thanks to Faraday's Law, powers devices without
+physical connections, simplifying lives and advancing technology.
+
+12
+00:00:56,059 --> 00:01:03,582
+From power generation to gadgets, Faraday's Law shapes our
+technologically advanced world, enabling innovation.
+
