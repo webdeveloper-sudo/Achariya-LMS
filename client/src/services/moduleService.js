@@ -46,21 +46,49 @@ export const reorderModules = async (moduleIds) => {
 };
 
 export const uploadModuleFile = async (moduleId, fileType, file) => {
-  // Map module file types to generic asset types
-  let assetType = "documents";
-  if (fileType === "slides") assetType = "slides";
-  else if (fileType === "audio") assetType = "audio";
-  // 'notes' and 'transcript' fall under 'documents'
+  // Map fileType to specific upload endpoint suffix
+  // Types: 'slides_ppt', 'slides_pdf', 'infographic', 'notes', 'audio', 'transcript'
+  // Also support legacy 'slides' (defaults to ppt?) No, form uses explicit types now.
+
+  let endpointSuffix = "";
+  let fieldName = fileType;
+
+  switch (fileType) {
+    case "slides_ppt":
+      endpointSuffix = "upload-slides-ppt";
+      break;
+    case "slides_pdf":
+      endpointSuffix = "upload-slides-pdf";
+      break;
+    case "infographic":
+      endpointSuffix = "upload-infographic";
+      break;
+    case "notes":
+      endpointSuffix = "upload-notes";
+      break;
+    case "audio":
+      endpointSuffix = "upload-audio";
+      break;
+    case "transcript":
+      endpointSuffix = "upload-transcript";
+      break;
+    // Legacy fallback if needed (though we updated form)
+    case "slides":
+      // Assuming generic slides is ppt for now if old code calls it
+      endpointSuffix = "upload-slides-ppt";
+      fieldName = "slides_ppt";
+      break;
+    default:
+      console.error("Unknown file type for module upload:", fileType);
+      return { success: false, error: "Unknown file type" };
+  }
 
   try {
-    // 1. Cleanup Temp for this type
-    await axiosInstance.post(`/admin/upload/cleanup-temp/${assetType}`);
-
-    // 2. Upload to Temp
     const formData = new FormData();
-    formData.append("file", file);
-    const tempRes = await axiosInstance.post(
-      `/admin/upload/asset/${assetType}`,
+    formData.append(fieldName, file);
+
+    const response = await axiosInstance.post(
+      `/admin/modules/${moduleId}/${endpointSuffix}`,
       formData,
       {
         headers: {
@@ -69,24 +97,7 @@ export const uploadModuleFile = async (moduleId, fileType, file) => {
       }
     );
 
-    if (!tempRes.data.success) {
-      throw new Error(tempRes.data.error || "Upload to temp failed");
-    }
-
-    // 3. Save (Move to Permanent)
-    const saveRes = await axiosInstance.post(`/admin/upload/save/${assetType}`);
-
-    if (!saveRes.data.success) {
-      throw new Error(saveRes.data.error || "Save permanent failed");
-    }
-
-    return {
-      success: true,
-      data: {
-        filePath: saveRes.data.url,
-        fileName: tempRes.data.originalName,
-      },
-    };
+    return response.data;
   } catch (error) {
     console.error("uploadModuleFile error:", error);
     return {

@@ -23,7 +23,7 @@ import StudentProgress from "./pages/student/StudentProgress";
 import StudentRivals from "./pages/student/StudentRivals";
 import StudentPowerUps from "./pages/student/StudentPowerUps";
 import StudentSocialFeed from "./pages/student/StudentSocialFeed";
-import StudentQuizPage from "./pages/student/StudentQuizPage";
+import StudentQuizPage from "./pages/student/StudentAssesmentPage";
 import StudentLiveQuizTaking from "./pages/student/StudentLiveQuizTaking";
 import StudentLiveQuizResults from "./pages/student/StudentLiveQuizResults";
 import StudentChatbot from "./pages/student/StudentChatbot";
@@ -73,6 +73,7 @@ import AdminUploadStudents from "./pages/admin/pages/user/AdminUploadStudents";
 import AdminTeachersPage from "./pages/admin/pages/teacher/AdminTeachersPage";
 import AdminUploadTeachers from "./pages/admin/pages/teacher/AdminUploadTeachers";
 import AdminAssetsPage from "./pages/admin/pages/assets/AdminAssetsPage";
+import StudentAssesmentPage from "./pages/student/StudentAssesmentPage";
 
 function App() {
   return (
@@ -97,10 +98,10 @@ function App() {
             element={<StudentCourseDetail />}
           />
           <Route
-            path="/student/module/:moduleId"
+            path="/student/courses/:courseId/:moduleId"
             element={<StudentModuleView />}
           />
-          <Route path="/student/quiz/:moduleId" element={<StudentQuizPage />} />
+          <Route path="/student/assessment/:moduleId" element={<StudentAssesmentPage />} />
           <Route path="/student/wallet" element={<StudentWalletPage />} />
           <Route path="/student/badges" element={<StudentBadgesPage />} />
           <Route path="/student/marketplace" element={<StudentMarketplace />} />

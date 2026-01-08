@@ -91,7 +91,11 @@ const ModuleModal = ({ isOpen, onClose, onSave, initialData, isEditing, courseId
                 if (type === 'notes') {
                     setValue('moduleNotes', fileData);
                 } else if (type === 'slides') {
-                    setValue('pptSlides', fileData);
+                    // Deprecated - ModuleModal might need updates to handle embed URL directly in form state instead of file upload
+                    // Since Embed URL is a text field, it effectively doesn't use handleFileUpload, but purely state in the form
+                    // We will handle this in UI rendering below
+                    console.warn("Slides upload is deprecated");
+                    // setValue('pptEmbedUrl', ...); // managed by input
                 } else if (type === 'audio') {
                     // Start or update audioContent object
                     const currentAudio = getValues('audioContent') || {};
@@ -298,36 +302,44 @@ const ModuleModal = ({ isOpen, onClose, onSave, initialData, isEditing, courseId
                                 <div className="space-y-6 animate-in fade-in duration-200">
                                     <div className="flex items-center justify-between border-b pb-4">
                                          <h3 className="text-lg font-bold text-gray-800">Presentation Slides</h3>
-                                         {watch('pptSlides') && <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium flex items-center"><CheckCircle className="w-3 h-3 mr-1"/> Uploaded</span>}
+                                    </div>
+                                    
+                                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6">
+                                        <label className="block text-sm font-semibold text-blue-900 mb-1">
+                                            Google Slides Embed URL
+                                        </label>
+                                        <textarea
+                                            value={watch('pptEmbedUrl') || ''}
+                                            onChange={(e) => setValue('pptEmbedUrl', e.target.value)}
+                                            placeholder='<iframe src="https://docs.google.com/presentation/..." ...></iframe>'
+                                            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-mono"
+                                            rows={4}
+                                        />
+                                        <p className="text-xs text-blue-700 mt-2">
+                                            Paste the full iframe code from Google Slides (File &gt; Share &gt; Publish to web &gt; Embed).
+                                        </p>
                                     </div>
 
-                                    <FileUploadZone
-                                        acceptedFileTypes={{
-                                            'application/vnd.ms-powerpoint': ['.ppt'],
-                                            'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx']
-                                        }}
-                                        maxSize={50 * 1024 * 1024}
-                                        onUpload={(f) => handleFileUpload(f, 'slides')}
-                                        onRemove={() => setValue('pptSlides', null)}
-                                        currentFile={watch('pptSlides')}
-                                        label="Upload PPT/PPTX Slides"
-                                    />
-                                     {uploadingSlides && <LoadingSpinner message="Uploading slides..." />}
-
-                                     {watch('pptSlides') && (
-                                        <div className="bg-gray-50 p-4 rounded-lg text-sm space-y-2">
-                                            <div className="flex justify-between">
-                                                <span className="text-gray-500">File Name:</span>
-                                                <span className="font-medium text-gray-800">{watch('pptSlides').fileName}</span>
-                                            </div>
-                                            {watch('pptSlides').totalSlides && (
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-500">Total Slides:</span>
-                                                    <span className="font-medium text-gray-800">{watch('pptSlides').totalSlides}</span>
+                                    {/* Embed Preview */}
+                                    {(() => {
+                                        const embedCode = watch("pptEmbedUrl");
+                                        if (embedCode) {
+                                            return (
+                                                <div className="mt-4 border rounded-xl overflow-hidden shadow-sm bg-gray-100">
+                                                    <div className="p-3 bg-gray-200 border-b flex items-center justify-between">
+                                                        <span className="text-xs font-bold text-gray-500 uppercase">
+                                                            Slide Preview
+                                                        </span>
+                                                    </div>
+                                                    <div 
+                                                        className="w-full h-[300px] flex justify-center bg-black"
+                                                        dangerouslySetInnerHTML={{ __html: embedCode }}
+                                                    />
                                                 </div>
-                                            )}
-                                        </div>
-                                    )}
+                                            );
+                                        }
+                                        return null;
+                                    })()}
                                 </div>
                             )}
 

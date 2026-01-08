@@ -13,14 +13,16 @@ import {
   Loader2,
   CheckCircle,
   Lock,
+  Trash2,
 } from "lucide-react";
 // Adjust relative paths to src/admin/components
 import DocumentUploader from "@/pages/admin/components/uploaders/DocumentUploader";
 import AudioUploader from "@/pages/admin/components/uploaders/AudioUploader";
 import LoadingSpinner from "@/pages/admin/components/LoadingSpinner";
 import AssessmentBuilder from "@/pages/admin/components/AssessmentBuilder";
-import { uploadModuleFile } from "@/services/moduleService";
+import { useAssetUpload } from "@/hooks/useAssetUpload";
 import axiosInstance from "@/api/axiosInstance";
+import { deleteAssessment } from "@/services/assessmentService";
 
 interface AdminEditModuleFormProps {
   moduleId: string;
@@ -40,11 +42,24 @@ const AdminEditModuleForm = ({
   const [selectedAssessmentId, setSelectedAssessmentId] = useState(null);
   const [initialData, setInitialData] = useState<any>(null);
 
-  // Upload states
-  const [uploadingNotes, setUploadingNotes] = useState(false);
-  const [uploadingSlides, setUploadingSlides] = useState(false);
-  const [uploadingAudio, setUploadingAudio] = useState(false);
-  const [uploadingTranscript, setUploadingTranscript] = useState(false);
+  // Asset Upload Hooks
+  const {
+    upload: uploadAudioFile,
+    save: saveAudioFile,
+    isUploading: isUploadingAudioFile,
+  } = useAssetUpload("audio");
+
+  const {
+    upload: uploadDocFile,
+    save: saveDocFile,
+    isUploading: isUploadingDocFile,
+  } = useAssetUpload("documents");
+
+  const {
+    upload: uploadImageFile,
+    save: saveImageFile,
+    isUploading: isUploadingImageFile,
+  } = useAssetUpload("images");
 
   // Form setup
   const {
@@ -68,8 +83,9 @@ const AdminEditModuleForm = ({
       // Nested Objects
       videoTutorial: { url: "", title: "", duration: "", thumbnail: "" },
       moduleNotes: null,
-      pptSlides: null,
+      pptEmbedUrl: "",
       audioContent: null,
+      infographics: [],
     },
   });
 
@@ -80,24 +96,21 @@ const AdminEditModuleForm = ({
   const fetchModule = async () => {
     try {
       const res = await axiosInstance.get(`/admin/modules/${moduleId}`);
-
-      // SAFELY normalize backend response
       const raw = res.data?.data ?? res.data?.module ?? res.data;
 
       if (!raw) {
         throw new Error("Module data not found");
       }
 
+      // Populate form
       const normalizedData = {
         ...raw,
-
         videoTutorial: raw.videoTutorial ?? {
           url: "",
           title: "",
           duration: "",
           thumbnail: "",
         },
-
         audioContent: raw.audioContent ?? {
           url: "",
           title: "",
@@ -105,9 +118,9 @@ const AdminEditModuleForm = ({
           hasTranscript: false,
           transcriptPath: "",
         },
-
         moduleNotes: raw.moduleNotes ?? null,
-        pptSlides: raw.pptSlides ?? null,
+        pptEmbedUrl: raw.pptEmbedUrl ?? "",
+        infographics: raw.infographics ?? [],
       };
 
       setInitialData(normalizedData);
@@ -121,56 +134,69 @@ const AdminEditModuleForm = ({
   };
 
   const handleFileUpload = async (file: File, type: string) => {
-    // Prevent concurrent uploads for 'documents' type (notes & transcript)
-    // because the backend uses a shared temp folder which is cleared on upload.
-    if (type === "notes" && uploadingTranscript) {
-      alert("Please wait for the transcript upload to finish.");
-      return;
-    }
-    if (type === "transcript" && uploadingNotes) {
-      alert("Please wait for the notes upload to finish.");
-      return;
-    }
-
-    const setters: any = {
-      notes: setUploadingNotes,
-      slides: setUploadingSlides,
-      audio: setUploadingAudio,
-      transcript: setUploadingTranscript,
-    };
-    const setter = setters[type];
-    if (setter) setter(true);
-
     try {
-      const res = await uploadModuleFile(moduleId, type, file);
-      if (res.success) {
-        const fileData = res.data;
+      let finalUrl = "";
+      let metadata: any = {
+        fileName: file.name,
+        fileSize: file.size,
+        mimeType: file.type,
+      };
 
-        if (type === "notes") {
-          setValue("moduleNotes", fileData);
-        } else if (type === "slides") {
-          setValue("pptSlides", fileData);
-        } else if (type === "audio") {
-          const currentAudio = getValues("audioContent") || {};
-          setValue("audioContent", {
-            ...currentAudio,
-            url: fileData.filePath,
-            title: fileData.fileName,
-          });
-        } else if (type === "transcript") {
-          const currentAudio = getValues("audioContent") || {};
-          setValue("audioContent", {
-            ...currentAudio,
-            hasTranscript: true,
-            transcriptPath: fileData.filePath,
-          });
+      // 1. Upload & Save based on type
+      if (type === "audio") {
+        await uploadAudioFile(file);
+        finalUrl = await saveAudioFile();
+      } else if (type === "notes" || type === "transcript") {
+        await uploadDocFile(file);
+        finalUrl = await saveDocFile();
+      } else if (type === "infographic") {
+        const currentInfographics = getValues("infographics") || [];
+        if (currentInfographics.length >= 10) {
+          alert("You can only upload up to 10 infographics.");
+          return;
         }
+        await uploadImageFile(file);
+        finalUrl = await saveImageFile();
       }
-    } catch (error) {
-      console.error(error);
-      alert("Upload failed");
-    } finally {
-      if (setter) setter(false);
+
+      if (!finalUrl) throw new Error("Failed to get file URL");
+
+      // 2. Update Form State (which will be saved on "Save Changes")
+      if (type === "notes") {
+        setValue("moduleNotes", {
+          ...metadata,
+          filePath: finalUrl,
+          uploadedOn: new Date().toISOString(),
+        });
+      } else if (type === "infographic") {
+        const current = getValues("infographics") || [];
+        setValue("infographics", [
+          ...current,
+          {
+            url: finalUrl,
+            title: file.name,
+            order: current.length + 1,
+          },
+        ]);
+      } else if (type === "audio") {
+        const current = getValues("audioContent") || {};
+        setValue("audioContent", {
+          ...current,
+          ...metadata,
+          url: finalUrl,
+          title: current.title || file.name,
+        });
+      } else if (type === "transcript") {
+        const current = getValues("audioContent") || {};
+        setValue("audioContent", {
+          ...current,
+          hasTranscript: true,
+          transcriptPath: finalUrl,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      alert(`Failed to upload ${type}`);
     }
   };
 
@@ -187,6 +213,23 @@ const AdminEditModuleForm = ({
     }
   };
 
+  const handleDeleteAssessment = async (assessmentId: string) => {
+    if (!confirm("Are you sure you want to delete this assessment?")) return;
+    try {
+      await deleteAssessment(assessmentId);
+      // Remove from local state
+      setInitialData((prev: any) => ({
+        ...prev,
+        assessments: prev.assessments.filter(
+          (a: any) => a._id !== assessmentId
+        ),
+      }));
+    } catch (error) {
+      console.error("Failed to delete assessment:", error);
+      alert("Failed to delete assessment");
+    }
+  };
+
   if (dataLoading)
     return (
       <div className="fixed inset-0 flex items-center justify-center">
@@ -199,7 +242,8 @@ const AdminEditModuleForm = ({
     { id: "notes", label: "Notes (PDF)", icon: FileText },
     { id: "video", label: "Video Tutorial", icon: Video },
     { id: "audio", label: "Audio Content", icon: Music },
-    { id: "slides", label: "PPT Slides", icon: MonitorPlay },
+    { id: "slides", label: "Google Slides", icon: MonitorPlay },
+    { id: "infographics", label: "Infographics", icon: FileText },
     { id: "assessments", label: "Assessments", icon: ListChecks },
   ];
 
@@ -362,7 +406,7 @@ const AdminEditModuleForm = ({
                     value={watch("moduleNotes")}
                     onUpload={(f) => handleFileUpload(f, "notes")}
                     onRemove={() => setValue("moduleNotes", null)}
-                    isUploading={uploadingNotes}
+                    isUploading={isUploadingDocFile}
                   />
                 </div>
               )}
@@ -372,23 +416,118 @@ const AdminEditModuleForm = ({
                 <div className="space-y-6 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between border-b pb-4">
                     <h3 className="text-lg font-bold text-gray-800">
-                      Presentation Slides
+                      Google Slides
                     </h3>
-                    {watch("pptSlides") && (
-                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium flex items-center">
-                        <CheckCircle className="w-3 h-3 mr-1" /> Uploaded
-                      </span>
-                    )}
                   </div>
 
-                  <DocumentUploader
-                    label="Upload PPT/PPTX Slides"
-                    type="ppt"
-                    value={watch("pptSlides")}
-                    onUpload={(f) => handleFileUpload(f, "slides")}
-                    onRemove={() => setValue("pptSlides", null)}
-                    isUploading={uploadingSlides}
-                  />
+                  <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6">
+                    <label className="block text-sm font-semibold text-blue-900 mb-1">
+                      Google Slides Embed URL
+                    </label>
+                    <input
+                      {...register("pptEmbedUrl")}
+                      placeholder='<iframe src="https://docs.google.com/presentation/..." ...></iframe>'
+                      className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-mono"
+                    />
+                    <p className="text-xs text-blue-700 mt-2">
+                      Paste the full iframe code from Google Slides (File &gt;
+                      Share &gt; Publish to web &gt; Embed).
+                    </p>
+                  </div>
+
+                  {/* Embed Preview */}
+                  {(() => {
+                    const embedCode = watch("pptEmbedUrl");
+
+                    if (embedCode) {
+                      return (
+                        <div className="mt-4 border rounded-xl overflow-hidden shadow-sm bg-gray-100">
+                          <div className="p-3 bg-gray-200 border-b flex items-center justify-between">
+                            <span className="text-xs font-bold text-gray-500 uppercase">
+                              Slide Preview
+                            </span>
+                          </div>
+                          <div
+                            className="w-full h-[500px] flex justify-center bg-black"
+                            dangerouslySetInnerHTML={{ __html: embedCode }}
+                          />
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+                </div>
+              )}
+
+              {/* Infographics Tab */}
+              {activeTab === "infographics" && (
+                <div className="space-y-6 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b pb-4">
+                    <h3 className="text-lg font-bold text-gray-800">
+                      Infographics
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Add visual learning materials
+                    </p>
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6">
+                    <DocumentUploader
+                      label="Upload Infographic (JPG/PNG)"
+                      type="image"
+                      value={null}
+                      onUpload={(f) => handleFileUpload(f, "infographic")}
+                      isUploading={isUploadingImageFile}
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-gray-700 border-b pb-2">
+                      Uploaded Gallery ({watch("infographics")?.length || 0}/10)
+                    </h4>
+                    {watch("infographics") &&
+                    watch("infographics").length > 0 ? (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {watch("infographics").map((info: any, idx: number) => (
+                          <div
+                            key={idx}
+                            className="relative group border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+                          >
+                            <img
+                              src={info.url}
+                              alt={info.title}
+                              className="w-full h-32 object-cover"
+                            />
+                            <div className="p-2">
+                              <p
+                                className="text-xs text-gray-600 truncate"
+                                title={info.title}
+                              >
+                                {info.title}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const current = getValues("infographics");
+                                const updated = current.filter(
+                                  (_: any, i: number) => i !== idx
+                                );
+                                setValue("infographics", updated);
+                              }}
+                              className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              title="Remove Infographic"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500 italic text-center py-8">
+                        No infographics uploaded yet.
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -503,7 +642,7 @@ const AdminEditModuleForm = ({
                         }
                         onUpload={(f) => handleFileUpload(f, "audio")}
                         onRemove={() => setValue("audioContent.url", "")}
-                        isUploading={uploadingAudio}
+                        isUploading={isUploadingAudioFile}
                       />
                     </div>
 
@@ -557,7 +696,7 @@ const AdminEditModuleForm = ({
                           setValue("audioContent.hasTranscript", false);
                           setValue("audioContent.transcriptPath", "");
                         }}
-                        isUploading={uploadingTranscript}
+                        isUploading={isUploadingDocFile}
                       />
                     </div>
                   </div>
@@ -567,77 +706,121 @@ const AdminEditModuleForm = ({
               {/* Assessments Tab */}
               {activeTab === "assessments" && (
                 <div className="space-y-6 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between border-b pb-4">
-                    <h3 className="text-lg font-bold text-gray-800">
-                      Module Assessments
-                    </h3>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedAssessmentId(null);
-                        setIsAssessmentBuilderOpen(true);
-                      }}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium shadow-sm flex items-center"
-                    >
-                      <ListChecks className="w-4 h-4 mr-2" />
-                      Create New Assessment
-                    </button>
-                  </div>
-
-                  <div className="space-y-3">
-                    {initialData?.assessments?.length > 0 ? (
-                      initialData.assessments.map((ass: any, index: number) => (
-                        <div
-                          key={ass._id || index}
-                          className="p-4 border rounded-xl bg-white flex justify-between items-center hover:shadow-sm transition"
+                  {!isAssessmentBuilderOpen ? (
+                    <>
+                      <div className="flex items-center justify-between border-b pb-4">
+                        <h3 className="text-lg font-bold text-gray-800">
+                          Module Assessments
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedAssessmentId(null);
+                            setIsAssessmentBuilderOpen(true);
+                          }}
+                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium shadow-sm flex items-center"
                         >
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-bold text-gray-800">
-                                {ass.title}
-                              </span>
-                              <span
-                                className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                                  ass.isActive
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-gray-100 text-gray-600"
-                                }`}
+                          <ListChecks className="w-4 h-4 mr-2" />
+                          Create New Assessment
+                        </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        {initialData?.assessments?.length > 0 ? (
+                          initialData.assessments.map(
+                            (ass: any, index: number) => (
+                              <div
+                                key={ass._id || index}
+                                className="p-4 border rounded-xl bg-white flex justify-between items-center hover:shadow-sm transition"
                               >
-                                {ass.isActive ? "Active" : "Inactive"}
-                              </span>
-                            </div>
-                            <p className="text-sm text-gray-500 mt-1">
-                              {ass.assessmentType.toUpperCase()} •{" "}
-                              {ass.questions?.length || 0} Questions •{" "}
-                              {ass.totalMarks} Marks
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-bold text-gray-800">
+                                      {ass.title}
+                                    </span>
+                                    <span
+                                      className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                                        ass.isActive
+                                          ? "bg-green-100 text-green-700"
+                                          : "bg-gray-100 text-gray-600"
+                                      }`}
+                                    >
+                                      {ass.isActive ? "Active" : "Inactive"}
+                                    </span>
+                                  </div>
+                                  <p className="text-sm text-gray-500 mt-1">
+                                    {ass.assessmentType?.toUpperCase() ||
+                                      "ASSESSMENT"}{" "}
+                                    • {ass.questions?.length || 0} Questions •{" "}
+                                    {ass.totalMarks || 0} Marks
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedAssessmentId(ass._id);
+                                      setIsAssessmentBuilderOpen(true);
+                                    }}
+                                    className="px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-sm font-medium transition"
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleDeleteAssessment(ass._id)
+                                    }
+                                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
+                                    title="Delete Assessment"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </div>
+                            )
+                          )
+                        ) : (
+                          <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                            <ListChecks className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                            <p className="text-gray-500 font-medium">
+                              No assessments added yet
+                            </p>
+                            <p className="text-gray-400 text-sm mt-1">
+                              Create a quiz or exam for this module
                             </p>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedAssessmentId(ass._id);
-                                setIsAssessmentBuilderOpen(true);
-                              }}
-                              className="px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-sm font-medium transition"
-                            >
-                              Edit
-                            </button>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-                        <ListChecks className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                        <p className="text-gray-500 font-medium">
-                          No assessments added yet
-                        </p>
-                        <p className="text-gray-400 text-sm mt-1">
-                          Create a quiz or exam for this module
-                        </p>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </>
+                  ) : (
+                    <div className="bg-gray-50 border rounded-xl overflow-hidden">
+                      <div className="p-4 border-b bg-white flex justify-between items-center">
+                        <h3 className="font-bold text-gray-700">
+                          Assessment Editor
+                        </h3>
+                        <button
+                          onClick={() => {
+                            setIsAssessmentBuilderOpen(false);
+                            fetchModule();
+                          }}
+                          className="text-sm text-gray-500 hover:text-gray-800"
+                        >
+                          Back to List
+                        </button>
+                      </div>
+                      <AssessmentBuilder
+                        isEmbedded={true}
+                        moduleId={moduleId}
+                        courseId={initialData?.courseId}
+                        assessmentId={selectedAssessmentId}
+                        onClose={() => {
+                          setIsAssessmentBuilderOpen(false);
+                          fetchModule();
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
             </form>
@@ -666,19 +849,6 @@ const AdminEditModuleForm = ({
           </button>
         </div>
       </div>
-
-      {/* Nested Assessment Builder Modal */}
-      {isAssessmentBuilderOpen && (
-        <AssessmentBuilder
-          isOpen={isAssessmentBuilderOpen}
-          onClose={() => {
-            setIsAssessmentBuilderOpen(false);
-            fetchModule(); // Refresh assessments list
-          }}
-          moduleId={moduleId}
-          assessmentId={selectedAssessmentId}
-        />
-      )}
     </div>
   );
 };

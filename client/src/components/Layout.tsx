@@ -46,8 +46,21 @@ const Layout = () => {
     setSidebarOpen(false); // Close sidebar on route change
   }, [location.pathname]);
 
+  // Robust Role Determination: Use localStorage, fallback to URL path
+  let currentRole = role;
+  if (!currentRole) {
+    if (location.pathname.startsWith("/student")) currentRole = "Student";
+    else if (location.pathname.startsWith("/teacher")) currentRole = "Teacher";
+    else if (location.pathname.startsWith("/principal"))
+      currentRole = "Principal";
+    else if (location.pathname.startsWith("/admin")) currentRole = "Admin";
+  }
+
   const getNavItems = () => {
-    switch (role) {
+    const normalizedRole = currentRole
+      ? currentRole.charAt(0).toUpperCase() + currentRole.slice(1).toLowerCase()
+      : "";
+    switch (normalizedRole) {
       case "Student":
         return [
           { to: "/student/dashboard", icon: Home, label: "Dashboard" },

@@ -7,7 +7,7 @@ import QuizReview from '../../components/QuizReview';
 import RetakePrompt from '../../components/RetakePrompt';
 import { generateDynamicQuiz } from '../../utils/quizGenerator';
 
-const StudentQuizPage = () => {
+const StudentAssesmentPage = () => {
     const { moduleId } = useParams();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const student = sampleData.students.find(s => s.email === user.email) || sampleData.students[0];
@@ -239,4 +239,4 @@ const StudentQuizPage = () => {
     );
 };
 
-export default StudentQuizPage;
+export default StudentAssesmentPage;

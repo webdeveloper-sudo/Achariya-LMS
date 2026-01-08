@@ -1,14 +1,16 @@
-import adminApi from "./adminApi";
+import axiosInstance from "../api/axiosInstance";
 
 export const getAssessmentsByModule = async (moduleId) => {
-  // route: /api/admin/modules/:moduleId/assessments
-  const response = await adminApi.get(`/admin/modules/${moduleId}/assessments`);
+  // route: /api/v1/admin/modules/:moduleId/assessments
+  const response = await axiosInstance.get(
+    `/admin/modules/${moduleId}/assessments`
+  );
   return response.data;
 };
 
 export const createAssessment = async (moduleId, assessmentData) => {
-  // route: /api/admin/modules/:moduleId/assessments
-  const response = await adminApi.post(
+  // route: /api/v1/admin/modules/:moduleId/assessments
+  const response = await axiosInstance.post(
     `/admin/modules/${moduleId}/assessments`,
     assessmentData
   );
@@ -16,12 +18,14 @@ export const createAssessment = async (moduleId, assessmentData) => {
 };
 
 export const getAssessmentById = async (assessmentId) => {
-  const response = await adminApi.get(`/admin/assessments/${assessmentId}`);
+  const response = await axiosInstance.get(
+    `/admin/assessments/${assessmentId}`
+  );
   return response.data;
 };
 
 export const updateAssessment = async (assessmentId, assessmentData) => {
-  const response = await adminApi.put(
+  const response = await axiosInstance.put(
     `/admin/assessments/${assessmentId}`,
     assessmentData
   );
@@ -29,6 +33,8 @@ export const updateAssessment = async (assessmentId, assessmentData) => {
 };
 
 export const deleteAssessment = async (assessmentId) => {
-  const response = await adminApi.delete(`/admin/assessments/${assessmentId}`);
+  const response = await axiosInstance.delete(
+    `/admin/assessments/${assessmentId}`
+  );
   return response.data;
 };

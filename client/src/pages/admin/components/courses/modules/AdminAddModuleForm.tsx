@@ -19,8 +19,8 @@ import DocumentUploader from "@/pages/admin/components/uploaders/DocumentUploade
 import AudioUploader from "@/pages/admin/components/uploaders/AudioUploader";
 import LoadingSpinner from "@/pages/admin/components/LoadingSpinner";
 import AssessmentBuilder from "@/pages/admin/components/AssessmentBuilder";
-import { uploadModuleFile } from "@/services/moduleService";
 import axiosInstance from "@/api/axiosInstance";
+import { useAssetUpload } from "@/hooks/useAssetUpload";
 
 interface AdminAddModuleFormProps {
   courseId: string;
@@ -38,15 +38,28 @@ const AdminAddModuleForm = ({
   const [isAssessmentBuilderOpen, setIsAssessmentBuilderOpen] = useState(false);
   const [selectedAssessmentId, setSelectedAssessmentId] = useState(null);
 
+  // Asset Upload Hooks
+  const {
+    upload: uploadAudioFile,
+    save: saveAudioFile,
+    isUploading: isUploadingAudioFile,
+  } = useAssetUpload("audio");
+
+  const {
+    upload: uploadDocFile,
+    save: saveDocFile,
+    isUploading: isUploadingDocFile,
+  } = useAssetUpload("documents");
+
+  const {
+    upload: uploadImageFile,
+    save: saveImageFile,
+    isUploading: isUploadingImageFile,
+  } = useAssetUpload("images");
+
   // If created, we switch to edit mode
   const [createdModuleId, setCreatedModuleId] = useState<string | null>(null);
   const isEditing = !!createdModuleId;
-
-  // Upload states
-  const [uploadingNotes, setUploadingNotes] = useState(false);
-  const [uploadingSlides, setUploadingSlides] = useState(false);
-  const [uploadingAudio, setUploadingAudio] = useState(false);
-  const [uploadingTranscript, setUploadingTranscript] = useState(false);
 
   // Form setup
   const {
@@ -70,150 +83,120 @@ const AdminAddModuleForm = ({
       // Nested Objects
       videoTutorial: { url: "", title: "", duration: "", thumbnail: "" },
       moduleNotes: null,
-      pptSlides: null,
+      pptEmbedUrl: "", // Changed default
       audioContent: null, // { url, title, duration, hasTranscript, transcriptPath }
     },
   });
 
-  const [pendingUploads, setPendingUploads] = useState<{
-    [key: string]: File;
-  }>({});
-
+  // Unified File Upload Handler
   const handleFileUpload = async (file: File, type: string) => {
-    // If module exists, upload immediately
-    if (createdModuleId) {
-      const setters: any = {
-        notes: setUploadingNotes,
-        slides: setUploadingSlides,
-        audio: setUploadingAudio,
-        transcript: setUploadingTranscript,
-      };
-      const setter = setters[type];
-      if (setter) setter(true);
-
-      try {
-        const res = await uploadModuleFile(createdModuleId, type, file);
-        if (res.success) {
-          const fileData = res.data;
-          updateFormFileState(type, fileData);
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Upload failed");
-      } finally {
-        if (setter) setter(false);
-      }
-    } else {
-      // Store locally for later upload
-      setPendingUploads((prev) => ({ ...prev, [type]: file }));
-      // Create a mock file data object for visual feedback & preview
-      const localUrl = URL.createObjectURL(file);
-      const mockFileData = {
-        filePath: localUrl,
+    try {
+      let finalUrl = "";
+      let metadata: any = {
         fileName: file.name,
-        originalFile: file, // Keep reference if needed
+        fileSize: file.size,
+        mimeType: file.type,
       };
-      updateFormFileState(type, mockFileData);
-    }
-  };
 
-  const updateFormFileState = (type: string, fileData: any) => {
-    if (type === "notes") {
-      setValue("moduleNotes", fileData);
-    } else if (type === "slides") {
-      setValue("pptSlides", fileData);
-    } else if (type === "audio") {
-      const currentAudio = getValues("audioContent") || {};
-      setValue("audioContent", {
-        ...currentAudio,
-        url: fileData.filePath,
-        title: fileData.fileName,
-      });
-    } else if (type === "transcript") {
-      const currentAudio = getValues("audioContent") || {};
-      setValue("audioContent", {
-        ...currentAudio,
-        hasTranscript: true,
-        transcriptPath: fileData.filePath,
-      });
+      // 1. Upload & Save based on type
+      if (type === "audio") {
+        await uploadAudioFile(file);
+        finalUrl = await saveAudioFile();
+      } else if (type === "notes" || type === "transcript") {
+        await uploadDocFile(file);
+        finalUrl = await saveDocFile();
+      } else if (type === "infographic") {
+        // limit check
+        const currentInfographics = getValues("infographics") || [];
+        if (currentInfographics.length >= 10) {
+          alert("You can only upload up to 10 infographics.");
+          return;
+        }
+        await uploadImageFile(file);
+        finalUrl = await saveImageFile();
+      }
+
+      if (!finalUrl) throw new Error("Failed to get file URL");
+
+      // 2. Update Form State
+      if (type === "notes") {
+        setValue("moduleNotes", {
+          ...metadata,
+          filePath: finalUrl,
+          uploadedOn: new Date().toISOString(),
+        });
+      } else if (type === "infographic") {
+        const current = getValues("infographics") || [];
+        setValue("infographics", [
+          ...current,
+          {
+            url: finalUrl,
+            title: file.name,
+            order: current.length + 1,
+          },
+        ]);
+      } else if (type === "audio") {
+        const current = getValues("audioContent") || {};
+        setValue("audioContent", {
+          ...current,
+          ...metadata,
+          url: finalUrl,
+          title: current.title || file.name,
+        });
+      } else if (type === "transcript") {
+        const current = getValues("audioContent") || {};
+        setValue("audioContent", {
+          ...current,
+          hasTranscript: true,
+          transcriptPath: finalUrl,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      alert(`Failed to upload ${type}`);
     }
   };
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      let targetModuleId = createdModuleId;
+      // Sanitize payload to prevent CastError/Validation Error
+      const payload = {
+        ...data,
+        credits: Number(data.credits) || 0,
+        sequenceOrder: Number(data.sequenceOrder) || 1,
+        moduleNotes: data.moduleNotes ? data.moduleNotes : undefined,
+        audioContent: data.audioContent ? data.audioContent : undefined,
+        infographics: data.infographics || [],
+        pptEmbedUrl: data.pptEmbedUrl || "",
+        videoTutorial: {
+          ...data.videoTutorial,
+          duration: data.videoTutorial?.duration || "", // Ensure string
+        },
+      };
 
-      if (!targetModuleId) {
-        // Step 1: Create Module
-        const res = await axiosInstance.post(
-          `/admin/modules/course/${courseId}`,
-          data
-        );
-        if (res.data.success) {
-          targetModuleId = res.data.data._id;
-          setCreatedModuleId(targetModuleId);
-        } else {
-          throw new Error("Failed to create module");
-        }
+      if (courseId) {
+        // Mode A: Create new module directly under course
+        const endpoint = `/admin/modules/course/${courseId}`;
+        await axiosInstance.post(endpoint, payload);
       } else {
-        // Update existing module (basic info)
-        await axiosInstance.put(`/admin/modules/${targetModuleId}`, data);
-      }
-
-      // Step 2: Handle Pending Uploads
-      const pendingKeys = Object.keys(pendingUploads);
-      if (pendingKeys.length > 0 && targetModuleId) {
-        const updates: any = {};
-
-        // Parallel uploads
-        // Sequential uploads to avoid temp folder conflicts
-        for (const type of pendingKeys) {
-          const file = pendingUploads[type];
-          try {
-            const uploadRes = await uploadModuleFile(
-              targetModuleId!,
-              type,
-              file
-            );
-            if (uploadRes.success) {
-              // Collect updates to save back to module
-              const fileData = uploadRes.data;
-              if (type === "notes") updates.moduleNotes = fileData;
-              else if (type === "slides") updates.pptSlides = fileData;
-              else if (type === "audio") {
-                updates.audioContent = updates.audioContent || {
-                  ...data.audioContent,
-                };
-                updates.audioContent.url = fileData.filePath;
-                updates.audioContent.title = fileData.fileName;
-              } else if (type === "transcript") {
-                updates.audioContent = updates.audioContent || {
-                  ...data.audioContent,
-                };
-                updates.audioContent.hasTranscript = true;
-                updates.audioContent.transcriptPath = fileData.filePath;
-              }
-            }
-          } catch (err) {
-            console.error(`Failed to upload ${type}`, err);
-          }
-        }
-
-        // Step 3: Update module with new file paths if any uploads happened
-        if (Object.keys(updates).length > 0) {
-          // If we have updates, we need to merge them with existing data and save again
-          await axiosInstance.put(`/admin/modules/${targetModuleId}`, {
-            ...data,
-            ...updates,
-          });
-        }
+        throw new Error("Missing courseId");
       }
 
       onSuccess();
     } catch (error: any) {
-      console.error(error);
-      alert("Failed to save module");
+      console.error("Submission Error:", error);
+      console.error("Error Response:", error.response?.data);
+
+      const serverError =
+        error.response?.data?.error || error.response?.data?.message;
+      // If serverError is an object (common with Mongoose validation), stringify it
+      const displayError =
+        typeof serverError === "object"
+          ? JSON.stringify(serverError, null, 2)
+          : serverError || "Failed to save module";
+
+      alert(`Save Failed: ${displayError}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -225,6 +208,7 @@ const AdminAddModuleForm = ({
     { id: "video", label: "Video Tutorial", icon: Video },
     { id: "audio", label: "Audio Content", icon: Music },
     { id: "slides", label: "PPT Slides", icon: MonitorPlay },
+    { id: "infographics", label: "Infographics", icon: FileText },
     {
       id: "assessments",
       label: "Assessments",
@@ -402,7 +386,7 @@ const AdminAddModuleForm = ({
                     value={watch("moduleNotes")}
                     onUpload={(f) => handleFileUpload(f, "notes")}
                     onRemove={() => setValue("moduleNotes", null)}
-                    isUploading={uploadingNotes}
+                    isUploading={isUploadingDocFile}
                   />
 
                   {/* PDF Preview */}
@@ -426,62 +410,123 @@ const AdminAddModuleForm = ({
               {/* Slides Tab */}
               {activeTab === "slides" && (
                 <div className="space-y-6 animate-in fade-in duration-200">
-                  <div className="flex items-center justify-between border-b pb-4">
-                    <h3 className="text-lg font-bold text-gray-800">
-                      Presentation Slides
-                    </h3>
-                    {watch("pptSlides") && (
-                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium flex items-center">
-                        <CheckCircle className="w-3 h-3 mr-1" /> Uploaded
-                      </span>
-                    )}
+                  <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6">
+                    <label className="block text-sm font-semibold text-blue-900 mb-1">
+                      Google Slides Embed URL
+                    </label>
+                    <input
+                      {...register("pptEmbedUrl")}
+                      placeholder='<iframe src="https://docs.google.com/presentation/..." ...></iframe>'
+                      className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-mono"
+                    />
+                    <p className="text-xs text-blue-700 mt-2">
+                      Paste the full iframe code from Google Slides (File &gt;
+                      Share &gt; Publish to web &gt; Embed).
+                    </p>
                   </div>
 
-                  <DocumentUploader
-                    label="Upload PPT/PPTX Slides"
-                    type="ppt"
-                    value={watch("pptSlides")}
-                    onUpload={(f) => handleFileUpload(f, "slides")}
-                    onRemove={() => setValue("pptSlides", null)}
-                    isUploading={uploadingSlides}
-                  />
+                  {/* Embed Preview */}
+                  {(() => {
+                    const embedCode = watch("pptEmbedUrl");
 
-                  {/* PPT Preview - Using Google Viewer if remote, or just Image if it's an image? 
-                      User mentioned 'ppt slides or image'. If it's PPT, standard browsers can't embed it natively. 
-                      If it is a blob (pending), we can't send it to Google.
-                      If it is remote, we can.
-                  */}
-                  {watch("pptSlides")?.filePath && (
-                    <div className="mt-4 border rounded-xl overflow-hidden shadow-sm bg-gray-100">
-                      <div className="p-3 bg-gray-200 border-b flex items-center justify-between">
-                        <span className="text-xs font-bold text-gray-500 uppercase">
-                          Slide Preview
-                        </span>
-                      </div>
-                      {(() => {
-                        const path = watch("pptSlides").filePath;
-                        // If it's a blob/local, we can't preview PPT easeily.
-                        if (path.startsWith("blob:")) {
-                          return (
-                            <div className="p-10 text-center text-gray-500">
-                              <p>Preview will be available after saving.</p>
-                            </div>
-                          );
-                        } else {
-                          // Use Google Viewer for office docs
-                          return (
-                            <iframe
-                              src={`https://docs.google.com/gview?url=${encodeURIComponent(
-                                path
-                              )}&embedded=true`}
-                              className="w-full h-[500px]"
-                              title="Slides Preview"
+                    if (embedCode) {
+                      // Extract src if full iframe tag is pasted, or use as is if just URL (though prompt implies iframe code)
+                      // Prompt: "add ppt like this ... <iframe ...></iframe>"
+                      // Let's safe render it using dangerouslySetInnerHTML but purely for preview
+                      return (
+                        <div className="mt-4 border rounded-xl overflow-hidden shadow-sm bg-gray-100">
+                          <div className="p-3 bg-gray-200 border-b flex items-center justify-between">
+                            <span className="text-xs font-bold text-gray-500 uppercase">
+                              Slide Preview
+                            </span>
+                          </div>
+                          <div
+                            className="w-full h-[500px] flex justify-center bg-black"
+                            dangerouslySetInnerHTML={{ __html: embedCode }}
+                          />
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+                </div>
+              )}
+
+              {/* Infographics Tab */}
+              {activeTab === "infographics" && (
+                <div className="space-y-6 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b pb-4">
+                    <h3 className="text-lg font-bold text-gray-800">
+                      Infographics
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Add visual learning materials
+                    </p>
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6">
+                    <h4 className="text-sm font-bold text-blue-800 mb-2">
+                      Upload Infographic Image
+                    </h4>
+                    <DocumentUploader
+                      label="Upload Image (JPG/PNG)"
+                      type="image"
+                      value={null} // We don't bind a single value, we push to array in backend
+                      onUpload={(f) => handleFileUpload(f, "infographic")}
+                      isUploading={isUploadingImageFile}
+                    />
+                  </div>
+
+                  {/* List of uploaded infographics */}
+                  {/* List of uploaded infographics */}
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-gray-700 border-b pb-2">
+                      Uploaded Infographics (
+                      {watch("infographics")?.length || 0}/10)
+                    </h4>
+                    {watch("infographics") &&
+                    watch("infographics").length > 0 ? (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        {watch("infographics").map((info: any, idx: number) => (
+                          <div
+                            key={idx}
+                            className="relative group border rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+                          >
+                            <img
+                              src={info.url}
+                              alt={info.title}
+                              className="w-full h-32 object-cover"
                             />
-                          );
-                        }
-                      })()}
-                    </div>
-                  )}
+                            <div className="p-2">
+                              <p
+                                className="text-xs text-gray-600 truncate"
+                                title={info.title}
+                              >
+                                {info.title}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const current = getValues("infographics");
+                                const updated = current.filter(
+                                  (_: any, i: number) => i !== idx
+                                );
+                                setValue("infographics", updated);
+                              }}
+                              className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              title="Remove Infographic"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500 italic text-center py-8">
+                        No infographics uploaded yet.
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -596,7 +641,7 @@ const AdminAddModuleForm = ({
                         }
                         onUpload={(f) => handleFileUpload(f, "audio")}
                         onRemove={() => setValue("audioContent.url", "")}
-                        isUploading={uploadingAudio}
+                        isUploading={isUploadingAudioFile}
                       />
                     </div>
 
@@ -650,7 +695,7 @@ const AdminAddModuleForm = ({
                           setValue("audioContent.hasTranscript", false);
                           setValue("audioContent.transcriptPath", "");
                         }}
-                        isUploading={uploadingTranscript}
+                        isUploading={isUploadingDocFile}
                       />
                     </div>
                   </div>
