@@ -974,3 +974,31 @@ exports.getCourse = async (req, res) => {
     res.status(500).json({ message: "Error fetching course" });
   }
 };
+
+// 9. Get Single Module (Public/Student)
+exports.getModule = async (req, res) => {
+  try {
+    const { courseId, moduleId } = req.params;
+
+    // Find Module
+    const module = await Module.findOne({
+      _id: moduleId,
+      courseId: courseId,
+    });
+
+    if (!module) {
+      return res.status(404).json({ message: "Module not found" });
+    }
+
+    res.json({
+      success: true,
+      data: module,
+    });
+  } catch (error) {
+    if (error.kind === "ObjectId") {
+      return res.status(404).json({ message: "Module not found" });
+    }
+    console.error("Error fetching module:", error);
+    res.status(500).json({ message: "Error fetching module" });
+  }
+};

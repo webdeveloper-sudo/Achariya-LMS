@@ -37,6 +37,10 @@ app.get(
   "/api/v1/courses/:id",
   require("./controllers/studentController").getCourse
 ); // Public/Student Course Detail
+app.get(
+  "/api/v1/courses/:courseId/modules/:moduleId",
+  require("./controllers/studentController").getModule
+); // Public/Student Module Detail
 app.use("/api/v1/admin/teachers", require("./routes/teacherRoutes"));
 
 // LMS Admin Routes

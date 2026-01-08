@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const questionSchema = new mongoose.Schema(
   {
-    questionNumber: {
+    questionNo: {
       type: Number,
       required: true,
     },
@@ -12,24 +12,27 @@ const questionSchema = new mongoose.Schema(
     },
     questionType: {
       type: String,
-      enum: ["multiple-choice", "true-false", "short-answer", "essay"],
+      enum: [
+        "multiple-choice",
+        "true-false",
+        "fill-ups",
+        "short-answer",
+        "essay",
+      ],
       required: true,
     },
     options: [
       {
-        type: String,
+        type: String, // Only for multiple-choice
       },
     ],
-    correctAnswer: {
-      type: mongoose.Schema.Types.Mixed, // String or Array of Strings
+    answer: {
+      type: mongoose.Schema.Types.Mixed,
       required: function () {
-        // Essay type might strictly not need a "correct answer" stored if it's manual grading,
-        // but the prompt says correctAnswer is String or Array.
-        // I'll make it required unless it's an essay, but strict validation in controller is better.
         return this.questionType !== "essay";
       },
     },
-    marks: {
+    mark: {
       type: Number,
       required: true,
       default: 1,
@@ -39,7 +42,7 @@ const questionSchema = new mongoose.Schema(
     },
   },
   { _id: false }
-); // sub-document, no separate _id by default unless needed
+);
 
 const assessmentSchema = new mongoose.Schema(
   {
@@ -65,37 +68,26 @@ const assessmentSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      maxlength: 500,
-    },
-    assessmentType: {
-      type: String,
-      enum: ["quiz", "assignment", "exam", "practice"],
-      required: true,
+      maxlength: 1000,
     },
     totalMarks: {
       type: Number,
       required: true,
-    },
-    passingMarks: {
-      type: Number,
-      required: true,
+      default: 0,
     },
     duration: {
-      type: Number, // in minutes
+      type: Number,
+      required: true, // in seconds
+    },
+    attempts: {
+      type: Number,
+      default: 3,
+    },
+    totalCredits: {
+      type: Number,
+      default: 0,
     },
     questions: [questionSchema],
-    attemptsAllowed: {
-      type: Number,
-      default: 0, // 0 means unlimited
-    },
-    showCorrectAnswers: {
-      type: Boolean,
-      default: false,
-    },
-    randomizeQuestions: {
-      type: Boolean,
-      default: false,
-    },
     isActive: {
       type: Boolean,
       default: true,
@@ -103,14 +95,6 @@ const assessmentSchema = new mongoose.Schema(
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "AdminUser",
-    },
-    postedOn: {
-      type: Date,
-      default: Date.now,
-    },
-    lastUpdatedOn: {
-      type: Date,
-      default: Date.now,
     },
   },
   {

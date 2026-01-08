@@ -6,14 +6,12 @@ const generateModuleId = async (courseIdStr, courseObjectId) => {
   // Get count of modules in this course to generate sequence
   const count = await Module.countDocuments({ courseId: courseObjectId });
   const num = (count + 1).toString().padStart(2, "0");
-  // Using string courseId part if possible, or just slice of ObjectId if courseIdStr is standard regex related
   return `MOD-${courseIdStr.split("-")[2] || "XXX"}-M${num}`;
-  // Note: This relies on courseIdStr structure. If courseIdStr is 'CRS-2025-001', split[2] is '001'.
 };
 
 exports.createModule = async (req, res, next) => {
   try {
-    const { courseId } = req.params; // Expecting courseId (ObjectId or String ID) in params
+    const { courseId } = req.params;
     let course = await Course.findOne({
       $or: [{ _id: courseId }, { courseId: courseId }],
     });
@@ -29,26 +27,36 @@ exports.createModule = async (req, res, next) => {
       courseId: course._id,
     });
 
+    // Extract fields from body. The frontend now sends full objects/urls.
     const newModule = await Module.create({
       moduleId,
-      courseId: course._id, // Always store ObjectId
+      courseId: course._id,
       title: req.body.title,
       description: req.body.description,
       sequenceOrder: currentModulesCount + 1,
       credits: req.body.credits,
       estimatedDuration: req.body.estimatedDuration,
-      moduleNotes: req.body.moduleNotes,
-      videoTutorial: req.body.videoTutorial,
-      audioContent: req.body.audioContent,
-      pptSlides: req.body.pptSlides,
-      prerequisites: req.body.prerequisites,
       status: req.body.status,
       postedBy: req.user.id,
+
+      // Complex Objects - Mapped directly from JSON payload
+      videoTutorial: req.body.videoTutorial,
+
+      // Audio: { url, title, duration, fileSize, mimeType, hasTranscript, transcriptPath }
+      audioContent: req.body.audioContent,
+
+      // Notes: { fileName, filePath, fileSize, mimeType, uploadedOn }
+      moduleNotes: req.body.moduleNotes,
+
+      // Infographics: Array of { url, title, order }
+      infographics: req.body.infographics || [],
+
+      pptEmbedUrl: req.body.pptEmbedUrl,
+      prerequisites: req.body.prerequisites,
     });
 
     // Add to course
     course.modules.push(newModule._id);
-    // Recalculate course credits
     course.totalCredits = (course.totalCredits || 0) + (newModule.credits || 0);
     await course.save();
 
@@ -72,10 +80,7 @@ exports.getModulesByCourse = async (req, res, next) => {
 
     const modules = await Module.find({ courseId: course._id, isActive: true })
       .sort({ sequenceOrder: 1 })
-      .populate("assessments"); // Populate just to get count or full? Prompt says "Populate assessments count"
-
-    // We can format response to include count if we don't send full assessment objects
-    // But for admin backend, sending full objects is usually fine unless very heavy.
+      .populate("assessments");
 
     res.status(200).json({ success: true, data: modules });
   } catch (err) {
@@ -115,31 +120,34 @@ exports.updateModule = async (req, res, next) => {
 
     const oldCredits = module.credits || 0;
 
-    // Update fields
-    const fields = [
-      "title",
-      "description",
-      "credits",
-      "estimatedDuration",
-      "videoTutorial",
-      "moduleNotes",
-      "audioContent",
-      "pptSlides",
-      "prerequisites",
-      "status",
-      "isActive",
-    ];
-    fields.forEach((f) => {
-      if (req.body[f] !== undefined) module[f] = req.body[f];
-    });
+    // Update fields - Explicit mapping ensures security and correctness
+    const cleanBody = req.body;
+
+    // Simple Fields
+    if (cleanBody.title) module.title = cleanBody.title;
+    if (cleanBody.description) module.description = cleanBody.description;
+    if (cleanBody.credits !== undefined) module.credits = cleanBody.credits;
+    if (cleanBody.estimatedDuration)
+      module.estimatedDuration = cleanBody.estimatedDuration;
+    if (cleanBody.status) module.status = cleanBody.status;
+    if (cleanBody.isActive !== undefined) module.isActive = cleanBody.isActive;
+    if (cleanBody.pptEmbedUrl !== undefined)
+      module.pptEmbedUrl = cleanBody.pptEmbedUrl;
+
+    // Complex Objects - Replace logic is acceptable as frontend sends full state
+    if (cleanBody.videoTutorial) module.videoTutorial = cleanBody.videoTutorial;
+    if (cleanBody.moduleNotes) module.moduleNotes = cleanBody.moduleNotes;
+    if (cleanBody.audioContent) module.audioContent = cleanBody.audioContent;
+    if (cleanBody.infographics) module.infographics = cleanBody.infographics;
+    if (cleanBody.prerequisites) module.prerequisites = cleanBody.prerequisites;
 
     await module.save();
 
     // If credits changed, update course
-    if (req.body.credits !== undefined && req.body.credits !== oldCredits) {
+    if (cleanBody.credits !== undefined && cleanBody.credits !== oldCredits) {
       const course = await Course.findById(module.courseId);
       if (course) {
-        const creditDiff = req.body.credits - oldCredits;
+        const creditDiff = cleanBody.credits - oldCredits;
         course.totalCredits += creditDiff;
         course.lastUpdatedOn = Date.now();
         await course.save();
@@ -163,9 +171,6 @@ exports.deleteModule = async (req, res, next) => {
         .status(404)
         .json({ success: false, error: "Module not found" });
 
-    // Check prerequisites
-    // ... implementation omitted for brevity, but instructed in prompt.
-    // "Check if module has prerequisites in other modules (prevent deletion if so)"
     const dependentModules = await Module.find({ prerequisites: module._id });
     if (dependentModules.length > 0) {
       return res.status(400).json({
@@ -173,11 +178,6 @@ exports.deleteModule = async (req, res, next) => {
         error: "Cannot delete module. It is a prerequisite for other modules.",
       });
     }
-
-    // Hard delete or Soft delete? Prompt says "Delete module (remove from course and database)"
-    // This implies hard delete or at least removing from course list.
-    // Later it mentions "Delete associated files from server".
-    // Let's do a hard delete as per "remove from course and database".
 
     // Remove from course
     const course = await Course.findById(module.courseId);
@@ -189,10 +189,10 @@ exports.deleteModule = async (req, res, next) => {
       await course.save();
     }
 
-    // Delete Module
     await Module.deleteOne({ _id: module._id });
 
-    // Note: File Deletion is skipped here for brevity but should be done using fs.unlink
+    // Note: File deletions from S3/Disk not implemented here.
+    // Since we use the central Asset Upload system, files persist unless explicitly cleaned up.
 
     res.status(200).json({ success: true, message: "Module deleted" });
   } catch (err) {
@@ -202,90 +202,11 @@ exports.deleteModule = async (req, res, next) => {
 
 exports.reorderModules = async (req, res, next) => {
   try {
-    const { moduleIds } = req.body; // Array of Ids in new order
-
-    // Loop and update sequenceOrder
+    const { moduleIds } = req.body;
     for (let i = 0; i < moduleIds.length; i++) {
       await Module.updateOne({ _id: moduleIds[i] }, { sequenceOrder: i + 1 });
     }
-
     res.status(200).json({ success: true, message: "Modules reordered" });
-  } catch (err) {
-    next(err);
-  }
-};
-
-// File upload handler helpers usually called after middleware
-exports.handleFileUpload = async (req, res, next) => {
-  try {
-    // middleware put file in req.file
-    if (!req.file) {
-      return res
-        .status(400)
-        .json({ success: false, error: "No file uploaded" });
-    }
-
-    const module = await Module.findOne({
-      $or: [{ _id: req.params.moduleId }, { moduleId: req.params.moduleId }],
-    });
-
-    if (!module)
-      return res
-        .status(404)
-        .json({ success: false, error: "Module not found" });
-
-    // Update module field based on file type
-    const fieldMap = {
-      notes: "moduleNotes",
-      slides: "pptSlides",
-      audio: "audioContent",
-    };
-
-    const fieldName = req.file.fieldname; // 'notes', 'slides', 'audio', 'transcript'
-    const dbField =
-      fieldMap[fieldName] ||
-      (fieldName === "transcript" ? "audioContent" : null);
-
-    if (dbField) {
-      if (fieldName === "notes") {
-        module.moduleNotes = {
-          fileName: req.file.originalname,
-          filePath: req.file.path,
-          fileSize: req.file.size,
-          uploadedOn: Date.now(),
-        };
-      } else if (fieldName === "slides") {
-        module.pptSlides = {
-          fileName: req.file.originalname,
-          filePath: req.file.path,
-          fileSize: req.file.size,
-          uploadedOn: Date.now(),
-        };
-      } else if (fieldName === "audio") {
-        module.audioContent = {
-          ...(module.audioContent || {}),
-          url: req.file.path,
-          title: req.file.originalname, // Default title
-          fileSize: req.file.size,
-          mimeType: req.file.mimetype,
-        };
-      } else if (fieldName === "transcript") {
-        module.audioContent = {
-          ...(module.audioContent || {}),
-          hasTranscript: true,
-          transcriptPath: req.file.path,
-        };
-      }
-      await module.save();
-    }
-
-    res.status(200).json({
-      success: true,
-      data: {
-        filePath: req.file.path,
-        fileName: req.file.originalname,
-      },
-    });
   } catch (err) {
     next(err);
   }

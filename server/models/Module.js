@@ -30,10 +30,7 @@ const moduleSchema = new mongoose.Schema(
       fileName: String,
       filePath: String,
       fileSize: Number,
-      mimeType: {
-        type: String,
-        default: "application/pdf",
-      },
+      mimeType: String,
       uploadedOn: Date,
     },
     videoTutorial: {
@@ -52,14 +49,18 @@ const moduleSchema = new mongoose.Schema(
       hasTranscript: Boolean,
       transcriptPath: String,
     },
-    pptSlides: {
-      fileName: String,
-      filePath: String,
-      fileSize: Number,
-      totalSlides: Number,
-      mimeType: String,
-      uploadedOn: Date,
+    // Replaced pptSlides array with simple Embed URL
+    pptEmbedUrl: {
+      type: String,
+      trim: true,
     },
+    infographics: [
+      {
+        url: { type: String },
+        title: { type: String },
+        order: { type: Number },
+      },
+    ],
     credits: {
       type: Number,
       required: true,

@@ -22,9 +22,25 @@ exports.createAssessment = async (req, res, next) => {
         .status(404)
         .json({ success: false, error: "Module not found" });
 
-    // Calculate total marks
-    const questions = req.body.questions || [];
-    const totalMarks = questions.reduce((sum, q) => sum + (q.marks || 0), 0);
+    // 1. Map Questions
+    const rawQuestions = req.body.questions || [];
+    const questions = rawQuestions.map((q, idx) => ({
+      questionNo: q.questionNumber || idx + 1,
+      questionText: q.questionText,
+      questionType: q.questionType,
+      options: q.options || [],
+      answer: q.correctAnswer, // Frontend sends correctAnswer
+      mark: Number(q.marks) || 1, // Frontend sends marks
+      explanation: q.explanation,
+    }));
+
+    // 2. Calculate Total Marks
+    const totalMarks = questions.reduce((sum, q) => sum + (q.mark || 0), 0);
+
+    // 3. Convert Duration (Frontend sends minutes, Backend stores seconds)
+    // If frontend sends conversion logic, it might come as seconds, but usually we standardize here.
+    // My frontend code sends 'duration' as a Number (minutes).
+    const durationInSeconds = (Number(req.body.duration) || 0) * 60;
 
     const assessmentId = await generateAssessmentId(
       module.moduleId,
@@ -37,14 +53,12 @@ exports.createAssessment = async (req, res, next) => {
       courseId: module.courseId,
       title: req.body.title,
       description: req.body.description,
-      assessmentType: req.body.assessmentType,
       totalMarks,
-      passingMarks: req.body.passingMarks,
-      duration: req.body.duration,
+      duration: durationInSeconds,
+      attempts: Number(req.body.attemptsAllowed) || 3, // Frontend sends attemptsAllowed
+      totalCredits: Number(req.body.credits) || 0, // Frontend sends credits
       questions,
-      attemptsAllowed: req.body.attemptsAllowed,
-      showCorrectAnswers: req.body.showCorrectAnswers,
-      randomizeQuestions: req.body.randomizeQuestions,
+      isActive: req.body.isActive !== undefined ? req.body.isActive : true,
       postedBy: req.user.id,
     });
 
@@ -92,7 +106,26 @@ exports.getAssessmentById = async (req, res, next) => {
         .status(404)
         .json({ success: false, error: "Assessment not found" });
 
-    res.status(200).json({ success: true, data: assessment });
+    // Optional: Transform back to frontend format if needed?
+    // Frontend `loadAssessment` expects:
+    // duration (mins), attempts (attemptsAllowed), credits, questions(correctAnswer, marks)
+    // I should arguably transform it here on READ to avoid breaking frontend logic,
+    // OR create a transformer helper.
+    // Let's do a simple transformation on the fly to match frontend expectations.
+
+    const transformed = assessment.toObject();
+    transformed.duration = Math.floor(transformed.duration / 60); // Seconds -> Mins
+    transformed.attemptsAllowed = transformed.attempts; // Map back
+    transformed.credits = transformed.totalCredits; // Map back
+    transformed.questions = transformed.questions.map((q) => ({
+      ...q,
+      questionNumber: q.questionNo,
+      marks: q.mark,
+      correctAnswer: q.answer,
+    }));
+    // Note: passingMarks, assessmentType might be missing. Frontend handles defaults.
+
+    res.status(200).json({ success: true, data: transformed });
   } catch (err) {
     next(err);
   }
@@ -112,26 +145,42 @@ exports.updateAssessment = async (req, res, next) => {
         .status(404)
         .json({ success: false, error: "Assessment not found" });
 
-    const fields = [
-      "title",
-      "description",
-      "assessmentType",
-      "duration",
-      "questions",
-      "passingMarks",
-      "attemptsAllowed",
-      "showCorrectAnswers",
-      "randomizeQuestions",
-    ];
+    // Update fields
+    if (req.body.title) assessment.title = req.body.title;
+    if (req.body.description !== undefined)
+      assessment.description = req.body.description;
 
-    fields.forEach((f) => {
-      if (req.body[f] !== undefined) assessment[f] = req.body[f];
-    });
+    if (req.body.duration) {
+      assessment.duration = Number(req.body.duration) * 60; // Mins -> Seconds
+    }
 
-    // Recalc total marks if questions changed
+    if (req.body.attemptsAllowed !== undefined) {
+      assessment.attempts = Number(req.body.attemptsAllowed);
+    }
+
+    if (req.body.credits !== undefined) {
+      assessment.totalCredits = Number(req.body.credits);
+    }
+
+    if (req.body.isActive !== undefined)
+      assessment.isActive = req.body.isActive;
+
+    // Process Questions
     if (req.body.questions) {
-      assessment.totalMarks = req.body.questions.reduce(
-        (sum, q) => sum + (q.marks || 0),
+      const rawQuestions = req.body.questions;
+      assessment.questions = rawQuestions.map((q, idx) => ({
+        questionNo: q.questionNumber || idx + 1,
+        questionText: q.questionText,
+        questionType: q.questionType,
+        options: q.options || [],
+        answer: q.correctAnswer,
+        mark: Number(q.marks) || 1,
+        explanation: q.explanation,
+      }));
+
+      // Recalc Total Marks
+      assessment.totalMarks = assessment.questions.reduce(
+        (sum, q) => sum + (q.mark || 0),
         0
       );
     }
