@@ -32,6 +32,10 @@ exports.createAssessment = async (req, res, next) => {
       answer: q.correctAnswer, // Frontend sends correctAnswer
       mark: Number(q.marks) || 1, // Frontend sends marks
       explanation: q.explanation,
+      pairs: q.pairs || [],
+      tableRows: q.tableRows || [],
+      image: q.image,
+      images: q.images || [],
     }));
 
     // 2. Calculate Total Marks
@@ -44,7 +48,7 @@ exports.createAssessment = async (req, res, next) => {
 
     const assessmentId = await generateAssessmentId(
       module.moduleId,
-      module._id
+      module._id,
     );
 
     const assessment = await Assessment.create({
@@ -122,6 +126,10 @@ exports.getAssessmentById = async (req, res, next) => {
       questionNumber: q.questionNo,
       marks: q.mark,
       correctAnswer: q.answer,
+      pairs: q.pairs,
+      tableRows: q.tableRows,
+      image: q.image,
+      images: q.images,
     }));
     // Note: passingMarks, assessmentType might be missing. Frontend handles defaults.
 
@@ -176,12 +184,16 @@ exports.updateAssessment = async (req, res, next) => {
         answer: q.correctAnswer,
         mark: Number(q.marks) || 1,
         explanation: q.explanation,
+        pairs: q.pairs || [],
+        tableRows: q.tableRows || [],
+        image: q.image,
+        images: q.images || [],
       }));
 
       // Recalc Total Marks
       assessment.totalMarks = assessment.questions.reduce(
         (sum, q) => sum + (q.mark || 0),
-        0
+        0,
       );
     }
 
@@ -210,7 +222,7 @@ exports.deleteAssessment = async (req, res, next) => {
     const module = await Module.findById(assessment.moduleId);
     if (module) {
       module.assessments = module.assessments.filter(
-        (a) => a.toString() !== assessment._id.toString()
+        (a) => a.toString() !== assessment._id.toString(),
       );
       await module.save();
     }

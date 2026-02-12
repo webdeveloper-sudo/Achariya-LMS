@@ -152,8 +152,86 @@ router.post(
     res
       .status(400)
       .json({ success: false, error: "Use generic asset upload endpoints" });
-  }
+  },
 );
+
+router.post(
+  "/asset/bulk/:type",
+  uploadAsset.array("files"),
+  async (req, res) => {
+    if (!req.files || req.files.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, error: "No files uploaded" });
+    }
+
+    const files = req.files.map((file) => ({
+      filename: file.filename,
+      originalName: file.originalname,
+      previewUrl: `/assets/temp/${req.params.type}/${file.filename}`,
+    }));
+
+    res.json({
+      success: true,
+      files,
+    });
+  },
+);
+
+router.post("/save/all/:type", async (req, res) => {
+  try {
+    const { type } = req.params;
+    const tempTypeDir = path.join(TEMP_DIR, type);
+
+    if (!fs.existsSync(tempTypeDir)) {
+      return res
+        .status(400)
+        .json({ success: false, error: "No temp files found" });
+    }
+
+    const files = await fs.readdir(tempTypeDir);
+    if (files.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, error: "No pending files to save" });
+    }
+
+    // Get Date Path YYYY/MM
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+
+    const targetDir = path.join(ASSETS_DIR, type, String(year), String(month));
+    await fs.ensureDir(targetDir);
+
+    const savedFiles = [];
+    const protocol = req.protocol;
+    const host = req.get("host");
+    const dynamicBaseUrl = `${protocol}://${host}`;
+
+    for (const filename of files) {
+      const tempPath = path.join(tempTypeDir, filename);
+      const targetPath = path.join(targetDir, filename);
+
+      // Use move with overwrite
+      await fs.move(tempPath, targetPath, { overwrite: true });
+
+      const finalUrl = `${dynamicBaseUrl}/assets/${type}/${year}/${month}/${filename}`;
+      savedFiles.push({
+        filename,
+        url: finalUrl,
+      });
+    }
+
+    res.json({
+      success: true,
+      savedFiles,
+    });
+  } catch (error) {
+    console.error("Save All error:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 
 // --- Bulk Routes ---
 
@@ -199,7 +277,7 @@ router.post("/students/bulk", uploadBulk.single("file"), async (req, res) => {
     // Processing Logic...
     for (const row of jsonData) {
       const normalizedRow = Object.fromEntries(
-        Object.entries(row).map(([k, v]) => [normalizeKey(k), v])
+        Object.entries(row).map(([k, v]) => [normalizeKey(k), v]),
       );
       const getVal = (keys) => {
         for (const k of keys) if (normalizedRow[k]) return normalizedRow[k];
@@ -275,7 +353,7 @@ router.post("/teachers/bulk", uploadBulk.single("file"), async (req, res) => {
 
     for (const row of jsonData) {
       const normalizedRow = Object.fromEntries(
-        Object.entries(row).map(([k, v]) => [normalizeKey(k), v])
+        Object.entries(row).map(([k, v]) => [normalizeKey(k), v]),
       );
       const getVal = (keys) => {
         for (const k of keys) if (normalizedRow[k]) return normalizedRow[k];

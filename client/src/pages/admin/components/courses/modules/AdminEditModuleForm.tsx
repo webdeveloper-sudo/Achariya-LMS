@@ -19,10 +19,13 @@ import {
 import DocumentUploader from "@/pages/admin/components/uploaders/DocumentUploader";
 import AudioUploader from "@/pages/admin/components/uploaders/AudioUploader";
 import LoadingSpinner from "@/pages/admin/components/LoadingSpinner";
-import AssessmentBuilder from "@/pages/admin/components/AssessmentBuilder";
+import AdminAssessmentUpload from "@/pages/admin/components/AdminAssessmentUpload";
 import { useAssetUpload } from "@/hooks/useAssetUpload";
 import axiosInstance from "@/api/axiosInstance";
-import { deleteAssessment } from "@/services/assessmentService";
+import {
+  deleteAssessment,
+  createAssessment,
+} from "@/services/assessmentService";
 
 interface AdminEditModuleFormProps {
   moduleId: string;
@@ -38,7 +41,7 @@ const AdminEditModuleForm = ({
   const [activeTab, setActiveTab] = useState("basic");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
-  const [isAssessmentBuilderOpen, setIsAssessmentBuilderOpen] = useState(false);
+  const [isAssessmentUploadOpen, setIsAssessmentUploadOpen] = useState(false);
   const [selectedAssessmentId, setSelectedAssessmentId] = useState(null);
   const [initialData, setInitialData] = useState<any>(null);
 
@@ -244,7 +247,7 @@ const AdminEditModuleForm = ({
     { id: "audio", label: "Audio Content", icon: Music },
     { id: "slides", label: "Google Slides", icon: MonitorPlay },
     { id: "infographics", label: "Infographics", icon: FileText },
-    { id: "assessments", label: "Assessments", icon: ListChecks },
+    { id: "assessments", label: "Upload Assessments", icon: ListChecks },
   ];
 
   return (
@@ -706,7 +709,7 @@ const AdminEditModuleForm = ({
               {/* Assessments Tab */}
               {activeTab === "assessments" && (
                 <div className="space-y-6 animate-in fade-in duration-200">
-                  {!isAssessmentBuilderOpen ? (
+                  {!isAssessmentUploadOpen ? (
                     <>
                       <div className="flex items-center justify-between border-b pb-4">
                         <h3 className="text-lg font-bold text-gray-800">
@@ -716,12 +719,12 @@ const AdminEditModuleForm = ({
                           type="button"
                           onClick={() => {
                             setSelectedAssessmentId(null);
-                            setIsAssessmentBuilderOpen(true);
+                            setIsAssessmentUploadOpen(true);
                           }}
                           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium shadow-sm flex items-center"
                         >
-                          <ListChecks className="w-4 h-4 mr-2" />
-                          Create New Assessment
+                          <Upload className="w-4 h-4 mr-2" />
+                          Upload Assessment (Excel)
                         </button>
                       </div>
 
@@ -756,16 +759,7 @@ const AdminEditModuleForm = ({
                                   </p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedAssessmentId(ass._id);
-                                      setIsAssessmentBuilderOpen(true);
-                                    }}
-                                    className="px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-sm font-medium transition"
-                                  >
-                                    Edit
-                                  </button>
+                                  {/* Edit button removed as manual editing is deprecated in Admin */}
                                   <button
                                     type="button"
                                     onClick={() =>
@@ -797,11 +791,11 @@ const AdminEditModuleForm = ({
                     <div className="bg-gray-50 border rounded-xl overflow-hidden">
                       <div className="p-4 border-b bg-white flex justify-between items-center">
                         <h3 className="font-bold text-gray-700">
-                          Assessment Editor
+                          Upload Assessment
                         </h3>
                         <button
                           onClick={() => {
-                            setIsAssessmentBuilderOpen(false);
+                            setIsAssessmentUploadOpen(false);
                             fetchModule();
                           }}
                           className="text-sm text-gray-500 hover:text-gray-800"
@@ -809,14 +803,30 @@ const AdminEditModuleForm = ({
                           Back to List
                         </button>
                       </div>
-                      <AssessmentBuilder
-                        isEmbedded={true}
-                        moduleId={moduleId}
-                        courseId={initialData?.courseId}
-                        assessmentId={selectedAssessmentId}
-                        onClose={() => {
-                          setIsAssessmentBuilderOpen(false);
-                          fetchModule();
+                      <AdminAssessmentUpload
+                        onCancel={() => setIsAssessmentUploadOpen(false)}
+                        onSave={async (questions) => {
+                          try {
+                            const payload = {
+                              title: "Uploaded Assessment",
+                              description: "Imported from Excel",
+                              moduleId: moduleId, // Using the prop directly
+                              courseId: initialData.courseId || null, // Best effort to get courseId
+                              questions: questions,
+                              duration: 30,
+                              assessmentType: "quiz",
+                            };
+
+                            await createAssessment(moduleId, payload);
+
+                            alert("Assessment uploaded successfully!");
+                            setIsAssessmentUploadOpen(false);
+                            if (onSuccess) onSuccess(); // Refresh parent or create reload trigger
+                            fetchModule(); // Refresh current form data
+                          } catch (err) {
+                            console.error(err);
+                            alert("Failed to save uploaded assessment");
+                          }
                         }}
                       />
                     </div>

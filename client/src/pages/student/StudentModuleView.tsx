@@ -31,7 +31,7 @@ const StudentModuleView = () => {
       try {
         setLoading(true);
         const response = await axiosInstance.get(
-          `/courses/${courseId}/modules/${moduleId}`
+          `/courses/${courseId}/modules/${moduleId}`,
         );
         if (response.data.success) {
           setModule(response.data.data);
@@ -41,7 +41,7 @@ const StudentModuleView = () => {
       } catch (err: any) {
         console.error("Error fetching module:", err);
         setError(
-          err.response?.data?.message || "Module not found or failed to load."
+          err.response?.data?.message || "Module not found or failed to load.",
         );
       } finally {
         setLoading(false);
@@ -129,7 +129,7 @@ const StudentModuleView = () => {
     if (!url) return null;
 
     const ytMatch = url.match(
-      /(?:youtu\.be\/|youtube\.com\/watch\?v=|v\/|u\/\w\/|embed\/)([^#&?]*).*/
+      /(?:youtu\.be\/|youtube\.com\/watch\?v=|v\/|u\/\w\/|embed\/)([^#&?]*).*/,
     );
     const vimeoMatch = url.match(/(?:vimeo.com\/)([0-9]+)/);
 
@@ -400,12 +400,14 @@ const StudentModuleView = () => {
             Ready to test your knowledge in this Module?
           </h3>
           <p className="text-gray-600 text-sm">
-            Complete the Assessment after reviewing all learning materials above to
-            unlock the next module.
+            Complete the Assessment after reviewing all learning materials above
+            to unlock the next module.
           </p>
         </div>
         <button
-          onClick={() => navigate(`/student/quiz/${module._id}`)}
+          onClick={() =>
+            navigate(`/student/course/${courseId}/assessment/${module._id}`)
+          }
           className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition whitespace-nowrap shadow-sm"
         >
           Take Module Assessment

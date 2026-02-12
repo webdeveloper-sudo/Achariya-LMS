@@ -4,6 +4,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const studentController = require("../controllers/studentController");
+const studentAssessmentController = require("../controllers/studentAssessmentController");
 const { authenticate, requireAdmin } = require("../middleware/authMiddleware");
 
 // Configure multer for file uploads
@@ -30,7 +31,7 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     const allowedTypes = /\.(xlsx|xls|csv)$/;
     const extname = allowedTypes.test(
-      path.extname(file.originalname).toLowerCase()
+      path.extname(file.originalname).toLowerCase(),
     );
     const mimetype =
       file.mimetype ===
@@ -53,7 +54,7 @@ router.post(
   authenticate,
   requireAdmin,
   upload.single("file"),
-  studentController.uploadFile
+  studentController.uploadFile,
 );
 
 // Save students data (Admin-only) - Bulk
@@ -69,7 +70,7 @@ router.post(
   "/create",
   authenticate,
   requireAdmin,
-  studentController.createStudent
+  studentController.createStudent,
 );
 
 // Update student (Admin-only)
@@ -109,5 +110,17 @@ router.get("/courses", authenticate, studentController.getCourses);
 
 // Enroll in a course
 router.post("/enroll", authenticate, studentController.enrollCourse);
+
+// Assessment Routes
+router.get(
+  "/:studentId/assessment/:assessmentId",
+  authenticate,
+  studentAssessmentController.getAssessmentForStudent,
+);
+router.post(
+  "/:studentId/assessment/:assessmentId/submit",
+  authenticate,
+  studentAssessmentController.submitAssessment,
+);
 
 module.exports = router;

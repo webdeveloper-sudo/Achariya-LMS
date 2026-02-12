@@ -45,7 +45,7 @@ exports.uploadFile = async (req, res) => {
       .map((row) => {
         // Normalize all keys once
         const normalizedRow = Object.fromEntries(
-          Object.entries(row).map(([k, v]) => [normalizeKey(k), v])
+          Object.entries(row).map(([k, v]) => [normalizeKey(k), v]),
         );
 
         const getSerialNo = () => {
@@ -151,7 +151,7 @@ exports.uploadFile = async (req, res) => {
           // Let's strictly require email if 'email' logic returns something, or filter if empty?
           // If we make it mandatory in schema, we must filter here?
           // Let's filter here to be safe.
-          student.email
+          student.email,
       );
 
     if (mappedData.length === 0) {
@@ -346,7 +346,7 @@ exports.updateStudent = async (req, res) => {
     const updatedStudent = await Student.findByIdAndUpdate(
       id,
       { $set: updateData },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedStudent) {
@@ -551,16 +551,16 @@ exports.sendOtp = async (req, res) => {
         const sent = await sendEmail(
           student.email,
           "Your Achariya Portal OTP",
-          `<p>Your OTP for verification is: <strong>${otp}</strong></p><p>This code is valid for 10 minutes.</p>`
+          `<p>Your OTP for verification is: <strong>${otp}</strong></p><p>This code is valid for 10 minutes.</p>`,
         );
         if (sent) {
           message = `OTP sent successfully to your registered email ending in **${student.email.slice(
-            -4
+            -4,
           )}.`;
         } else {
           // Fallback if email fails (likely due to missing config in this env)
           console.warn(
-            "Email sending failed or skipped. OTP is still generated."
+            "Email sending failed or skipped. OTP is still generated.",
           );
           message = "Failed to send email. Check server logs.";
         }
@@ -573,12 +573,12 @@ exports.sendOtp = async (req, res) => {
       if (student.mobileNo) {
         const sent = await sendSms(
           student.mobileNo,
-          `Your Achariya Portal OTP is: ${otp}. Valid for 10 minutes.`
+          `Your Achariya Portal OTP is: ${otp}. Valid for 10 minutes.`,
         );
 
         if (sent) {
           message = `OTP sent successfully to your mobile number ending in **${student.mobileNo.slice(
-            -4
+            -4,
           )}.`;
         } else {
           // Fallback for demo/dev if no Twilio (keep user moving)
@@ -687,7 +687,7 @@ exports.completeOnboarding = async (req, res) => {
     const token = jwt.sign(
       { id: student._id, admissionNo: student.admissionNo, role: "Student" },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.json({
@@ -814,13 +814,14 @@ exports.login = async (req, res) => {
     const token = jwt.sign(
       { id: student._id, admissionNo: student.admissionNo, role: "Student" },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.json({
       message: "Login successful",
       token,
       student: {
+        id: student._id,
         admissionNo: student.admissionNo,
         name: student.studentName,
         email: student.email,
@@ -856,7 +857,7 @@ exports.enrollCourse = async (req, res) => {
     // Check if already enrolled
     // enrolledCourses is a Mongoose DocumentArray, we can use .some() or .id() if we had ids, but here courseId is ref
     const isEnrolled = student.enrolledCourses.some(
-      (c) => c.courseId.toString() === courseId
+      (c) => c.courseId.toString() === courseId,
     );
 
     if (isEnrolled) {
@@ -984,7 +985,7 @@ exports.getModule = async (req, res) => {
     const module = await Module.findOne({
       _id: moduleId,
       courseId: courseId,
-    });
+    }).populate("assessments");
 
     if (!module) {
       return res.status(404).json({ message: "Module not found" });

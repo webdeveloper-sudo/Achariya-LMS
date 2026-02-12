@@ -38,6 +38,7 @@ const StudentLogin = () => {
 
         // Keep for axiosInstance
         localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user)); // Add this for legacy support
 
         navigate("/student/dashboard");
       } else {
@@ -47,7 +48,7 @@ const StudentLogin = () => {
       setError(
         err?.response?.data?.message ||
           err.message ||
-          "Invalid admission number or password"
+          "Invalid admission number or password",
       );
     } finally {
       setLoading(false);

@@ -1,5 +1,7 @@
 
 
+
+
 const CourseProgress = () => {
     return (
         <div className="p-6">

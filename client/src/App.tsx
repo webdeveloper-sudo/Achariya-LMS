@@ -41,6 +41,7 @@ import TeacherCreditsPage from "./pages/teacher/TeacherCreditsPage";
 import LiveQuizControl from "./pages/teacher/LiveQuizControl";
 import LiveQuizResults from "./pages/teacher/LiveQuizResults";
 import TeacherEvidenceSubmission from "./pages/teacher/EvidenceSubmission";
+import TeacherAssessmentCreator from "./pages/teacher/TeacherAssessmentCreator";
 
 // Principal Pages
 import PrincipalDashboard from "./pages/principal/PrincipalDashboard";
@@ -101,7 +102,10 @@ function App() {
             path="/student/courses/:courseId/:moduleId"
             element={<StudentModuleView />}
           />
-          <Route path="/student/assessment/:moduleId" element={<StudentAssesmentPage />} />
+          <Route
+            path="/student/course/:courseId/assessment/:moduleId"
+            element={<StudentAssesmentPage />}
+          />
           <Route path="/student/wallet" element={<StudentWalletPage />} />
           <Route path="/student/badges" element={<StudentBadgesPage />} />
           <Route path="/student/marketplace" element={<StudentMarketplace />} />
@@ -160,6 +164,10 @@ function App() {
           <Route
             path="/teacher/live-quiz/:sessionId/results"
             element={<LiveQuizResults />}
+          />
+          <Route
+            path="/teacher/courses/:courseId/modules/:moduleId/assessment/new"
+            element={<TeacherAssessmentCreator />}
           />
 
           {/* Principal Routes */}

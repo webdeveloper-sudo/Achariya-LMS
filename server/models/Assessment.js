@@ -18,6 +18,9 @@ const questionSchema = new mongoose.Schema(
         "fill-ups",
         "short-answer",
         "essay",
+        "match",
+        "diagram-mcq",
+        "table-mcq",
       ],
       required: true,
     },
@@ -29,7 +32,7 @@ const questionSchema = new mongoose.Schema(
     answer: {
       type: mongoose.Schema.Types.Mixed,
       required: function () {
-        return this.questionType !== "essay";
+        return this.questionType !== "essay" && this.questionType !== "match";
       },
     },
     mark: {
@@ -40,8 +43,18 @@ const questionSchema = new mongoose.Schema(
     explanation: {
       type: String,
     },
+    // New Fields for Enhanced Question Types
+    pairs: [
+      {
+        left: String,
+        right: String,
+      },
+    ],
+    tableRows: [String],
+    image: String, // Single image for diagram
+    images: [String], // Multiple images if needed
   },
-  { _id: false }
+  { _id: false },
 );
 
 const assessmentSchema = new mongoose.Schema(
@@ -99,7 +112,7 @@ const assessmentSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Assessment", assessmentSchema);

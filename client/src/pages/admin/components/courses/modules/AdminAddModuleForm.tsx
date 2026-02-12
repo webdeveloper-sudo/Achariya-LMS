@@ -18,7 +18,7 @@ import {
 import DocumentUploader from "@/pages/admin/components/uploaders/DocumentUploader";
 import AudioUploader from "@/pages/admin/components/uploaders/AudioUploader";
 import LoadingSpinner from "@/pages/admin/components/LoadingSpinner";
-import AssessmentBuilder from "@/pages/admin/components/AssessmentBuilder";
+import AdminAssessmentUpload from "@/pages/admin/components/AdminAssessmentUpload";
 import axiosInstance from "@/api/axiosInstance";
 import { useAssetUpload } from "@/hooks/useAssetUpload";
 
@@ -35,7 +35,7 @@ const AdminAddModuleForm = ({
 }: AdminAddModuleFormProps) => {
   const [activeTab, setActiveTab] = useState("basic");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isAssessmentBuilderOpen, setIsAssessmentBuilderOpen] = useState(false);
+  const [isAssessmentUploadOpen, setIsAssessmentUploadOpen] = useState(false);
   const [selectedAssessmentId, setSelectedAssessmentId] = useState(null);
 
   // Asset Upload Hooks
@@ -211,7 +211,7 @@ const AdminAddModuleForm = ({
     { id: "infographics", label: "Infographics", icon: FileText },
     {
       id: "assessments",
-      label: "Assessments",
+      label: "Upload Assessments",
       icon: ListChecks,
       disabled: !isEditing,
     },
@@ -713,12 +713,12 @@ const AdminAddModuleForm = ({
                       type="button"
                       onClick={() => {
                         setSelectedAssessmentId(null);
-                        setIsAssessmentBuilderOpen(true);
+                        setIsAssessmentUploadOpen(true);
                       }}
                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium shadow-sm flex items-center"
                     >
-                      <ListChecks className="w-4 h-4 mr-2" />
-                      Create New Assessment
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload Assessment (Excel)
                     </button>
                   </div>
 
@@ -762,17 +762,46 @@ const AdminAddModuleForm = ({
         </div>
       </div>
 
-      {/* Nested Assessment Builder Modal */}
-      {isAssessmentBuilderOpen && (
-        <AssessmentBuilder
-          isOpen={isAssessmentBuilderOpen}
-          onClose={() => {
-            setIsAssessmentBuilderOpen(false);
-            if (onSuccess) onSuccess(); // Refresh?
+      {/* Nested Assessment Upload Modal */}
+      {isAssessmentUploadOpen && (
+        <AdminAssessmentUpload
+          onCancel={() => setIsAssessmentUploadOpen(false)}
+          onSave={async (questions) => {
+            // Logic to save the assessment questions to backend
+            // Assuming we create a new assessment wrapper around these questions
+            try {
+              // We might need a small form or prompt for Title/Duration before saving,
+              // but for now let's assume valid default or we ask inside the component?
+              // The current AdminAssessmentUpload only returns questions.
+              // Let's wrapping it in a basic payload
+              const payload = {
+                title: "Uploaded Assessment",
+                description: "Imported from Excel",
+                moduleId: createdModuleId,
+                courseId: courseId,
+                questions: questions,
+                // defaults
+                duration: 30,
+                assessmentType: "quiz",
+              };
+
+              // We need to call createAssessment here.
+              // But AdminAddModuleForm doesn't import createAssessment.
+              // I might need to import it or rely on a handle helper.
+              // Let's import axiosInstance directly as we are in the form.
+              await axiosInstance.post(
+                `/admin/modules/${createdModuleId}/assessments`,
+                payload
+              );
+
+              alert("Assessment uploaded successfully!");
+              setIsAssessmentUploadOpen(false);
+              if (onSuccess) onSuccess();
+            } catch (err) {
+              console.error(err);
+              alert("Failed to save uploaded assessment");
+            }
           }}
-          moduleId={createdModuleId}
-          courseId={courseId}
-          assessmentId={selectedAssessmentId}
         />
       )}
     </div>

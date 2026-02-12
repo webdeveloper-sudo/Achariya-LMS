@@ -152,6 +152,35 @@ const studentSchema = new mongoose.Schema(
           min: 0,
           max: 100,
         },
+        assessmentProgress: [
+          {
+            assessmentId: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "Assessment",
+            },
+            moduleId: {
+              type: String, // Storing Module ID
+            },
+            attempts: {
+              type: Number,
+              default: 0,
+            },
+            highestScore: {
+              type: Number,
+              default: 0,
+            },
+            isCompleted: {
+              type: Boolean,
+              default: false,
+            },
+            history: [
+              {
+                score: { type: Number },
+                date: { type: Date, default: Date.now },
+              },
+            ],
+          },
+        ],
       },
     ],
     lastLoginAt: {
@@ -171,7 +200,7 @@ const studentSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Index for faster queries
