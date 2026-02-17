@@ -13,12 +13,14 @@ import {
   Loader2,
   CheckCircle,
   Lock,
+  Trash2,
 } from "lucide-react";
 // Adjust relative paths to src/admin/components
 import DocumentUploader from "@/pages/admin/components/uploaders/DocumentUploader";
 import AudioUploader from "@/pages/admin/components/uploaders/AudioUploader";
 import LoadingSpinner from "@/pages/admin/components/LoadingSpinner";
 import AdminAssessmentUpload from "@/pages/admin/components/AdminAssessmentUpload";
+import AdminEditAssessment from "@/pages/admin/components/AdminEditAssessment";
 import axiosInstance from "@/api/axiosInstance";
 import { useAssetUpload } from "@/hooks/useAssetUpload";
 
@@ -37,6 +39,11 @@ const AdminAddModuleForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAssessmentUploadOpen, setIsAssessmentUploadOpen] = useState(false);
   const [selectedAssessmentId, setSelectedAssessmentId] = useState(null);
+
+  // Assessment List State
+  const [selectedModuleAssessments, setSelectedModuleAssessments] = useState<
+    any[]
+  >([]);
 
   // Asset Upload Hooks
   const {
@@ -60,6 +67,42 @@ const AdminAddModuleForm = ({
   // If created, we switch to edit mode
   const [createdModuleId, setCreatedModuleId] = useState<string | null>(null);
   const isEditing = !!createdModuleId;
+
+  // Fetch Assessments
+  // const fetchAssessments = async () => {
+  //   if (!createdModuleId) return;
+  //   try {
+  //     const res = await axiosInstance.get(
+  //       `/admin/modules/${createdModuleId}/assessments`,
+  //     );
+  //     if (res.data.success) {
+  //       setSelectedModuleAssessments(res.data.data);
+  //     }
+  //   } catch (err) {
+  //     console.error("Failed to fetch assessments", err);
+  //   }
+  // };
+    const fetchAssessments = async () => {
+    try {
+      if (getValues("moduleId") || getValues("_id")) {
+        const mid = getValues("moduleId") || getValues("_id");
+        const res = await axiosInstance.get(
+          `/admin/modules/${mid}/assessments`,
+        );
+        if (res.data.success) {
+          setSelectedModuleAssessments(res.data.data);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch assessments", error);
+    }
+  };
+
+  useEffect(() => {
+    if (createdModuleId) {
+      fetchAssessments();
+    }
+  }, [createdModuleId]);
 
   // Form setup
   const {
@@ -157,6 +200,29 @@ const AdminAddModuleForm = ({
     }
   };
 
+
+
+  const handleDeleteAssessment = async (assessmentId: string) => {
+    if (!window.confirm("Are you sure you want to delete this assessment?"))
+      return;
+    try {
+      await axiosInstance.delete(
+        `/admin/modules/${getValues("_id")}/assessments/${assessmentId}`,
+      );
+      alert("Assessment deleted");
+      fetchAssessments();
+    } catch (err) {
+      console.error(err);
+      try {
+        await axiosInstance.delete(`/admin/assessments/${assessmentId}`);
+        alert("Assessment deleted");
+        fetchAssessments();
+      } catch (e) {
+        alert("Failed to delete assessment");
+      }
+    }
+  };
+
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
@@ -178,7 +244,10 @@ const AdminAddModuleForm = ({
       if (courseId) {
         // Mode A: Create new module directly under course
         const endpoint = `/admin/modules/course/${courseId}`;
-        await axiosInstance.post(endpoint, payload);
+        const response = await axiosInstance.post(endpoint, payload);
+        if (response.data?.data?._id) {
+          setCreatedModuleId(response.data.data._id);
+        }
       } else {
         throw new Error("Missing courseId");
       }
@@ -254,12 +323,15 @@ const AdminAddModuleForm = ({
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => !tab.disabled && setActiveTab(tab.id)}
+                  disabled={tab.disabled}
                   className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition text-left
                                         ${
                                           activeTab === tab.id
                                             ? "bg-blue-100 text-blue-700"
-                                            : "text-gray-600 hover:bg-white hover:shadow-sm"
+                                            : tab.disabled
+                                              ? "text-gray-300 cursor-not-allowed"
+                                              : "text-gray-600 hover:bg-white hover:shadow-sm"
                                         }
                                     `}
                 >
@@ -509,7 +581,7 @@ const AdminAddModuleForm = ({
                               onClick={() => {
                                 const current = getValues("infographics");
                                 const updated = current.filter(
-                                  (_: any, i: number) => i !== idx
+                                  (_: any, i: number) => i !== idx,
                                 );
                                 setValue("infographics", updated);
                               }}
@@ -555,10 +627,10 @@ const AdminAddModuleForm = ({
                         let embedUrl = null;
                         if (url) {
                           const ytMatch = url.match(
-                            /(?:youtu\.be\/|youtube\.com\/watch\?v=|v\/|u\/\w\/|embed\/)([^#&?]*).*/
+                            /(?:youtu\.be\/|youtube\.com\/watch\?v=|v\/|u\/\w\/|embed\/)([^#&?]*).*/,
                           );
                           const vimeoMatch = url.match(
-                            /(?:vimeo.com\/)([0-9]+)/
+                            /(?:vimeo.com\/)([0-9]+)/,
                           );
                           if (ytMatch && ytMatch[1]) {
                             embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`;
@@ -723,15 +795,81 @@ const AdminAddModuleForm = ({
                   </div>
 
                   <div className="space-y-3">
-                    {/* Simplified Assessment List (Since we don't have initialData.assessments populated here unless we refetch) */}
-                    {/* Add Form won't have assessments yet unless we refetch after creation.
-                        We can implement refetch logic but for now let's just show placeholder */}
-                    <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-                      <ListChecks className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-500 font-medium">
-                        Assessments can be managed after creating basic module.
-                      </p>
-                    </div>
+                    {selectedModuleAssessments.length > 0 ? (
+                      <div className="space-y-4">
+                        {selectedModuleAssessments.map((assess) => (
+                          <div
+                            key={assess._id}
+                            className={`p-4 rounded-xl border flex justify-between items-center ${assess.questions.length === 0 ? "bg-red-50 border-red-200" : "bg-white border-gray-200"}`}
+                          >
+                            <div>
+                              <h4
+                                className={`font-bold ${assess.questions.length === 0 ? "text-red-700" : "text-gray-800"}`}
+                              >
+                                {assess.title || assess.assessmentId}
+                              </h4>
+                              <p className="text-xs text-gray-500">
+                                {assess.questions.length} Questions •{" "}
+                                {Math.round(assess.duration / 60)} Mins • Total
+                                Marks: {assess.totalMarks}
+                              </p>
+                              {assess.description && (
+                                <p className="text-xs text-gray-500 mt-1 line-clamp-1">
+                                  {assess.description}
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex gap-2">
+                              {assess.questions.length === 0 && (
+                                <span className="text-xs font-bold text-red-600 bg-red-100 px-2 py-1 rounded">
+                                  Corrupted / Empty
+                                </span>
+                              )}
+                              <button
+                                type="button"
+                                className="p-2 bg-gray-100 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition"
+                                title="Edit Assessment"
+                                onClick={() => {
+                                  setSelectedAssessmentId(assess._id);
+                                  setIsAssessmentUploadOpen(true);
+                                }}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                </svg>
+                              </button>
+                              <button
+                                type="button"
+                                className="p-2 bg-red-50 rounded-lg hover:bg-red-100 hover:text-red-600 transition"
+                                title="Delete Assessment"
+                                onClick={() =>
+                                  handleDeleteAssessment(assess._id)
+                                }
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                        <ListChecks className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                        <p className="text-gray-500 font-medium">
+                          No assessments uploaded yet.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -762,50 +900,89 @@ const AdminAddModuleForm = ({
         </div>
       </div>
 
-      {/* Nested Assessment Upload Modal */}
-      {isAssessmentUploadOpen && (
-        <AdminAssessmentUpload
-          onCancel={() => setIsAssessmentUploadOpen(false)}
-          onSave={async (questions) => {
-            // Logic to save the assessment questions to backend
-            // Assuming we create a new assessment wrapper around these questions
+      {/* Nested Assessment Upload/Edit Modal */}
+      {isAssessmentUploadOpen && selectedAssessmentId ? (
+        <AdminEditAssessment
+          onCancel={() => {
+            setIsAssessmentUploadOpen(false);
+            setSelectedAssessmentId(null);
+          }}
+          initialData={selectedModuleAssessments.find(
+            (a) => a._id === selectedAssessmentId,
+          )}
+          onSave={async (questions, title, description) => {
             try {
-              // We might need a small form or prompt for Title/Duration before saving,
-              // but for now let's assume valid default or we ask inside the component?
-              // The current AdminAssessmentUpload only returns questions.
-              // Let's wrapping it in a basic payload
               const payload = {
-                title: "Uploaded Assessment",
-                description: "Imported from Excel",
                 moduleId: createdModuleId,
                 courseId: courseId,
                 questions: questions,
-                // defaults
-                duration: 30,
+                duration: 30, // Default duration
                 assessmentType: "quiz",
               };
-
-              // We need to call createAssessment here.
-              // But AdminAddModuleForm doesn't import createAssessment.
-              // I might need to import it or rely on a handle helper.
-              // Let's import axiosInstance directly as we are in the form.
-              await axiosInstance.post(
-                `/admin/modules/${createdModuleId}/assessments`,
-                payload
+              await axiosInstance.put(
+                `/admin/modules/${createdModuleId}/assessments/${selectedAssessmentId}`,
+                { ...payload, title, description },
               );
-
-              alert("Assessment uploaded successfully!");
+              alert("Assessment Updated Successfully!");
               setIsAssessmentUploadOpen(false);
-              if (onSuccess) onSuccess();
+              setSelectedAssessmentId(null);
+              fetchAssessments();
             } catch (err) {
               console.error(err);
-              alert("Failed to save uploaded assessment");
+              alert("Failed to update assessment");
             }
           }}
         />
+      ) : (
+        isAssessmentUploadOpen && (
+          <AdminAssessmentUpload
+            onCancel={() => setIsAssessmentUploadOpen(false)}
+            onSave={async (questions, title, description) => {
+              try {
+                const payload = {
+                  moduleId: createdModuleId,
+                  courseId: courseId,
+                  questions: questions,
+                  duration: 30, // Default duration
+                  assessmentType: "quiz",
+                };
+                await axiosInstance.post(
+                  `/admin/modules/${createdModuleId}/assessments`,
+                  { ...payload, title, description },
+                );
+                alert("Assessment Created Successfully!");
+                setIsAssessmentUploadOpen(false);
+                fetchAssessments();
+              } catch (err) {
+                console.error(err);
+                alert("Failed to save assessment");
+              }
+            }}
+          />
+        )
       )}
     </div>
   );
 };
-
+// Add fetchAssessments logic inside component
+// Since I can't easily inject hooks in `replace_file_content` without context,
+// I will perform a larger replacement of the component body to include the state/effect and list UI.
+// But first, let's just close the file read loop.
 export default AdminAddModuleForm;
+//               );
+
+//               alert("Assessment uploaded successfully!");
+//               setIsAssessmentUploadOpen(false);
+//               if (onSuccess) onSuccess();
+//             } catch (err) {
+//               console.error(err);
+//               alert("Failed to save uploaded assessment");
+//             }
+//           }}
+//         />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default AdminAddModuleForm;

@@ -11,6 +11,7 @@ import {
 import StudentChatbot from "../../components/StudentChatbot";
 import axiosInstance from "../../api/axiosInstance";
 import { useStudentStore } from "../../store/useStudentStore";
+import ProgressBar from "../../components/ProgressBar";
 
 const StudentCourseDetail = () => {
   const { courseId } = useParams();
@@ -24,7 +25,7 @@ const StudentCourseDetail = () => {
   const [error, setError] = useState<string | null>(null);
 
   const enrollment = student?.enrolledCourses?.find(
-    (e: any) => e.courseId === courseId || e.courseId?._id === courseId
+    (e: any) => e.courseId === courseId || e.courseId?._id === courseId,
   ); // Simplify check
   const isEnrolled = !!enrollment;
 
@@ -44,6 +45,21 @@ const StudentCourseDetail = () => {
 
     if (courseId) fetchCourse();
   }, [courseId]);
+
+  // Fetch latest student data to ensure progress is up-to-date
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const response = await axiosInstance.get("/students/dashboard");
+        if (response.data && response.data.profile) {
+          useStudentStore.getState().updateStudent(response.data.profile);
+        }
+      } catch (err) {
+        console.error("Failed to refresh student data:", err);
+      }
+    };
+    fetchStudentData();
+  }, []);
 
   const handleEnroll = async () => {
     if (!student) {
@@ -68,7 +84,7 @@ const StudentCourseDetail = () => {
     } catch (err: any) {
       console.error("Enrollment failed:", err);
       alert(
-        err.response?.data?.message || "Enrollment failed. Please try again."
+        err.response?.data?.message || "Enrollment failed. Please try again.",
       );
     } finally {
       setEnrollLoading(false);
@@ -167,30 +183,42 @@ const StudentCourseDetail = () => {
               {course.description || "No description provided."}
             </p>
 
-            <div className="mt-auto flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-              {!isEnrolled ? (
-                <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                  <button
-                    onClick={handleEnroll}
-                    disabled={enrollLoading}
-                    className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200 active:transform active:scale-95 disabled:bg-blue-400 flex items-center justify-center gap-2"
-                  >
-                    {enrollLoading ? (
-                      <Loader2 className="animate-spin" />
-                    ) : (
-                      "Enroll Now"
-                    )}
-                    {!enrollLoading && (
-                      <span className="ml-1 text-blue-100 font-normal opacity-80">
-                        Free
-                      </span>
-                    )}
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-lg border border-green-100">
-                  <CheckCircle size={20} />
-                  <span className="font-semibold">Enrolled</span>
+            <div className="mt-auto flex flex-col w-full">
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-4">
+                {!isEnrolled ? (
+                  <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                    <button
+                      onClick={handleEnroll}
+                      disabled={enrollLoading}
+                      className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200 active:transform active:scale-95 disabled:bg-blue-400 flex items-center justify-center gap-2"
+                    >
+                      {enrollLoading ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        "Enroll Now"
+                      )}
+                      {!enrollLoading && (
+                        <span className="ml-1 text-blue-100 font-normal opacity-80">
+                          Free
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-lg border border-green-100">
+                    <CheckCircle size={20} />
+                    <span className="font-semibold">Enrolled</span>
+                  </div>
+                )}
+              </div>
+
+              {isEnrolled && (
+                <div className="w-full max-w-md">
+                  <ProgressBar
+                    percentage={enrollment?.progress || 0}
+                    label="Course Progress"
+                    height="h-3"
+                  />
                 </div>
               )}
             </div>
@@ -220,19 +248,24 @@ const StudentCourseDetail = () => {
             <div className="space-y-4">
               {modules.map((module: any, index: number) => {
                 const isCompleted = enrollment?.completedModules?.includes(
-                  module._id
+                  module._id,
                 );
                 // const isLocked = !isEnrolled && index > 0; // Unused
 
                 return (
                   <div
                     key={module._id}
-                    className={`bg-white rounded-xl border p-5 transition-all ${
+                    className={`relative bg-white rounded-xl border p-5 transition-all ${
                       isEnrolled
                         ? "border-gray-200 shadow-sm hover:shadow-md hover:border-blue-200"
                         : "border-gray-200 opacity-75"
                     }`}
                   >
+                    {isCompleted && (
+                      <div className="absolute top-4 right-4 bg-green-100 text-green-600 rounded-full p-1 z-10">
+                        <CheckCircle size={20} />
+                      </div>
+                    )}
                     <div className="flex items-start gap-4">
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
@@ -260,18 +293,65 @@ const StudentCourseDetail = () => {
                           <span>{module.type || "Lesson"}</span>
                         </div>
 
+                        {/* Module Progress Bar */}
+                        {isEnrolled && (
+                          <div className="mb-4">
+                            {(() => {
+                              // Calculate module progress
+                              // Filter out ghost assessments (nulls from populate)
+                              const validAssessments = (
+                                module.assessments || []
+                              ).filter((a: any) => a);
+                              const totalAssessments = validAssessments.length;
+                              let completedCount = 0;
+
+                              if (
+                                enrollment?.assessmentProgress &&
+                                totalAssessments > 0
+                              ) {
+                                const moduleAssessmentIds =
+                                  validAssessments.map((a: any) =>
+                                    typeof a === "string" ? a : a._id,
+                                  );
+                                completedCount =
+                                  enrollment.assessmentProgress.filter(
+                                    (ap: any) =>
+                                      moduleAssessmentIds.includes(
+                                        ap.assessmentId,
+                                      ) && ap.isCompleted,
+                                  ).length;
+                              }
+
+                              const modProgress =
+                                totalAssessments > 0
+                                  ? (completedCount / totalAssessments) * 100
+                                  : isCompleted
+                                    ? 100
+                                    : 0;
+
+                              return (
+                                <ProgressBar
+                                  percentage={modProgress}
+                                  label="Module Progress"
+                                  height="h-2"
+                                />
+                              );
+                            })()}
+                          </div>
+                        )}
+
                         {isEnrolled && (
                           <div className="flex gap-3">
                             <button
                               onClick={() =>
                                 navigate(
-                                  `/student/courses/${courseId}/${module._id}`
+                                  `/student/courses/${courseId}/${module._id}`,
                                 )
                               }
                               className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
                             >
                               <PlayCircle size={16} />
-                              Start Learning
+                              {isCompleted ? "Review Module" : "Start Learning"}
                             </button>
                           </div>
                         )}

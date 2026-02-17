@@ -11,6 +11,7 @@ import StudentChatbot from "../../components/StudentChatbot";
 import axiosInstance from "../../api/axiosInstance";
 
 import { useStudentStore } from "../../store/useStudentStore";
+import ProgressBar from "../../components/ProgressBar";
 
 interface Course {
   _id: string; // MongoDB ID
@@ -52,7 +53,7 @@ const StudentCourses = () => {
     if (!student || !student.enrolledCourses) return null;
     // Check by _id first (courseId in enrolled is ref)
     const enrolled = student.enrolledCourses.find(
-      (e) => e.courseId === courseId
+      (e) => e.courseId === courseId,
     );
     return enrolled; // returns object or undefined
   };
@@ -146,18 +147,11 @@ const StudentCourses = () => {
 
                 {isEnrolled && enrollment ? (
                   <div className="mt-auto pt-4 border-t border-gray-100">
-                    <div className="flex justify-between text-xs font-medium text-gray-500 mb-1.5">
-                      <span>Progress</span>
-                      <span className="text-blue-600">
-                        {enrollment.progress || 0}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                      <div
-                        className="bg-blue-600 h-full rounded-full transition-all duration-500"
-                        style={{ width: `${enrollment.progress || 0}%` }}
-                      />
-                    </div>
+                    <ProgressBar
+                      percentage={enrollment.progress || 0}
+                      label="Progress"
+                      height="h-1.5"
+                    />
                   </div>
                 ) : (
                   <div className="mt-auto pt-4 border-t border-gray-100 text-sm font-medium text-blue-600 group-hover:text-blue-700 flex items-center justify-end">

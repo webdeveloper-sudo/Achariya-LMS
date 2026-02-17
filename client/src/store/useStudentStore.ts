@@ -8,6 +8,7 @@ export interface EnrolledCourse {
   completedModules: string[];
   currentModule?: string;
   progress: number;
+  assessmentProgress?: any[];
 }
 
 interface Student {
@@ -75,6 +76,6 @@ export const useStudentStore = create<StudentState>()(
         isAuthenticated: state.isAuthenticated,
         token: state.token,
       }),
-    }
-  )
+    },
+  ),
 );

@@ -25,6 +25,7 @@ import axiosInstance from "@/api/axiosInstance";
 import {
   deleteAssessment,
   createAssessment,
+  updateAssessment,
 } from "@/services/assessmentService";
 
 interface AdminEditModuleFormProps {
@@ -224,7 +225,7 @@ const AdminEditModuleForm = ({
       setInitialData((prev: any) => ({
         ...prev,
         assessments: prev.assessments.filter(
-          (a: any) => a._id !== assessmentId
+          (a: any) => a._id !== assessmentId,
         ),
       }));
     } catch (error) {
@@ -513,7 +514,7 @@ const AdminEditModuleForm = ({
                               onClick={() => {
                                 const current = getValues("infographics");
                                 const updated = current.filter(
-                                  (_: any, i: number) => i !== idx
+                                  (_: any, i: number) => i !== idx,
                                 );
                                 setValue("infographics", updated);
                               }}
@@ -559,10 +560,10 @@ const AdminEditModuleForm = ({
                         let embedUrl = null;
                         if (url) {
                           const ytMatch = url.match(
-                            /(?:youtu\.be\/|youtube\.com\/watch\?v=|v\/|u\/\w\/|embed\/)([^#&?]*).*/
+                            /(?:youtu\.be\/|youtube\.com\/watch\?v=|v\/|u\/\w\/|embed\/)([^#&?]*).*/,
                           );
                           const vimeoMatch = url.match(
-                            /(?:vimeo.com\/)([0-9]+)/
+                            /(?:vimeo.com\/)([0-9]+)/,
                           );
                           if (ytMatch && ytMatch[1]) {
                             embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`;
@@ -762,6 +763,17 @@ const AdminEditModuleForm = ({
                                   {/* Edit button removed as manual editing is deprecated in Admin */}
                                   <button
                                     type="button"
+                                    onClick={() => {
+                                      setSelectedAssessmentId(ass._id);
+                                      setIsAssessmentUploadOpen(true);
+                                    }}
+                                    className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition"
+                                    title="Edit Assessment"
+                                  >
+                                    <FileText className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    type="button"
                                     onClick={() =>
                                       handleDeleteAssessment(ass._id)
                                     }
@@ -772,7 +784,7 @@ const AdminEditModuleForm = ({
                                   </button>
                                 </div>
                               </div>
-                            )
+                            ),
                           )
                         ) : (
                           <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
@@ -804,25 +816,54 @@ const AdminEditModuleForm = ({
                         </button>
                       </div>
                       <AdminAssessmentUpload
-                        onCancel={() => setIsAssessmentUploadOpen(false)}
-                        onSave={async (questions) => {
+                        initialData={
+                          selectedAssessmentId
+                            ? initialData?.assessments?.find(
+                                (a: any) => a._id === selectedAssessmentId,
+                              )
+                            : null
+                        }
+                        onCancel={() => {
+                          setIsAssessmentUploadOpen(false);
+                          setSelectedAssessmentId(null);
+                        }}
+                        onSave={async (questions, title, description) => {
                           try {
+                            const targetModuleId = moduleId || initialData?._id;
+                            if (!targetModuleId) {
+                              alert(
+                                "Module ID is missing. Cannot upload assessment.",
+                              );
+                              return;
+                            }
+
                             const payload = {
-                              title: "Uploaded Assessment",
-                              description: "Imported from Excel",
-                              moduleId: moduleId, // Using the prop directly
-                              courseId: initialData.courseId || null, // Best effort to get courseId
+                              title: title, // Use user-provided title
+                              description: description, // Use user-provided description
+                              moduleId: targetModuleId,
+                              courseId: initialData?.courseId || null,
                               questions: questions,
-                              duration: 30,
+                              duration: 30, // Default, can be edited later if needed
                               assessmentType: "quiz",
                             };
 
-                            await createAssessment(moduleId, payload);
+                            if (selectedAssessmentId) {
+                              // Update existing assessment
+                              await updateAssessment(
+                                selectedAssessmentId,
+                                payload,
+                              );
+                              alert("Assessment updated successfully!");
+                            } else {
+                              // Create new
+                              await createAssessment(targetModuleId, payload);
+                              alert("Assessment uploaded successfully!");
+                            }
 
-                            alert("Assessment uploaded successfully!");
                             setIsAssessmentUploadOpen(false);
-                            if (onSuccess) onSuccess(); // Refresh parent or create reload trigger
-                            fetchModule(); // Refresh current form data
+                            setSelectedAssessmentId(null); // Reset selection
+                            if (onSuccess) onSuccess();
+                            fetchModule();
                           } catch (err) {
                             console.error(err);
                             alert("Failed to save uploaded assessment");
