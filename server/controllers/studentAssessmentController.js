@@ -2,6 +2,9 @@ const Student = require("../schemas/Student");
 const Assessment = require("../models/Assessment");
 const Module = require("../models/Module");
 const Course = require("../models/Course");
+const mongoose = require("mongoose");
+const GamificationController = require("./gamificationController");
+const BadgeService = require("../services/BadgeService");
 
 // Get Assessment Details (with 3rd attempt logic)
 exports.getAssessmentForStudent = async (req, res) => {
@@ -47,7 +50,39 @@ exports.getAssessmentForStudent = async (req, res) => {
     }
 
     if (progressRecord) {
-      attemptsUsed = progressRecord.attempts;
+      // Check for Stale Progress (Assessment updated after last attempt)
+      // Logic: If assessment.updatedAt > last history entry date
+      const lastAttempt =
+        progressRecord.history.length > 0
+          ? progressRecord.history[progressRecord.history.length - 1].date
+          : null;
+
+      const assessmentDate = assessment.updatedAt || assessment.createdAt; // Use updatedAt if available
+
+      if (
+        lastAttempt &&
+        assessmentDate &&
+        new Date(assessmentDate) > new Date(lastAttempt)
+      ) {
+        // RESET PROGRESS
+        console.log(
+          "Assessment updated since last attempt. Resetting progress for student:",
+          studentId,
+        );
+        progressRecord.attempts = 0;
+        progressRecord.history = [];
+        progressRecord.isCompleted = false;
+        progressRecord.highestScore = 0;
+        attemptsUsed = 0;
+
+        // Perform the save update in DB
+        // We need to save the student document
+        // Since we modified 'progressRecord' which is a subdocument reference?
+        // JS references work, but we need to call student.save()
+        await student.save();
+      } else {
+        attemptsUsed = progressRecord.attempts;
+      }
     }
 
     // Determine if we should show hints (Attempt 3 => attemptsUsed == 2)
@@ -93,11 +128,6 @@ exports.submitAssessment = async (req, res) => {
   try {
     const { studentId, assessmentId } = req.params;
     const { score, totalMarks, moduleId, courseId } = req.body;
-    // Note: Trusting frontend score is risky, but required if we aren't grading here.
-    // Ideally we should receive answers and grade here.
-    // For this task, assuming frontend calculates score for simplicity unless asked otherwise.
-    // But to enforce "100% on 3rd attempt", we must trust the score passed or calculate it.
-    // Let's assume passed score is correct.
 
     const student = await Student.findById(studentId);
     if (!student)
@@ -133,134 +163,210 @@ exports.submitAssessment = async (req, res) => {
 
     const progress = enrolledCourse.assessmentProgress[progressIndex];
 
-    // Check Attempts
+    // Check Attempts (Frontend should block, but backend safety)
     if (progress.attempts >= 3) {
-      // Technically shouldn't happen if frontend blocks, but just in case
-      return res
-        .status(400)
-        .json({ success: false, message: "Max attempts reached" });
-    }
-
-    // Logic for 3rd attempt (current attempts = 2)
-    if (progress.attempts === 2) {
-      // 3rd attempt
-      const percentage = (score / totalMarks) * 100;
-      if (percentage < 100) {
-        return res.status(400).json({
-          success: false,
-          message: "You must score 100% on the 3rd attempt to pass.",
-          isThirdAttemptFailed: true,
-        });
+      // Allow if just retrying for practice? Requirement says "Block submission until 100% achieved"
+      // If they already passed, maybe allow re-attempt?
+      // If they haven't passed and used 3 attempts, they are in the "Attempt 3 loop" until 100%.
+      // So we DON'T block if they haven't passed yet.
+      if (progress.isCompleted) {
+        // Optional: Block retries after completion? Or allow for practice?
+        // Let's allow for practice but not increment attempts to infinity or mess up logic.
+        // For now, let's proceed.
       }
     }
 
-    // Update Progress
+    // Attempt Logic
+    // If it's the 3rd attempt (current attempts = 2) or more, strict 100% is enforced by frontend blocking.
+    // Backend also validates.
+    const percentage = (score / totalMarks) * 100;
+
+    if (progress.attempts >= 2 && percentage < 100) {
+      // 3rd Attempt or later: Must score 100%
+      // Note: progress.attempts is 0-indexed count of *completed* attempts?
+      // No, usually 'attempts' in DB is count of attempts made.
+      // If attempts=0, this is 1st attempt.
+      // If attempts=2, this is 3rd attempt.
+      return res.status(400).json({
+        success: false,
+        message: "You must score 100% on the 3rd attempt to pass.",
+        isThirdAttemptFailed: true,
+      });
+    }
+
+    // Update Progress Details
     progress.attempts += 1;
     progress.history.push({ score, date: new Date() });
     if (score > progress.highestScore) {
       progress.highestScore = score;
     }
 
-    // Check Completion (Pass Mark e.g. 50%? Or just passing the attempt rules?)
-    // Requirement: "3rd attempt ... 100% without ... could not submit"
-    // So if they submitted 3rd attempt, they passed.
-    // For 1st/2nd, assume standard pass (e.g., 50% or 60%?). Let's assume 60% default if not specified.
-    // Or simpler: If they pass 3rd attempt rule OR score > passMark (say 60%) in 1/2.
-    // Let's strictly enforce: If attempt < 3, pass if score >= 60% (arbitrary, maybe 50?).
-    // User said: "if the student couldnot score the 100% in frst two attempts." -> implies 100% is ALWAYS the goal?
-    // "if the student couldnot score the 100% in frst two attempts. on the thirdf attempt there should be hints"
-    // This implies passing means 100%? Or maybe just "if they didn't get 100%, they retry"?
-    // "by the completion of third attempt the student should score 100% for sure"
-    // Let's assume Passing = 100% for simplicity based on the prompt's emphasis on 100%.
-    // Re-reading: "if the student couldnot score the 100% in frst two attempts... on third... should score 100%"
-    // It strongly suggests 100% is the completion criteria.
-
-    const percentage = (score / totalMarks) * 100;
-    const passed = percentage === 100; // Strict 100% based on prompt
+    // Completion Logic: Module Complete = ALL assessments @ 100% (3rd attempt enforced)
+    // This implies 100% is the target for ANY attempt to be "Completed".
+    const passed = percentage === 100;
 
     let creditsAwarded = 0;
+    let moduleCompleted = false;
 
     if (passed && !progress.isCompleted) {
       progress.isCompleted = true;
 
-      // Award Credits
-      const moduleDoc = await Module.findOne({ moduleId }); // Find module to get credits
-      // Note: Module model has 'credits'.
-      if (moduleDoc) {
-        // Logic: "credits for that assessment" - usually credits are per module?
-        // Prompt: "whole credits for that assessment should be added"
-        // Module schema has 'credits'. Assessment schema doesn't seem to have credits explicitly shown in previous view?
-        // Let's check Assessment model again or assume Module credits are split?
-        // Or maybe Assessment has credits we missed.
-        // If Assessment doesn't have credits, maybe use Module credits?
-        // Prompt says "credits for that assessment". Let's assume Assessment might have 'credits' field or use Module's.
-        // Let's fetch Assessment to be sure.
-        const assessment = await Assessment.findById(assessmentId);
-        // If assessment has no credits field, maybe we award generic points or check Module.
-        // Let's assume 10 credits if not found for now to be safe, or 0.
-        const points = assessment.credits || 0; // We need to ensure Assessment schema has credits if expected.
+      // Award Credits (Assessment specific)
+      const assessment = await Assessment.findById(assessmentId);
+      const points = (assessment && assessment.credits) || 10; // Default 10 if not specified
 
-        if (points > 0) {
-          student.credits.push({
-            amount: points,
-            message: `Completed assessment for module ${moduleDoc.title}`,
-            date: new Date(),
-          });
-          student.totalCredits += points;
-          creditsAwarded = points;
-        }
+      if (points > 0) {
+        await GamificationController.awardCredits(
+          student._id,
+          points,
+          `Completed Assessment: ${assessment.title}`,
+          "QUIZ_PASS",
+          assessment._id,
+          "Assessment",
+        );
+        creditsAwarded += points;
       }
 
-      // Check Module Completion
-      // Are all assessments in this module completed?
-      const moduleAssessments = await Assessment.find({
-        moduleId: moduleDoc ? moduleDoc._id : null,
-      }); // Mapping?
-      // Wait, Module has `assessments` array.
+      // Bonus: Perfect Score on First Attempt? (Attempts logic is a bit fuzzy here, but if attempts==1 and passed, it's first try)
+      // progress.attempts was incremented above. So if attempts === 1, it's first try.
+      if (progress.attempts === 1 && passed) {
+        await GamificationController.awardCredits(
+          student._id,
+          5,
+          "First Try Bonus!",
+          "QUIZ_PERFECT",
+          assessment._id,
+          "Assessment",
+        );
+        creditsAwarded += 5;
+      }
+    }
+
+    if (passed) {
+      // We expect moduleId to be the _id (ObjectId) of the module from frontend params
+      // Try to find module by _id first, if not valid ObjectId, try custom moduleId
+      let moduleDoc = null;
+      if (mongoose.Types.ObjectId.isValid(moduleId)) {
+        moduleDoc = await Module.findById(moduleId);
+      } else {
+        moduleDoc = await Module.findOne({ moduleId });
+      }
+
       if (moduleDoc && moduleDoc.assessments) {
-        const allModuleAssessments = moduleDoc.assessments.map((id) =>
+        // IDs of all assessments in this module
+        const rawModuleAssessmentIds = moduleDoc.assessments.map((id) =>
           id.toString(),
         );
+
+        // Robustness: Only count assessments that actually exist in the DB
+        // Fetch valid assessments
+        const validAssessments = await Assessment.find({
+          _id: { $in: rawModuleAssessmentIds },
+        }).select("_id");
+
+        const validAssessmentIds = validAssessments.map((a) =>
+          a._id.toString(),
+        );
+
         // Check if student has completed all of them
-        const completedAssessmentsInModule =
-          enrolledCourse.assessmentProgress.filter(
-            (ap) =>
-              allModuleAssessments.includes(ap.assessmentId.toString()) &&
-              ap.isCompleted,
-          );
+        const completedCount = enrolledCourse.assessmentProgress.filter(
+          (ap) =>
+            validAssessmentIds.includes(ap.assessmentId.toString()) &&
+            ap.isCompleted,
+        ).length;
 
+        // Use validAssessmentIds.length as the denominator
         if (
-          completedAssessmentsInModule.length === allModuleAssessments.length
+          validAssessmentIds.length > 0 &&
+          completedCount === validAssessmentIds.length
         ) {
-          // Mark Module as Completed
-          if (!enrolledCourse.completedModules.includes(moduleId)) {
-            enrolledCourse.completedModules.push(moduleId);
+          moduleCompleted = true;
 
-            // Check Course Completion
-            const course = await Course.findById(courseId);
-            if (course && course.modules) {
-              // Assuming course.modules is list of module Ids (refs)
-              // Module schema has string `moduleId` (e.g. "M1") but Course links via ObjectId usually.
-              // We need to match schemas. Module.js has `moduleId` (string) AND `_id` (ObjectId).
-              // Course likely references `_id`.
-              // enrolledCourse.completedModules stores string "moduleId" (from schema view earlier: type: String).
-              // We need to be consistent.
+          // Mark Module as Completed in Student Record
+          const moduleObjectId = moduleDoc._id.toString();
 
-              // Let's assume for now we just verify count.
-              // If (enrolledCourse.completedModules.length === course.modules.length) -> Course Completed.
-              // enrolledCourse.progress = 100;
+          if (!enrolledCourse.completedModules.includes(moduleObjectId)) {
+            enrolledCourse.completedModules.push(moduleObjectId);
 
-              const completedCount = enrolledCourse.completedModules.length;
-              const totalModules = course.modules.length;
-              const newProgress = Math.round(
-                (completedCount / totalModules) * 100,
-              );
-              enrolledCourse.progress = newProgress;
-            }
+            // Award Module Credits
+            const modulePoints = moduleDoc.credits || 20; // Default 20
+            await GamificationController.awardCredits(
+              student._id,
+              modulePoints,
+              `Completed Module: ${moduleDoc.title}`,
+              "MODULE_COMPLETION",
+              moduleDoc._id,
+              "Module",
+            );
+            creditsAwarded += modulePoints;
           }
         }
       }
+
+      // --- UPDATE ACCESSED STUDENTS IN ASSESSMENT ---
+      const assessmentDoc = await Assessment.findById(assessmentId);
+      if (assessmentDoc) {
+        const studentEntryIndex = assessmentDoc.accessedStudents.findIndex(
+          (s) => s.studentId.toString() === studentId,
+        );
+
+        if (studentEntryIndex > -1) {
+          assessmentDoc.accessedStudents[studentEntryIndex].attempts += 1;
+          assessmentDoc.accessedStudents[studentEntryIndex].lastScore = score;
+          assessmentDoc.accessedStudents[studentEntryIndex].lastAttemptedAt =
+            new Date();
+        } else {
+          assessmentDoc.accessedStudents.push({
+            studentId: student._id,
+            admissionNo: student.admissionNo,
+            attempts: 1,
+            lastScore: score,
+            lastAttemptedAt: new Date(),
+          });
+        }
+        await assessmentDoc.save();
+      }
+
+      // --- CHECK COURSE PROGRESS ---
+      const activeCourseModules = await Module.countDocuments({
+        courseId: courseId,
+        isActive: true,
+      });
+
+      const activeModuleIds = await Module.find({
+        courseId: courseId,
+        isActive: true,
+      }).select("_id");
+
+      const activeModuleIdStrings = activeModuleIds.map((m) =>
+        m._id.toString(),
+      );
+      const totalModules = activeModuleIds.length;
+
+      const completedModulesList = enrolledCourse.completedModules;
+      let completedModulesCount = 0;
+
+      if (completedModulesList && completedModulesList.length > 0) {
+        completedModulesCount = activeModuleIdStrings.filter((mId) =>
+          completedModulesList.includes(mId),
+        ).length;
+      }
+
+      const newProgress =
+        totalModules > 0
+          ? Math.round((completedModulesCount / totalModules) * 100)
+          : 0;
+
+      enrolledCourse.progress = Math.min(newProgress, 100);
     }
+
+    // Check for Badges (Pass '0' for time explicitly as we don't track it yet)
+    // The BadgeService checks if badges are already earned, so safe to call repeatedly.
+    const newBadges = await BadgeService.checkAssessmentBadges(
+      student._id,
+      percentage,
+      0,
+    );
 
     await student.save();
 
@@ -270,6 +376,9 @@ exports.submitAssessment = async (req, res) => {
       creditsAwarded,
       attempts: progress.attempts,
       isCompleted: progress.isCompleted,
+      moduleCompleted, // Flag for frontend confetti
+      courseProgress: enrolledCourse.progress,
+      newBadges, // Send new badges to frontend for popup
     });
   } catch (error) {
     console.error("Submit Assessment Error:", error);

@@ -89,7 +89,7 @@ const AdminAddCourseForm = ({
           subjects: t.subjects || [],
           branch: t.branch || "",
           designation: t.designation || "",
-        }))
+        })),
       );
       setFilteredTeachers(teachers);
     } catch (err) {
@@ -111,13 +111,13 @@ const AdminAddCourseForm = ({
         (t) =>
           t.userName.toLowerCase().includes(q) ||
           t.userId.toLowerCase().includes(q) ||
-          t.subjects.some((s) => s.toLowerCase().includes(q))
+          t.subjects.some((s) => s.toLowerCase().includes(q)),
       );
     } else {
       // Default: show teachers matching selected schools
       if (formData.eligibleSchools.length > 0) {
         filtered = filtered.filter((t) =>
-          formData.eligibleSchools.includes(t.branch)
+          formData.eligibleSchools.includes(t.branch),
         );
       }
     }
@@ -128,7 +128,7 @@ const AdminAddCourseForm = ({
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
@@ -140,7 +140,7 @@ const AdminAddCourseForm = ({
 
   const handleArraySelection = (
     field: "gradesEligible" | "eligibleSchools" | "assignedTeachers",
-    value: string
+    value: string,
   ) => {
     setFormData((prev) => {
       const current = prev[field];
@@ -155,7 +155,7 @@ const AdminAddCourseForm = ({
     if (field === "eligibleSchools") {
       setFormData((prev) => ({
         ...prev,
-        eligibleSchools: [...allschoolsdata],
+        eligibleSchools: allschoolsdata.map((s) => s.name),
       }));
     } else if (field === "gradesEligible") {
       setFormData((prev) => ({ ...prev, gradesEligible: [...ALL_CLASSES] }));
@@ -171,11 +171,11 @@ const AdminAddCourseForm = ({
     // If search query is empty, show all schools (or just selected ones if prefered, but user wants to be able to select)
     // The previous issue was likely that 'Select All' selected everything, but search might have been confusing if it filtered out selected ones.
     // Here we just filter by query.
-    return school.toLowerCase().includes(schoolsQuery.toLowerCase());
+    return school.name.toLowerCase().includes(schoolsQuery.toLowerCase());
   });
 
   const filteredGrades = ALL_CLASSES.filter((grade) =>
-    grade.toLowerCase().includes(gradesQuery.toLowerCase())
+    grade.toLowerCase().includes(gradesQuery.toLowerCase()),
   );
 
   const handleThumbnailUpload = async (file: File) => {
@@ -204,7 +204,7 @@ const AdminAddCourseForm = ({
       formData.eligibleSchools.length === 0
     ) {
       setError(
-        "Please fill all required fields: Title, Subject Code, Description, Grades, and Schools."
+        "Please fill all required fields: Title, Subject Code, Description, Grades, and Schools.",
       );
       setLoading(false);
       return;
@@ -406,15 +406,17 @@ const AdminAddCourseForm = ({
 
               <div className="flex flex-wrap gap-2 p-2 border rounded-lg bg-gray-50 max-h-48 overflow-y-auto">
                 {filteredSchools.map((school) => {
-                  const isSelected = formData.eligibleSchools.includes(school);
+                  const isSelected = formData.eligibleSchools.includes(
+                    school.name,
+                  );
                   // Hide already selected ones from the list to avoid clutter? Or keep them highlighted?
                   // User said "im unable to select... even if i select all".
                   // Let's keep them in list but highlighted
                   return (
                     <button
-                      key={school}
+                      key={school.id}
                       onClick={() =>
-                        handleArraySelection("eligibleSchools", school)
+                        handleArraySelection("eligibleSchools", school.name)
                       }
                       className={`px-3 py-1 rounded-full text-xs text-left transition-colors border ${
                         isSelected
@@ -423,7 +425,7 @@ const AdminAddCourseForm = ({
                       }`}
                       disabled={false}
                     >
-                      {school}
+                      {school.name}
                     </button>
                   );
                 })}
@@ -529,7 +531,7 @@ const AdminAddCourseForm = ({
                 ) : filteredTeachers.length > 0 ? (
                   filteredTeachers.map((teacher) => {
                     const isSelected = formData.assignedTeachers.includes(
-                      teacher.id
+                      teacher.id,
                     );
                     return (
                       <button

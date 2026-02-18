@@ -1,5 +1,5 @@
 import { X, Save } from "lucide-react";
-import { allschoolsdata, allsubjects, ALL_CLASSES} from "@/data/global/global";
+import { allschoolsdata, allsubjects, ALL_CLASSES } from "@/data/global/global";
 import { useState } from "react";
 import axiosInstance from "../../../../api/axiosInstance";
 
@@ -36,7 +36,7 @@ const AdminAddTeacherForm = ({
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -44,7 +44,7 @@ const AdminAddTeacherForm = ({
 
   const handleArraySelection = (
     field: "subjects" | "gradesInCharge",
-    value: string
+    value: string,
   ) => {
     setFormData((prev) => {
       const current = prev[field];
@@ -222,8 +222,8 @@ const AdminAddTeacherForm = ({
             >
               <option value="">Select Branch</option>
               {allschoolsdata.map((school) => (
-                <option key={school} value={school}>
-                  {school}
+                <option key={school.id} value={school.name}>
+                  {school.name}
                 </option>
               ))}
             </select>

@@ -3,7 +3,6 @@ import { BookOpen, Award, TrendingUp, Wallet } from "lucide-react";
 import { sampleData } from "../../data/sampleData";
 import { useState, useEffect } from "react";
 import StudentChatbot from "../../components/StudentChatbot";
-import CreditPopup from "../../components/CreditPopup";
 import StreakWidget from "../../components/StreakWidget";
 import SuggestedActions from "../../components/SuggestedActions";
 
@@ -15,16 +14,14 @@ const StudentDashboard = () => {
   // State for dashboard data
   const [student, setStudent] = useState<any>(
     sampleData.students.find((s) => s.email === user.email) ||
-      sampleData.students[0]
+      sampleData.students[0],
   );
   const [enrollments, setEnrollments] = useState<any[]>(
-    sampleData.enrollments.filter((e) => e.student_id === student.id)
+    sampleData.enrollments.filter((e) => e.student_id === student.id),
   );
 
-  const [showCreditPopup, setShowCreditPopup] = useState(false);
-  const [creditReward, setCreditReward] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(
-    student.currentStreak || 0
+    student.currentStreak || 0,
   );
 
   // Fetch real data on mount
@@ -43,11 +40,17 @@ const StudentDashboard = () => {
           setStudent((prev: any) => ({
             ...prev,
             ...dashboardRes.data.profile,
-            name: dashboardRes.data.profile.name || prev.name,
-            credits: dashboardRes.data.profile.credits || 0,
-            badges: dashboardRes.data.profile.badges || 0,
+            // Ensure these are accessed correctly if backend sends them at root of profile
+            credits: dashboardRes.data.profile.credits,
+            badges: dashboardRes.data.profile.badges,
           }));
+
+          // Use the streak from backend
           setCurrentStreak(dashboardRes.data.profile.currentStreak || 0);
+
+          // Check if we entered a new streak today (handled by backend login, but maybe we want to show popup?)
+          // If backend says we have a streak, and it's higher than before?
+          // For now, let's trust the backend data.
         }
 
         if (coursesRes.data && coursesRes.data.courses) {
@@ -58,7 +61,7 @@ const StudentDashboard = () => {
       } catch (error) {
         console.error(
           "Failed to fetch dashboard data, using local/sample data",
-          error
+          error,
         );
       }
     };
@@ -66,60 +69,13 @@ const StudentDashboard = () => {
     fetchData();
   }, []);
 
-  // Daily login credit system (Logic mostly handled by backend usually, but keeping frontend check as requested/legacy)
-  useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    const localStudentData = JSON.parse(
-      localStorage.getItem("studentData") || "{}"
-    );
-    const lastLogin =
-      localStudentData[student.id]?.lastLoginDate ||
-      student.lastLoginDate ||
-      "";
-
-    if (lastLogin !== today) {
-      // New day! Award credit
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().split("T")[0];
-      const wasYesterday = lastLogin === yesterdayStr;
-      const newStreak = wasYesterday ? (student.currentStreak || 0) + 1 : 1;
-
-      // Update student data locally (and ideally send to backend via dailyCheckIn API)
-      const updatedStudent = { ...student };
-      updatedStudent.credits = (updatedStudent.credits || 0) + 1;
-      updatedStudent.currentStreak = newStreak;
-      updatedStudent.longestStreak = Math.max(
-        newStreak,
-        updatedStudent.longestStreak || 0
-      );
-
-      setStudent(updatedStudent);
-
-      // Save to localStorage
-      localStudentData[student.id] = {
-        lastLoginDate: today,
-        credits: updatedStudent.credits,
-        currentStreak: newStreak,
-        longestStreak: updatedStudent.longestStreak,
-      };
-      localStorage.setItem("studentData", JSON.stringify(localStudentData));
-
-      // Show popup
-      setCreditReward(1);
-      setCurrentStreak(newStreak);
-      setShowCreditPopup(true);
-
-      // Call Backend API to record check-in
-      // studentAuthApi.dailyCheckIn().catch(err => console.error("Check-in failed", err));
-    }
-  }, [student.id]); // Run when student ID is stable
+  // Daily login logic is now handled by the backend upon authentication.
 
   const avgCompletion =
     enrollments.length > 0
       ? Math.round(
           enrollments.reduce((sum, e) => sum + (e.progress || 0), 0) /
-            enrollments.length
+            enrollments.length,
         )
       : 0;
 
@@ -242,16 +198,6 @@ const StudentDashboard = () => {
       <div className="mt-6">
         <StreakWidget currentStreak={1} longestStreak={5} />
       </div>
-
-      {/* Credit Popup */}
-      {showCreditPopup && (
-        <CreditPopup
-          credits={creditReward}
-          message="Daily login bonus"
-          streak={currentStreak}
-          onClose={() => setShowCreditPopup(false)}
-        />
-      )}
 
       {/* AI Chatbot - Floating */}
       <StudentChatbot studentId={student.id} studentName={student.name} />

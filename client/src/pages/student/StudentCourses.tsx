@@ -155,7 +155,7 @@ const StudentCourses = () => {
                   </div>
                 ) : (
                   <div className="mt-auto pt-4 border-t border-gray-100 text-sm font-medium text-blue-600 group-hover:text-blue-700 flex items-center justify-end">
-                    View Details{" "}
+                    Enroll Now{" "}
                     <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </div>
                 )}

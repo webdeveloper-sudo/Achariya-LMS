@@ -59,12 +59,12 @@ const AdminEditCourseForm = ({
         : [],
       eligibleSchools: Array.isArray(prev.eligibleSchools)
         ? prev.eligibleSchools.map((s: any) =>
-            typeof s === "string" ? s : s.name
+            typeof s === "string" ? s : s.name,
           )
         : [],
       assignedTeachers: Array.isArray(prev.assignedTeachers)
         ? prev.assignedTeachers.map((t: any) =>
-            typeof t === "string" ? t : t._id || t.id
+            typeof t === "string" ? t : t._id || t.id,
           )
         : [],
     }));
@@ -104,7 +104,7 @@ const AdminEditCourseForm = ({
         (t) =>
           t.userName.toLowerCase().includes(q) ||
           t.userId.toLowerCase().includes(q) ||
-          t.subjects.some((s) => s.toLowerCase().includes(q))
+          t.subjects.some((s) => s.toLowerCase().includes(q)),
       );
     } else {
       // Default: show teachers matching selected schools
@@ -113,7 +113,7 @@ const AdminEditCourseForm = ({
         editFormData.eligibleSchools.length > 0
       ) {
         filtered = filtered.filter((t) =>
-          editFormData.eligibleSchools.includes(t.branch)
+          editFormData.eligibleSchools.includes(t.branch),
         );
       }
     }
@@ -124,7 +124,7 @@ const AdminEditCourseForm = ({
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value, type } = e.target;
     setEditFormData({
@@ -136,7 +136,7 @@ const AdminEditCourseForm = ({
 
   const handleArraySelection = (
     field: "gradesEligible" | "eligibleSchools" | "assignedTeachers",
-    value: string
+    value: string,
   ) => {
     const current = editFormData[field] || [];
     let newArray;
@@ -153,7 +153,7 @@ const AdminEditCourseForm = ({
     if (field === "eligibleSchools") {
       setEditFormData((prev: any) => ({
         ...prev,
-        eligibleSchools: [...allschoolsdata],
+        eligibleSchools: allschoolsdata.map((s) => s.name),
       }));
     } else if (field === "gradesEligible") {
       setEditFormData((prev: any) => ({
@@ -169,11 +169,11 @@ const AdminEditCourseForm = ({
 
   // Filter lists
   const filteredSchools = allschoolsdata.filter((school) =>
-    school.toLowerCase().includes(schoolsQuery.toLowerCase())
+    school.name.toLowerCase().includes(schoolsQuery.toLowerCase()),
   );
 
   const filteredGrades = ALL_CLASSES.filter((grade) =>
-    grade.toLowerCase().includes(gradesQuery.toLowerCase())
+    grade.toLowerCase().includes(gradesQuery.toLowerCase()),
   );
 
   const handleThumbnailUpload = async (file: File) => {
@@ -350,13 +350,14 @@ const AdminEditCourseForm = ({
 
               <div className="flex flex-wrap gap-2 p-2 border rounded-lg bg-gray-50 max-h-48 overflow-y-auto">
                 {filteredSchools.map((school) => {
-                  const isSelected =
-                    editFormData.eligibleSchools?.includes(school);
+                  const isSelected = editFormData.eligibleSchools?.includes(
+                    school.name,
+                  );
                   return (
                     <button
-                      key={school}
+                      key={school.id}
                       onClick={() =>
-                        handleArraySelection("eligibleSchools", school)
+                        handleArraySelection("eligibleSchools", school.name)
                       }
                       className={`px-3 py-1 rounded-full text-xs text-left transition-colors border ${
                         isSelected
@@ -364,7 +365,7 @@ const AdminEditCourseForm = ({
                           : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                       }`}
                     >
-                      {school}
+                      {school.name}
                     </button>
                   );
                 })}
@@ -450,7 +451,7 @@ const AdminEditCourseForm = ({
                 ) : filteredTeachers.length > 0 ? (
                   filteredTeachers.map((teacher) => {
                     const isSelected = editFormData.assignedTeachers?.includes(
-                      teacher.id
+                      teacher.id,
                     );
                     return (
                       <button

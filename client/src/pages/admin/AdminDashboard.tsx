@@ -132,6 +132,16 @@ const AdminDashboard = () => {
           <h3 className="font-bold text-gray-800 mb-1">Manage Teachers</h3>
           <p className="text-sm text-gray-600">Add, edit, or remove teachers</p>
         </Link>
+        <Link
+          to="/admin/principals"
+          className="bg-purple-50 border border-purple-200 rounded-xl p-6 hover:shadow-md cursor-pointer transition"
+        >
+          <Users className="w-8 h-8 text-purple-600 mb-3" />
+          <h3 className="font-bold text-gray-800 mb-1">Manage Principals</h3>
+          <p className="text-sm text-gray-600">
+            Add principals & assign schools
+          </p>
+        </Link>
       </div>
 
       {/* All Schools */}
@@ -142,13 +152,13 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {sampleData.schools.map((school) => {
             const schoolStudents = sampleData.students.filter(
-              (s) => s.school_id === school.id
+              (s) => s.school_id === school.id,
             );
             const schoolTeachers = sampleData.teachers.filter(
-              (t) => t.school_id === school.id
+              (t) => t.school_id === school.id,
             );
             const schoolCourses = sampleData.courses.filter(
-              (c) => c.school_id === school.id
+              (c) => c.school_id === school.id,
             );
 
             return (

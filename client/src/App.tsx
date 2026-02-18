@@ -44,6 +44,7 @@ import TeacherEvidenceSubmission from "./pages/teacher/EvidenceSubmission";
 import TeacherAssessmentCreator from "./pages/teacher/TeacherAssessmentCreator";
 
 // Principal Pages
+import PrincipalLogin from "./pages/principal/PrincipalLogin";
 import PrincipalDashboard from "./pages/principal/PrincipalDashboard";
 import PrincipalCourses from "./pages/principal/PrincipalCourses";
 import PrincipalCourseDetail from "./pages/principal/PrincipalCourseDetail";
@@ -66,6 +67,7 @@ import AdminUploadCourse from "./pages/admin/pages/courses/AdminUploadCourse";
 import AdminCoursesModulePage from "./pages/admin/pages/courses/modules/AdminCoursesModulePage";
 
 import AdminUsersPage from "./pages/admin/pages/user/AdminUsersPage";
+import AdminPrincipalsPage from "./pages/admin/pages/user/AdminPrincipalsPage";
 import AdminConfigPage from "./pages/admin/AdminConfigPage";
 import AdminFAQPage from "./pages/admin/AdminFAQPage";
 import AdminQuestionBank from "./pages/admin/AdminQuestionBank";
@@ -86,6 +88,9 @@ function App() {
         {/* Student Auth Routes */}
         <Route path="/student/login" element={<StudentLogin />} />
         <Route path="/student/onboarding" element={<StudentOnboarding />} />
+
+        {/* Principal Auth Routes */}
+        <Route path="/principal/login" element={<PrincipalLogin />} />
 
         {/* Legacy Role Selection (Keeping just in case, or remove) */}
         <Route path="/select-role" element={<RoleSelection />} />
@@ -319,6 +324,14 @@ function App() {
             element={
               <RequireAdmin>
                 <AdminSystemMonitoring />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="/admin/principals"
+            element={
+              <RequireAdmin>
+                <AdminPrincipalsPage />
               </RequireAdmin>
             }
           />

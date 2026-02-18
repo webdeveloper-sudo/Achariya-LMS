@@ -4,10 +4,16 @@ const Course = require("../models/Course");
 
 const generateAssessmentId = async (moduleIdStr, moduleObjectId) => {
   const count = await Assessment.countDocuments({ moduleId: moduleObjectId });
-  const num = (count + 1).toString().padStart(2, "0");
+  let num = count + 1;
   // Using simple split might fail if ID format changes, but good for now per prompt
   const modIdPart = moduleIdStr.split("-")[1] || "XXX";
-  return `ASS-${modIdPart}-Q${num}`;
+  let assessmentId = `ASS-${modIdPart}-Q${num.toString().padStart(2, "0")}`;
+
+  while (await Assessment.exists({ assessmentId })) {
+    num++;
+    assessmentId = `ASS-${modIdPart}-Q${num.toString().padStart(2, "0")}`;
+  }
+  return assessmentId;
 };
 
 exports.createAssessment = async (req, res, next) => {
@@ -55,8 +61,8 @@ exports.createAssessment = async (req, res, next) => {
       assessmentId,
       moduleId: module._id,
       courseId: module.courseId,
-      title: req.body.title,
-      description: req.body.description,
+      title: req.body.title || "Untitled Assessment", // Fallback if missing
+      description: req.body.description || "",
       totalMarks,
       duration: durationInSeconds,
       attempts: Number(req.body.attemptsAllowed) || 3, // Frontend sends attemptsAllowed

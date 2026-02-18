@@ -84,6 +84,14 @@ router.put("/:id", authenticate, requireAdmin, studentController.updateStudent);
 //   studentController.deleteStudent
 // );
 
+// Delete ALL students (Admin-only)
+router.delete(
+  "/deleteAll",
+  authenticate,
+  requireAdmin,
+  studentController.deleteAllStudents,
+);
+
 // Get all students (no role restriction for now, read-only)
 router.get("/", studentController.getStudents);
 
@@ -107,6 +115,10 @@ router.get("/dashboard", authenticate, studentController.getDashboard);
 
 // Courses for students
 router.get("/courses", authenticate, studentController.getCourses);
+
+// Public course routes (no auth required)
+router.get("/courses/:id", studentController.getCourse);
+router.get("/courses/:courseId/modules/:moduleId", studentController.getModule);
 
 // Enroll in a course
 router.post("/enroll", authenticate, studentController.enrollCourse);

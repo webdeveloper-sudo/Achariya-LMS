@@ -2,11 +2,20 @@ const Module = require("../models/Module");
 const Course = require("../models/Course");
 
 // Generate ID: MOD-{courseId}-M{number}
+// Generate ID: MOD-{courseId}-M{number}
 const generateModuleId = async (courseIdStr, courseObjectId) => {
   // Get count of modules in this course to generate sequence
   const count = await Module.countDocuments({ courseId: courseObjectId });
-  const num = (count + 1).toString().padStart(2, "0");
-  return `MOD-${courseIdStr.split("-")[2] || "XXX"}-M${num}`;
+  let num = count + 1;
+  let moduleId = `MOD-${courseIdStr.split("-")[2] || "XXX"}-M${num.toString().padStart(2, "0")}`;
+
+  // Check for uniqueness and increment if necessary
+  while (await Module.exists({ moduleId })) {
+    num++;
+    moduleId = `MOD-${courseIdStr.split("-")[2] || "XXX"}-M${num.toString().padStart(2, "0")}`;
+  }
+
+  return moduleId;
 };
 
 exports.createModule = async (req, res, next) => {
@@ -183,7 +192,7 @@ exports.deleteModule = async (req, res, next) => {
     const course = await Course.findById(module.courseId);
     if (course) {
       course.modules = course.modules.filter(
-        (m) => m.toString() !== module._id.toString()
+        (m) => m.toString() !== module._id.toString(),
       );
       course.totalCredits -= module.credits || 0;
       await course.save();

@@ -78,26 +78,26 @@ const AdminUsersPage = () => {
             // Handle array/object properties safely if they are used here (though mostly strings)
             return u[key as keyof User];
           })
-          .filter(Boolean)
+          .filter(Boolean),
       ),
     ];
   };
 
   const uniqueSchools = useMemo(
     () => getUniqueValues("school"),
-    [allUsers]
+    [allUsers],
   ) as string[];
   const uniqueClasses = useMemo(
     () => getUniqueValues("class"),
-    [allUsers]
+    [allUsers],
   ) as string[];
   const uniqueSections = useMemo(
     () => getUniqueValues("section"),
-    [allUsers]
+    [allUsers],
   ) as string[];
   const uniqueStatuses = useMemo(
     () => getUniqueValues("status"),
-    [allUsers]
+    [allUsers],
   ) as string[];
 
   const filteredUsers = useMemo(() => {
@@ -144,7 +144,7 @@ const AdminUsersPage = () => {
 
   // Handle Input Change in Edit Modal
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setEditFormData((prev) => ({ ...prev, [name]: value }));
@@ -175,8 +175,8 @@ const AdminUsersPage = () => {
         prev.map((u) =>
           u._id === idToUpdate || u.id === idToUpdate
             ? ({ ...u, ...editFormData } as User)
-            : u
-        )
+            : u,
+        ),
       );
 
       setIsEditModalOpen(false);
@@ -185,7 +185,7 @@ const AdminUsersPage = () => {
       console.error("Failed to update user", err);
       alert(
         err.response?.data?.message ||
-          "Failed to update user. Please try again."
+          "Failed to update user. Please try again.",
       );
       setConfirmPopup((prev) => ({ ...prev, isLoading: false, isOpen: false }));
     }
@@ -232,6 +232,46 @@ const AdminUsersPage = () => {
           >
             <UserPlus className="w-4 h-4 mr-2" />
             Add New User
+          </button>
+
+          <button
+            className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+            onClick={() =>
+              setConfirmPopup({
+                isOpen: true,
+                title: "Delete ALL Students?",
+                message:
+                  "WARNING: This will permanently delete ALL student records from the database. This action cannot be undone. Are you absolutely sure?",
+                onConfirm: async () => {
+                  setConfirmPopup((prev) => ({ ...prev, isLoading: true }));
+                  try {
+                    const res = await axiosInstance.delete(
+                      "/admin/students/deleteAll",
+                    );
+                    alert(
+                      res.data.message || "All students deleted successfully.",
+                    );
+                    setAllUsers([]); // Clear local state
+                  } catch (err: any) {
+                    console.error("Failed to delete all students", err);
+                    alert(
+                      err.response?.data?.message ||
+                        "Failed to delete all students.",
+                    );
+                  } finally {
+                    setConfirmPopup((prev) => ({
+                      ...prev,
+                      isOpen: false,
+                      isLoading: false,
+                    }));
+                  }
+                },
+                isLoading: false,
+              })
+            }
+          >
+            <X className="w-4 h-4 mr-2" />
+            Delete All
           </button>
         </div>
         <AdminAddUserForm

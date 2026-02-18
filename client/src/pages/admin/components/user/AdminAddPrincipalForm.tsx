@@ -3,26 +3,24 @@ import { allschoolsdata } from "@/data/global/global";
 import { useState } from "react";
 import axiosInstance from "@/api/axiosInstance";
 
-interface AdminAddUserFormProps {
+interface AdminAddPrincipalFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onUserAdded: () => void;
+  onPrincipalAdded: () => void;
 }
 
-const AdminAddUserForm = ({
+const AdminAddPrincipalForm = ({
   isOpen,
   onClose,
-  onUserAdded,
-}: AdminAddUserFormProps) => {
+  onPrincipalAdded,
+}: AdminAddPrincipalFormProps) => {
   const [formData, setFormData] = useState({
     name: "",
-    admissionNo: "",
     email: "",
-    class: "",
-    section: "",
-    mobileNo: "",
-    status: "Active",
+    mobile: "",
     school: "",
+    school_id: "", // String input for number
+    password: "", // Optional initial password
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +31,18 @@ const AdminAddUserForm = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Auto-suggest school_id if school is selected (simple logic for now)
+    if (name === "school") {
+      const isCollege = value.toLowerCase().includes("college");
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+        school_id: isCollege ? "2" : "1", // Suggestion
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async () => {
@@ -43,37 +52,38 @@ const AdminAddUserForm = ({
     // Basic Validation
     if (
       !formData.name ||
-      !formData.admissionNo ||
-      !formData.email || // Check Email
-      !formData.class ||
-      !formData.section ||
-      !formData.mobileNo ||
-      !formData.school
+      !formData.email ||
+      !formData.mobile ||
+      !formData.school ||
+      !formData.school_id
     ) {
-      setError("All fields are required.");
+      setError(
+        "All fields (Name, Email, Mobile, School, School ID) are required.",
+      );
       setLoading(false);
       return;
     }
 
     try {
-      await axiosInstance.post("/admin/students/create", formData);
+      await axiosInstance.post("/admin/principals/create", {
+        ...formData,
+        school_id: Number(formData.school_id),
+      });
 
       // Success
-      onUserAdded(); // Refresh list
+      onPrincipalAdded(); // Refresh list
       onClose(); // Close modal
       // Reset form
       setFormData({
         name: "",
-        admissionNo: "",
         email: "",
-        class: "",
-        section: "",
-        mobileNo: "",
-        status: "Active",
+        mobile: "",
         school: "",
+        school_id: "",
+        password: "",
       });
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to create user");
+      setError(err.response?.data?.message || "Failed to create principal");
     } finally {
       setLoading(false);
     }
@@ -84,7 +94,9 @@ const AdminAddUserForm = ({
       <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl overflow-hidden animate-in fade-in zoom-in duration-200">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b">
-          <h2 className="text-lg font-semibold text-gray-800">Add New User</h2>
+          <h2 className="text-lg font-semibold text-gray-800">
+            Add New Principal
+          </h2>
           <button onClick={onClose}>
             <X className="w-5 h-5 text-gray-500 hover:text-gray-700" />
           </button>
@@ -103,7 +115,7 @@ const AdminAddUserForm = ({
         <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Name
+              Principal Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -111,21 +123,7 @@ const AdminAddUserForm = ({
               value={formData.name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="e.g. John Doe"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Admission No
-            </label>
-            <input
-              type="text"
-              name="admissionNo"
-              value={formData.admissionNo}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="e.g. ADM123"
+              placeholder="e.g. Dr. Sarah Smith"
             />
           </div>
 
@@ -139,46 +137,18 @@ const AdminAddUserForm = ({
               value={formData.email}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="student@achariya.org"
+              placeholder="principal@achariya.org"
             />
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Class
+              Mobile No <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              name="class"
-              value={formData.class}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="e.g. X, 10, XII"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Section
-            </label>
-            <input
-              type="text"
-              name="section"
-              value={formData.section}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="e.g. A, B"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Mobile No
-            </label>
-            <input
-              type="text"
-              name="mobileNo"
-              value={formData.mobileNo}
+              name="mobile"
+              value={formData.mobile}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="e.g. 9876543210"
@@ -187,27 +157,37 @@ const AdminAddUserForm = ({
 
           <div>
             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Status
+              Initial Password (Optional)
             </label>
-            <select
-              name="status"
-              value={formData.status}
+            <input
+              type="text"
+              name="password"
+              value={formData.password}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-            >
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-yellow-50"
+              placeholder="Set initial password if needed"
+            />
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-2 md:col-span-1">
             <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              School
+              School <span className="text-red-500">*</span>
             </label>
             <select
               name="school"
               value={formData.school}
-              onChange={handleChange}
+              onChange={(e) => {
+                const selectedSchoolName = e.target.value;
+                const schoolObj = allschoolsdata.find(
+                  (s) => s.name === selectedSchoolName,
+                );
+
+                setFormData((prev) => ({
+                  ...prev,
+                  school: selectedSchoolName,
+                  school_id: schoolObj ? String(schoolObj.id) : "",
+                }));
+              }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             >
               <option value="">Select School</option>
@@ -217,6 +197,23 @@ const AdminAddUserForm = ({
                 </option>
               ))}
             </select>
+          </div>
+
+          <div className="col-span-2 md:col-span-1">
+            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
+              School ID <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              name="school_id"
+              value={formData.school_id}
+              readOnly
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-gray-100 text-gray-600 cursor-not-allowed"
+              placeholder="Auto-generated ID"
+            />
+            <p className="text-xs text-green-600 mt-1">
+              ID is automatically assigned based on selected school.
+            </p>
           </div>
         </div>
 
@@ -238,7 +235,7 @@ const AdminAddUserForm = ({
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                Save User
+                Save Principal
               </>
             )}
           </button>
@@ -248,4 +245,4 @@ const AdminAddUserForm = ({
   );
 };
 
-export default AdminAddUserForm;
+export default AdminAddPrincipalForm;

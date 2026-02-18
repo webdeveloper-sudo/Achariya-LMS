@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/assets", express.static(path.join(__dirname, "uploads/assets")));
 app.use(
   "/assets/temp",
-  express.static(path.join(__dirname, "uploads/assets/temp"))
+  express.static(path.join(__dirname, "uploads/assets/temp")),
 );
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -29,18 +29,10 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/v1/auth", require("./routes/authRoutes"));
 app.use("/api/v1/admin/students", require("./routes/studentRoutes"));
 app.use("/api/v1/students", require("./routes/studentRoutes")); // Student App Routes
-app.get(
-  "/api/v1/courses",
-  require("./controllers/studentController").getCourses
-); // Public/Student Course List
-app.get(
-  "/api/v1/courses/:id",
-  require("./controllers/studentController").getCourse
-); // Public/Student Course Detail
-app.get(
-  "/api/v1/courses/:courseId/modules/:moduleId",
-  require("./controllers/studentController").getModule
-); // Public/Student Module Detail
+
+// Public course routes (previously inline, now in studentRoutes)
+app.use("/api/v1", require("./routes/studentRoutes")); // For /courses routes
+
 app.use("/api/v1/admin/teachers", require("./routes/teacherRoutes"));
 
 // LMS Admin Routes
@@ -50,6 +42,13 @@ app.use("/api/v1/admin/modules", require("./routes/moduleRoutes"));
 app.use("/api/v1/admin/assessments", require("./routes/assessmentRoutes"));
 app.use("/api/v1/admin/upload", require("./routes/uploadRoutes"));
 app.use("/api/v1/admin/assets", require("./routes/assetRoutes"));
+app.use("/api/v1/gamification", require("./routes/gamificationRoutes"));
+app.use("/api/v1/social", require("./routes/socialRoutes"));
+
+// Principal Routes
+const principalRoutes = require("./routes/principalRoutes");
+app.use("/api/v1/admin/principals", principalRoutes.adminRouter);
+app.use("/api/v1/principals/auth", principalRoutes.authRouter);
 
 // Health check
 app.get("/api/v1/health", (req, res) => {

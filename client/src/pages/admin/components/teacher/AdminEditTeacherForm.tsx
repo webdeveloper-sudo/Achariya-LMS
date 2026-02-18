@@ -1,7 +1,7 @@
 import { Save, Trash2, X } from "lucide-react";
 import ConfirmationPopup from "../../../../components/ConfirmationPopup";
 import { useState } from "react";
-import { allschoolsdata, allsubjects, ALL_CLASSES} from "@/data/global/global";
+import { allschoolsdata, allsubjects, ALL_CLASSES } from "@/data/global/global";
 
 interface AdminEditTeacherFormProps {
   editFormData: any;
@@ -21,7 +21,7 @@ const AdminEditTeacherForm = ({
   const [deleteConfOpen, setDeleteConfOpen] = useState(false);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setEditFormData((prev: any) => ({
@@ -32,7 +32,7 @@ const AdminEditTeacherForm = ({
 
   const handleArraySelection = (
     field: "subjects" | "gradesInCharge",
-    value: string
+    value: string,
   ) => {
     setEditFormData((prev: any) => {
       const current = prev[field] || [];
@@ -127,8 +127,8 @@ const AdminEditTeacherForm = ({
             >
               <option value="">Select Branch</option>
               {allschoolsdata.map((s) => (
-                <option key={s} value={s}>
-                  {s}
+                <option key={s.id} value={s.name}>
+                  {s.name}
                 </option>
               ))}
             </select>
@@ -261,7 +261,7 @@ const AdminEditTeacherForm = ({
             <div className="flex flex-wrap gap-2 p-2 border rounded-lg bg-gray-50 max-h-32 overflow-y-auto">
               {ALL_CLASSES.map((grade) => {
                 const isSelected = (editFormData.gradesInCharge || []).includes(
-                  grade
+                  grade,
                 );
                 return (
                   <button

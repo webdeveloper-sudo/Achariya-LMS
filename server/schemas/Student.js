@@ -183,11 +183,44 @@ const studentSchema = new mongoose.Schema(
         ],
       },
     ],
+    // --- GAMIFICATION STATS ---
+    gamification: {
+      totalCredits: { type: Number, default: 0, index: -1 }, // Index for Leaderboard
+      rank: { type: String, default: "Novice" }, // Rank Name based on credits
+      currentStreak: { type: Number, default: 0 },
+      longestStreak: { type: Number, default: 0 },
+      lastActivityDate: { type: Date }, // For streak calculation
+
+      // Earned Badges (Array of Objects)
+      badges: [
+        {
+          badgeId: { type: String, ref: "Badge" }, // Link to Badge Definition
+          name: String, // Cached name
+          earnedAt: { type: Date, default: Date.now },
+          metadata: Object, // e.g. { "quizScore": 100 }
+        },
+      ],
+    },
+
+    // --- SOCIAL GRAPH ---
+    social: {
+      friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
+      rivals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
+      pendingRequests: [
+        {
+          from: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
+          type: { type: String, enum: ["FRIEND", "RIVAL"] },
+          createdAt: { type: Date, default: Date.now },
+        },
+      ],
+    },
+
+    // Legacy support (to be migrated or kept for backup)
     lastLoginAt: {
       type: Date,
     },
     lastLoginDate: {
-      type: String, // Deprecated in favor of lastLoginAt, kept for backward compatibility
+      type: String,
     },
     streakFreezeUsed: {
       type: Boolean,

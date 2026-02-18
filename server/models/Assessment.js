@@ -24,11 +24,7 @@ const questionSchema = new mongoose.Schema(
       ],
       required: true,
     },
-    options: [
-      {
-        type: String, // Only for multiple-choice
-      },
-    ],
+    options: [String], // Array of strings for MCQ options
     answer: {
       type: mongoose.Schema.Types.Mixed,
       required: function () {
@@ -105,6 +101,21 @@ const assessmentSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    accessedStudents: [
+      {
+        studentId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Student",
+        },
+        admissionNo: String,
+        attempts: {
+          type: Number,
+          default: 0,
+        },
+        lastScore: Number,
+        lastAttemptedAt: Date,
+      },
+    ],
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "AdminUser",

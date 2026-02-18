@@ -601,13 +601,19 @@ const AdminAssessmentUpload = ({ onSave, onCancel, initialData }) => {
                     questionType: newType,
                     images: realUrls,
                     image: realUrls[0] || null,
+                    answer: q.correctAnswer, // Backend requires 'answer'
                     previewImages: undefined,
                   };
                 }
               }
 
               // Fallback or No Images
-              return { ...q, questionType: newType, previewImages: undefined };
+              return {
+                ...q,
+                questionType: newType,
+                answer: q.correctAnswer, // Backend requires 'answer'
+                previewImages: undefined,
+              };
             });
           }
         } else {
@@ -624,7 +630,12 @@ const AdminAssessmentUpload = ({ onSave, onCancel, initialData }) => {
             newType = "match";
             if (!q.correctAnswer) q.correctAnswer = "Match the pairs";
           }
-          return { ...q, questionType: newType, previewImages: undefined };
+          return {
+            ...q,
+            questionType: newType,
+            answer: q.correctAnswer, // Backend requires 'answer'
+            previewImages: undefined,
+          };
         });
       }
 

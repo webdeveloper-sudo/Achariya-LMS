@@ -55,8 +55,17 @@ export const studentApi = {
     client.get(`/students/module/${moduleId}/quiz`),
   submitQuiz: (moduleId: number, data: any) =>
     client.post(`/students/module/${moduleId}/quiz/submit`, data),
-  getWallet: () => client.get("/students/wallet"), // Not in backend yet
-  getBadges: () => client.get("/students/badges"), // Not in backend yet
+  getWallet: () => client.get("/gamification/wallet"),
+  getBadges: () => client.get("/gamification/badges"),
+  getLeaderboard: (type: "weekly" | "alltime") =>
+    client.get(`/gamification/leaderboard?type=${type}`),
+  // Social
+  getPotentialRivals: () => client.get("/social/rivals"),
+  getMyChallenges: () => client.get("/social/challenges"),
+  createChallenge: (data: any) => client.post("/social/challenge", data),
+  acceptChallenge: (challengeId: string) =>
+    client.post(`/social/challenge/${challengeId}/accept`),
+  getFeed: () => client.get("/social/feed"),
 };
 
 export const teacherApi = {

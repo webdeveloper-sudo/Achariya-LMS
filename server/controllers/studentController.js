@@ -1,4 +1,5 @@
 const XLSX = require("xlsx");
+const mongoose = require("mongoose");
 const path = require("path");
 const fs = require("fs");
 const Student = require("../schemas/Student");
@@ -7,6 +8,9 @@ const Course = require("../models/Course"); // Ensure this path is correct based
 const Module = require("../models/Module");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+// LAZY LOAD: Don't require gamificationController at top level to avoid circular dependency
+// const GamificationController = require("./gamificationController");
+// const BadgeService = require("../services/BadgeService");
 const crypto = require("crypto");
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev_super_secret_change_me";
@@ -381,6 +385,24 @@ exports.getStudents = async (req, res) => {
   }
 };
 
+// Delete all students
+exports.deleteAllStudents = async (req, res) => {
+  try {
+    const result = await Student.deleteMany({});
+    await Otp.deleteMany({}); // Also clear OTPs
+
+    res.status(200).json({
+      message: `Successfully deleted all students and OTPs.`,
+      deletedCount: result.deletedCount,
+    });
+  } catch (error) {
+    console.error("Error deleting all students:", error);
+    res
+      .status(500)
+      .json({ message: "Error deleting students: " + error.message });
+  }
+};
+
 // --- Student Authentication & Dashboard Endpoints ---
 
 // 1. Verify Admission
@@ -742,73 +764,74 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Daily Check-in Logic
+    // --- NEW GAMIFICATION LOGIC ---
+    // Lazy load to avoid circular dependency
+    const gamificationController = require("./gamificationController");
+    const BadgeService = require("../services/BadgeService");
+
     const now = new Date();
-    const lastLogin = student.lastLoginAt
-      ? new Date(student.lastLoginAt)
+    const lastActivity = student.gamification.lastActivityDate
+      ? new Date(student.gamification.lastActivityDate)
       : null;
-    let creditsAwarded = 0;
 
-    // Simple Rolling 24h Check Strategy
-    if (lastLogin) {
-      const diffTime = Math.abs(now - lastLogin);
-      const diffHours = diffTime / (1000 * 60 * 60);
+    let streakCount = student.gamification.currentStreak || 0;
 
-      if (diffHours >= 24 && diffHours < 48) {
-        // Streak Continue
-        student.currentStreak = (student.currentStreak || 0) + 1;
-        student.credits.push({
-          amount: 1,
-          message: "Daily Streak Bonus",
-          date: now,
-        });
-        student.totalCredits = (student.totalCredits || 0) + 1;
-        creditsAwarded = 1;
-      } else if (diffHours >= 48) {
-        // Streak Broken
-        student.currentStreak = 1;
-        student.credits.push({
-          amount: 1,
-          message: "Daily Login Bonus (New Streak)",
-          date: now,
-        });
-        student.totalCredits = (student.totalCredits || 0) + 1;
-        creditsAwarded = 1;
+    if (lastActivity) {
+      // Check difference in days (reset at midnight)
+      const lastDate = new Date(lastActivity);
+      lastDate.setHours(0, 0, 0, 0);
+      const today = new Date(now);
+      today.setHours(0, 0, 0, 0);
+
+      const diffTime = Math.abs(today - lastDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 1) {
+        // Consecutive Day
+        streakCount++;
+        // Award Streak Bonus
+        const bonus = streakCount >= 7 ? 10 : 5; // Higher bonus for week+
+        await gamificationController.awardCredits(
+          student._id,
+          bonus,
+          `Daily Streak Bonus (Day ${streakCount})`,
+          "DAILY_STREAK",
+        );
+      } else if (diffDays > 1) {
+        // Broken Streak
+        streakCount = 1;
+        await gamificationController.awardCredits(
+          student._id,
+          5,
+          "Daily Login Bonus",
+          "DAILY_STREAK",
+        );
       }
-      // Else < 24h, do nothing
+      // If diffDays === 0, same day, no bonus
     } else {
-      // First login
-      if (student.currentStreak === 0) {
-        student.currentStreak = 1;
-        // Note: Maybe don't award credit here if they just got 5 for onboarding?
-        // Logic: If lastLogin is null, it might be right after onboarding.
-        // Onboarding logic sets `lastLoginAt`? No, it sets `onboardedAt`.
-        // Let's check time since `onboardedAt` if `lastLoginAt` is null.
-        const onboardTime = student.onboardedAt
-          ? new Date(student.onboardedAt)
-          : null;
-        if (onboardTime) {
-          const diffOnboard = Math.abs(now - onboardTime) / (1000 * 60 * 60);
-          if (diffOnboard > 24) {
-            student.credits.push({
-              amount: 1,
-              message: "Welcome Back! First Login Bonus",
-              date: now,
-            });
-            student.totalCredits = (student.totalCredits || 0) + 1;
-          }
-        }
-      }
+      // First ever login equivalent
+      streakCount = 1;
+      await gamificationController.awardCredits(
+        student._id,
+        10,
+        "Welcome Bonus! First Activity.",
+        "DAILY_STREAK",
+      );
     }
 
-    student.lastLoginAt = now;
-
-    // Update Longest Streak
-    if (student.currentStreak > (student.longestStreak || 0)) {
-      student.longestStreak = student.currentStreak;
+    // Update Student Stats
+    student.gamification.currentStreak = streakCount;
+    if (streakCount > (student.gamification.longestStreak || 0)) {
+      student.gamification.longestStreak = streakCount;
     }
+    student.gamification.lastActivityDate = now;
+
+    // Check Badge Triggers
+    await BadgeService.checkStreakBadges(student._id, streakCount);
 
     await student.save();
+
+    // --- END GAMIFICATION LOGIC ---
 
     // Generate Token
     const token = jwt.sign(
@@ -909,11 +932,17 @@ exports.getDashboard = async (req, res) => {
       profile: {
         name: student.studentName,
         admissionNo: student.admissionNo,
-        credits: student.totalCredits, // Fix: Send total credits (number) not history
-        creditHistory: student.credits, // Send history separately
-        currentStreak: student.currentStreak,
-        longestStreak: student.longestStreak,
-        badges: student.badges, // existing field
+
+        // Gamification Mappings (Backward Compatibility + New Data)
+        credits: student.gamification.totalCredits || 0,
+        creditHistory: student.credits, // Legacy history
+        currentStreak: student.gamification.currentStreak || 0,
+        longestStreak: student.gamification.longestStreak || 0,
+        badges: student.gamification.badges.length || 0, // Send count for dashboard summary
+
+        // Full Object
+        gamification: student.gamification,
+
         quiz_avg: student.quiz_avg,
         completion: student.completion,
         enrolledCourses: student.enrolledCourses || [],
@@ -981,6 +1010,16 @@ exports.getModule = async (req, res) => {
   try {
     const { courseId, moduleId } = req.params;
 
+    // Validate IDs
+    if (
+      !moduleId ||
+      moduleId === "null" ||
+      moduleId === "undefined" ||
+      !mongoose.Types.ObjectId.isValid(moduleId)
+    ) {
+      return res.status(404).json({ message: "Invalid Module ID" });
+    }
+
     // Find Module
     const module = await Module.findOne({
       _id: moduleId,
@@ -996,7 +1035,8 @@ exports.getModule = async (req, res) => {
       data: module,
     });
   } catch (error) {
-    if (error.kind === "ObjectId") {
+    // Handle CastError explicitly
+    if (error.name === "CastError" || error.kind === "ObjectId") {
       return res.status(404).json({ message: "Module not found" });
     }
     console.error("Error fetching module:", error);
