@@ -10,7 +10,31 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+  "https://achariya-lms.netlify.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://achariyalms.netlify.app",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  }),
+);
+
+// Explicitly handle OPTIONS preflight for all routes
+app.options("*", cors());
+
 // Increase body size limits to handle large student uploads
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
