@@ -800,7 +800,7 @@ const AdminAddModuleForm = ({
                         {selectedModuleAssessments.map((assess) => (
                           <div
                             key={assess._id}
-                            className={`p-4 rounded-xl border flex justify-between items-center ${assess.questions.length === 0 ? "bg-red-50 border-red-200" : "bg-white border-gray-200"}`}
+                            className={`p-4 rounded-xl border flex justify-between items-center ${assess.questions.length === 0 ? "bg-red-50 border-red-200" : "bg-white border-gray-300"}`}
                           >
                             <div>
                               <h4
@@ -863,7 +863,7 @@ const AdminAddModuleForm = ({
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                      <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
                         <ListChecks className="w-10 h-10 text-gray-300 mx-auto mb-3" />
                         <p className="text-gray-500 font-medium">
                           No assessments uploaded yet.

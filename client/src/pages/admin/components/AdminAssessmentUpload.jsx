@@ -152,7 +152,7 @@ const QuestionPreview = ({ question, index, onEdit }) => (
   <div className="bg-white rounded-xl shadow-sm border p-6 transition hover:shadow-md relative group">
     <button
       onClick={() => onEdit(index)}
-      className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-blue-100 text-gray-600 hover:text-blue-600 rounded-lg transition opacity-0 group-hover:opacity-100 border border-gray-200"
+      className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-blue-100 text-gray-600 hover:text-blue-600 rounded-lg transition opacity-0 group-hover:opacity-100 border border-gray-300"
       title="Edit Question"
     >
       <svg

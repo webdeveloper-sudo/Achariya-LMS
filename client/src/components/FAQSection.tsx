@@ -1,56 +1,129 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
-import { faqData, UserRole } from '../data/faqs';
+import { useState } from "react";
+import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
+import { faqData, UserRole } from "../data/faqs";
 
 interface FAQSectionProps {
-    role: UserRole;
+  role: UserRole;
 }
 
 const FAQSection = ({ role }: FAQSectionProps) => {
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
-    const faqs = faqData[role];
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const faqs = faqData[role];
 
-    const toggleFAQ = (index: number) => {
-        setOpenIndex(openIndex === index ? null : index);
-    };
+  const getRoleConfig = (role: UserRole) => {
+    switch (role) {
+      case "teacher":
+        return {
+          primary: "#c72323",
+          bg: "bg-red-50",
+          border: "border-red-100",
+          text: "text-[#c72323]",
+        };
+      case "principal":
+        return {
+          primary: "#008000",
+          bg: "bg-emerald-50",
+          border: "border-emerald-100",
+          text: "text-[#008000]",
+        };
+      case "admin":
+        return {
+          primary: "#000000",
+          bg: "bg-gray-50",
+          border: "border-gray-200",
+          text: "text-black",
+        };
+      default:
+        return {
+          primary: "#1e3a8a", // blue-900
+          bg: "bg-blue-50",
+          border: "border-blue-100",
+          text: "text-blue-900",
+        };
+    }
+  };
 
-    return (
-        <div className="bg-white rounded-xl shadow-sm p-6 border">
-            <div className="flex items-center mb-6">
-                <HelpCircle className="w-6 h-6 text-blue-600 mr-3" />
-                <h2 className="text-2xl font-bold text-gray-800">Frequently Asked Questions</h2>
-            </div>
+  const config = getRoleConfig(role);
 
-            <div className="space-y-3">
-                {faqs.map((faq, index) => (
-                    <div
-                        key={index}
-                        className="border border-gray-200 rounded-lg overflow-hidden transition-all"
-                    >
-                        <button
-                            onClick={() => toggleFAQ(index)}
-                            className="w-full px-4 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition"
-                        >
-                            <span className="font-semibold text-gray-800 text-left">
-                                {faq.question}
-                            </span>
-                            {openIndex === index ? (
-                                <ChevronUp className="w-5 h-5 text-gray-600 flex-shrink-0 ml-4" />
-                            ) : (
-                                <ChevronDown className="w-5 h-5 text-gray-600 flex-shrink-0 ml-4" />
-                            )}
-                        </button>
+  const toggleFAQ = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
 
-                        {openIndex === index && (
-                            <div className="px-4 py-4 bg-white">
-                                <p className="text-gray-700 leading-relaxed">{faq.answer}</p>
-                            </div>
-                        )}
-                    </div>
-                ))}
-            </div>
+  return (
+    <div className="bg-white rounded-md shadow-xl p-10 border border-gray-200 relative overflow-hidden group text-center sm:text-left">
+      <div className="flex items-center gap-6 mb-12 relative z-10">
+        <div
+          className="p-3 rounded-md shadow-sm border"
+          style={{
+            backgroundColor: config.primary,
+            borderColor: config.primary,
+          }}
+        >
+          <HelpCircle className="w-8 h-8 text-white" />
         </div>
-    );
+        <div>
+          <h2 className="text-3xl text-gray-900 capitalize">
+            Standard <span className="text-gray-400">Operating Procedures</span>
+          </h2>
+          <p className="text-[14px] text-gray-600 mt-2 capitalize">
+            Institutional verified guidance and protocol documentation
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-6 relative z-10">
+        {faqs.map((faq, index) => (
+          <div
+            key={index}
+            className="border rounded-md overflow-hidden transition-all duration-300"
+            style={{
+              borderColor: openIndex === index ? config.primary : "#e5e7eb",
+              transform: openIndex === index ? "scale(1.01)" : "scale(1)",
+              boxShadow:
+                openIndex === index
+                  ? `0 20px 25px -5px rgba(0, 0, 0, 0.1)`
+                  : "none",
+            }}
+          >
+            <button
+              onClick={() => toggleFAQ(index)}
+              className="w-full px-8 py-6 flex items-center justify-between transition-all duration-500"
+              style={{
+                backgroundColor:
+                  openIndex === index ? config.primary : "#f9fafb",
+                color: openIndex === index ? "white" : "#374151",
+              }}
+            >
+              <span className="capitalize text-[15px]">{faq.question}</span>
+              <div
+                className="p-2 rounded-sm border transition-all"
+                style={{
+                  backgroundColor:
+                    openIndex === index ? "rgba(255,255,255,0.2)" : "white",
+                  borderColor:
+                    openIndex === index ? "rgba(255,255,255,0.4)" : "#e5e7eb",
+                }}
+              >
+                {openIndex === index ? (
+                  <ChevronUp size={16} />
+                ) : (
+                  <ChevronDown size={16} />
+                )}
+              </div>
+            </button>
+
+            {openIndex === index && (
+              <div className="px-10 py-8 bg-white animate-in slide-in-from-top-4 duration-500">
+                <p className="text-gray-600 leading-relaxed text-[15px]">
+                  {faq.answer}
+                </p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default FAQSection;

@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -51,18 +52,26 @@
 /* Colorful theme - BOLD, VIBRANT, ENERGETIC */
 [data-theme="colorful"] {
   /* Bright, saturated backgrounds - CLEARLY DIFFERENT */
-  --bg-primary: #ffe4f9;      /* Bright pink tint */
-  --bg-secondary: #ccf2ff;    /* Vibrant sky blue */
-  --bg-tertiary: #fff0db;     /* Bright peach */
-  
+  --bg-primary: #ffe4f9;
+  /* Bright pink tint */
+  --bg-secondary: #ccf2ff;
+  /* Vibrant sky blue */
+  --bg-tertiary: #fff0db;
+  /* Bright peach */
+
   /* High contrast, vivid text */
-  --text-primary: #9333ea;    /* Vibrant purple */
-  --text-secondary: #ec4899;  /* Bright pink */
-  --text-tertiary: #f97316;   /* Bold orange */
-  
+  --text-primary: #9333ea;
+  /* Vibrant purple */
+  --text-secondary: #ec4899;
+  /* Bright pink */
+  --text-tertiary: #f97316;
+  /* Bold orange */
+
   /* Eye-catching borders and accents */
-  --border-color: #f0abfc;    /* Bright fuchsia */
-  --border-hover: #818cf8;    /* Vibrant indigo */
+  --border-color: #f0abfc;
+  /* Bright fuchsia */
+  --border-hover: #818cf8;
+  /* Vibrant indigo */
   --shadow: rgba(236, 72, 153, 0.3);
 }
 
@@ -206,7 +215,7 @@ body {
 }
 
 /* Colorful theme borders */
-[data-theme="colorful"] .border-gray-200,
+[data-theme="colorful"] .border-gray-300,
 [data-theme="colorful"] .border-gray-300 {
   border-color: var(--border-color) !important;
 }
@@ -325,10 +334,10 @@ body {
   filter: brightness(1.2);
 }
 
-[data-theme="dark"] .border-gray-200,
+[data-theme="dark"] .border-gray-300,
 [data-theme="dark"] .border-gray-300,
 [data-theme="dark"] .border,
-[data-theme="dark"].border-gray-200,
+[data-theme="dark"].border-gray-300,
 [data-theme="dark"].border-gray-300,
 [data-theme="dark"].border {
   border-color: var(--border-color) !important;
@@ -374,8 +383,73 @@ body {
 }
 
 /* Utility Classes */
+/* Global Grid Pattern Utility */
+.grid-pattern-overlay {
+  position: relative;
+}
+
+.grid-pattern-overlay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  background-image: linear-gradient(#c2c2c5 2.5px, transparent 2.5px), linear-gradient(to right, #c2c2c5 2.5px, #ffffff 2.5px);
+  background-size: 50px 50px;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .card {
-  @apply bg-white rounded-lg shadow-sm border border-gray-100 p-6;
+  @apply bg-white rounded-lg shadow-sm border border-gray-100 p-6 relative overflow-hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffffff;
+  background-image: linear-gradient(#c2c2c5 2.5px, transparent 2.5px), linear-gradient(to right, #c2c2c5 2.5px, #ffffff 2.5px);
+  background-size: 50px 50px;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card>* {
+  position: relative;
+  z-index: 10;
+}
+
+/* Applying grid pattern to icons, progress bars, and small elements */
+.lucide-icon-container,
+.progress-bar-industrial,
+.heatmap-industrial {
+  position: relative;
+  overflow: hidden;
+}
+
+.lucide-icon-container::before,
+.progress-bar-industrial::before,
+.heatmap-industrial::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(#c2c2c5 1.5px, transparent 1.5px), linear-gradient(to right, #c2c2c5 1.5px, #ffffff 1.5px);
+  background-size: 20px 20px;
+  /* Smaller grid for small elements */
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .btn-primary {
@@ -388,4 +462,96 @@ body {
 
 .input-field {
   @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow;
+}
+
+/* Calendar Heatmap Overrides */
+.react-calendar-heatmap .color-scale-1 {
+  fill: rgba(59, 130, 246, 0.4) !important;
+}
+
+.react-calendar-heatmap .color-scale-4 {
+  fill: #3b82f6 !important;
+}
+
+.react-calendar-heatmap text {
+  font-size: 6px;
+  fill: #6b7280;
+}
+
+/* Admin Portal Typography Overrides (Accessibility Boost) 
+   Removed to match Student typography sizes */
+
+/* ============================================ */
+/* PORTAL TYPOGRAPHY REFINEMENT - POPPINS */
+/* ============================================ */
+
+:is(.student-context, .admin-context, .teacher-context, .principal-context) {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+:is(.student-context, .admin-context, .teacher-context, .principal-context) *,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) *::before,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) *::after {
+  font-family: 'Poppins', sans-serif !important;
+  text-transform: none !important;
+  /* NO FULL UPPERCASE */
+}
+
+/* Uniform typography overrides for Student Portal */
+:is(.student-context, .admin-context, .teacher-context, .principal-context) h1,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) h2,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) h3,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) h4,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) h5,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) h6 {
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  text-transform: none !important;
+}
+
+:is(.student-context, .admin-context, .teacher-context, .principal-context) p,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) span,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) div,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) li,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) a {
+  font-family: 'Poppins', sans-serif !important;
+  text-transform: none !important;
+}
+
+:is(.student-context, .admin-context, .teacher-context, .principal-context) button,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) .btn,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) [role="button"] {
+  font-family: 'Poppins', sans-serif !important;
+  text-transform: none !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+}
+
+:is(.student-context, .admin-context, .teacher-context, .principal-context) label,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) legend {
+  font-family: 'Poppins', sans-serif !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+}
+
+:is(.student-context, .admin-context, .teacher-context, .principal-context) input,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) textarea,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) select,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) input::placeholder,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) textarea::placeholder {
+  font-family: 'Poppins', sans-serif !important;
+  text-transform: none !important;
+}
+
+/* Override Tailwind uppercase utility classes inside student-context */
+:is(.student-context, .admin-context, .teacher-context, .principal-context) .uppercase {
+  text-transform: none !important;
+}
+
+:is(.student-context, .admin-context, .teacher-context, .principal-context) .tracking-widest,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) .tracking-wider,
+:is(.student-context, .admin-context, .teacher-context, .principal-context) .tracking-tighter {
+  letter-spacing: normal !important;
+  /* Reset harsh tracking often paired with uppercase */
 }

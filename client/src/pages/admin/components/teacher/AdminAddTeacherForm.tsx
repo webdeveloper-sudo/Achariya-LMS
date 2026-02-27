@@ -107,118 +107,122 @@ const AdminAddTeacherForm = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
-        <div className="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white z-10">
-          <h2 className="text-lg font-semibold text-gray-800">
-            Add New Teacher
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+      <div className="bg-white border border-black rounded-sm shadow-none w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+        <div className="bg-black px-6 py-4 border-b border-black flex items-center justify-between sticky top-0 z-10">
+          <h2 className="text-[13px] font-bold text-white uppercase tracking-wider">
+            Initialize Faculty Protocol
           </h2>
-          <button onClick={onClose}>
-            <X className="w-5 h-5 text-gray-500 hover:text-gray-700" />
+          <button
+            onClick={onClose}
+            className="text-white/70 hover:text-white p-1 hover:bg-white/10 rounded-sm transition-colors"
+          >
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {error && (
           <div className="px-6 pt-4">
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm">
-              {error}
+            <div className="bg-white border border-black text-black px-4 py-2.5 rounded-sm text-[12px] font-medium uppercase tracking-wider">
+              Error Profile: {error}
             </div>
           </div>
         )}
 
-        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* FORM BODY */}
+        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 bg-white">
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              EMP ID <span className="text-red-500">*</span>
+            <label className="block text-[11px] font-bold text-black uppercase mb-2 tracking-wider">
+              Personnel ID <span className="text-gray-400">*</span>
             </label>
             <input
               type="text"
               name="userId"
               value={formData.userId}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2.5 border border-black text-[13px] rounded-sm focus:ring-1 focus:ring-black outline-none placeholder-gray-300"
               placeholder="e.g. TCH1001"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              User Name <span className="text-red-500">*</span>
+            <label className="block text-[11px] font-bold text-black uppercase mb-2 tracking-wider">
+              Faculty Name <span className="text-gray-400">*</span>
             </label>
             <input
               type="text"
               name="userName"
               value={formData.userName}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2.5 border border-black text-[13px] rounded-sm focus:ring-1 focus:ring-black outline-none placeholder-gray-300"
               placeholder="e.g. Jane Doe"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Designation <span className="text-red-500">*</span>
+            <label className="block text-[11px] font-bold text-black uppercase mb-2 tracking-wider">
+              Administrative Rank <span className="text-gray-400">*</span>
             </label>
             <input
               type="text"
               name="designation"
               value={formData.designation}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2.5 border border-black text-[13px] rounded-sm focus:ring-1 focus:ring-black outline-none placeholder-gray-300"
               placeholder="e.g. Senior Teacher"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Joining Date <span className="text-red-500">*</span>
+            <label className="block text-[11px] font-bold text-black uppercase mb-2 tracking-wider">
+              Initialization Date <span className="text-gray-400">*</span>
             </label>
             <input
               type="date"
               name="joiningDate"
               value={formData.joiningDate}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2.5 border border-black text-[13px] rounded-sm focus:ring-1 focus:ring-black outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Qualifications <span className="text-red-500">*</span>
+            <label className="block text-[11px] font-bold text-black uppercase mb-2 tracking-wider">
+              Credentials <span className="text-gray-400">*</span>
             </label>
             <input
               type="text"
               name="qualifications"
               value={formData.qualifications}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2.5 border border-black text-[13px] rounded-sm focus:ring-1 focus:ring-black outline-none placeholder-gray-300"
               placeholder="e.g. M.Sc, B.Ed"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Experience <span className="text-red-500">*</span>
+            <label className="block text-[11px] font-bold text-black uppercase mb-2 tracking-wider">
+              Service Tenure <span className="text-gray-400">*</span>
             </label>
             <input
               type="text"
               name="experience"
               value={formData.experience}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2.5 border border-black text-[13px] rounded-sm focus:ring-1 focus:ring-black outline-none placeholder-gray-300"
               placeholder="e.g. 5 Years"
             />
           </div>
 
           <div className="col-span-2 md:col-span-1">
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Branch <span className="text-red-500">*</span>
+            <label className="block text-[11px] font-bold text-black uppercase mb-2 tracking-wider">
+              Branch Hub <span className="text-gray-400">*</span>
             </label>
             <select
               name="branch"
               value={formData.branch}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2.5 border border-black text-[13px] rounded-sm focus:ring-1 focus:ring-black outline-none bg-white"
             >
               <option value="">Select Branch</option>
               {allschoolsdata.map((school) => (
@@ -230,14 +234,14 @@ const AdminAddTeacherForm = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Status
+            <label className="block text-[11px] font-bold text-black uppercase mb-2 tracking-wider">
+              Operational Status
             </label>
             <select
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2.5 border border-black text-[13px] rounded-sm focus:ring-1 focus:ring-black outline-none bg-white"
             >
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
@@ -246,47 +250,48 @@ const AdminAddTeacherForm = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Mobile No
+            <label className="block text-[11px] font-bold text-black uppercase mb-2 tracking-wider">
+              Comm Link (Mobile)
             </label>
             <input
               type="text"
               name="mobileNo"
               value={formData.mobileNo}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2.5 border border-black text-[13px] rounded-sm focus:ring-1 focus:ring-black outline-none placeholder-gray-300"
               placeholder="Optional"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-              Email
+            <label className="block text-[11px] font-bold text-black uppercase mb-2 tracking-wider">
+              Secure Comm (Email)
             </label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2.5 border border-black text-[13px] rounded-sm focus:ring-1 focus:ring-black outline-none placeholder-gray-300"
               placeholder="Optional"
             />
           </div>
 
           {/* Multi-select for Subjects */}
           <div className="col-span-2">
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">
-              Subjects (Max 5) <span className="text-red-500">*</span>
+            <label className="block text-[11px] font-bold text-black uppercase mb-3 tracking-wider">
+              Instructional Subjects (Max 5){" "}
+              <span className="text-gray-400">*</span>
             </label>
-            <div className="flex flex-wrap gap-2 p-2 border rounded-lg bg-gray-50 max-h-32 overflow-y-auto">
+            <div className="flex flex-wrap gap-2 p-3 border border-black bg-white rounded-sm min-h-[80px]">
               {allsubjects.map((subj) => (
                 <button
                   key={subj}
                   onClick={() => handleArraySelection("subjects", subj)}
-                  className={`px-3 py-1 rounded-full text-xs transition-colors border ${
+                  className={`px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider transition-all border ${
                     formData.subjects.includes(subj)
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                      ? "bg-black text-white border-black"
+                      : "bg-white text-black border-black hover:bg-gray-100"
                   } ${
                     !formData.subjects.includes(subj) &&
                     formData.subjects.length >= 5
@@ -306,18 +311,18 @@ const AdminAddTeacherForm = ({
 
           {/* Multi-select for Grades In Charge */}
           <div className="col-span-2">
-            <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">
-              Grades In Charge (Max 5) <span className="text-red-500">*</span>
+            <label className="block text-[11px] font-bold text-black uppercase mb-3 tracking-wider">
+              Assigned Cohorts (Max 5) <span className="text-gray-400">*</span>
             </label>
-            <div className="flex flex-wrap gap-2 p-2 border rounded-lg bg-gray-50 max-h-32 overflow-y-auto">
+            <div className="flex flex-wrap gap-2 p-3 border border-black bg-white rounded-sm min-h-[80px]">
               {ALL_CLASSES.map((grade) => (
                 <button
                   key={grade}
                   onClick={() => handleArraySelection("gradesInCharge", grade)}
-                  className={`px-3 py-1 rounded-full text-xs transition-colors border ${
+                  className={`px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider transition-all border ${
                     formData.gradesInCharge.includes(grade)
-                      ? "bg-purple-600 text-white border-purple-600"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                      ? "bg-black text-white border-black"
+                      : "bg-white text-black border-black hover:bg-gray-100"
                   } ${
                     !formData.gradesInCharge.includes(grade) &&
                     formData.gradesInCharge.length >= 5
@@ -336,24 +341,25 @@ const AdminAddTeacherForm = ({
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 px-6 py-4 border-t bg-gray-50 sticky bottom-0 z-10">
+        {/* FOOTER */}
+        <div className="bg-white px-6 py-4 border-t border-black flex justify-end gap-3 sticky bottom-0 z-10">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+            className="px-5 py-2.5 border border-black text-black hover:bg-gray-50 text-[12px] uppercase tracking-wider font-bold rounded-sm transition-all"
           >
-            Cancel
+            Abort Initialization
           </button>
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-5 py-2.5 bg-black text-white hover:bg-gray-800 text-[12px] uppercase tracking-wider font-bold rounded-sm transition-all flex items-center gap-2 border border-black disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
           >
             {loading ? (
-              "Saving..."
+              "Executing..."
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                Save Teacher
+                Initialize Faculty
               </>
             )}
           </button>

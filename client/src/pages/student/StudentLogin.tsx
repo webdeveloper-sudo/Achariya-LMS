@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { User, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { studentAuthApi } from "../../api";
@@ -56,7 +56,7 @@ const StudentLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col items-center justify-center p-4 student-context">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
@@ -75,7 +75,7 @@ const StudentLogin = () => {
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {error && (
             <div className="mb-6 p-3 bg-red-50 border border-red-100 rounded-lg flex items-center gap-2 text-red-600 text-sm">
-              <span>⚠️</span> {error}
+              <span>âš ï¸</span> {error}
             </div>
           )}
 
@@ -94,7 +94,7 @@ const StudentLogin = () => {
                   type="text"
                   value={admissionNumber}
                   onChange={(e) => setAdmissionNumber(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-gray-400"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-gray-400"
                   placeholder="Enter your admission number"
                   required
                 />
@@ -107,13 +107,12 @@ const StudentLogin = () => {
                 <label className="block text-sm font-medium text-gray-700">
                   Password
                 </label>
-                <button
-                  type="button"
-                  onClick={() => setShowForgotPwd(true)}
+                <Link
+                  to="/student/onboarding?mode=forgot"
                   className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                 >
                   Forgot password?
-                </button>
+                </Link>
               </div>
               <div className="relative">
                 <Lock
@@ -124,7 +123,7 @@ const StudentLogin = () => {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-gray-400"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-gray-400"
                   placeholder="Enter your password"
                   required
                 />
@@ -168,7 +167,7 @@ const StudentLogin = () => {
 
         <div className="mt-6 text-center">
           <Link to="/" className="text-sm text-gray-500 hover:text-gray-700">
-            ← Back to Role Selection
+            â† Back to Role Selection
           </Link>
         </div>
       </div>

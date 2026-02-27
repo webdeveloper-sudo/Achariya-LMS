@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Login from "./pages/Login";
 import LandingPage from "./pages/LandingPage";
@@ -23,10 +24,11 @@ import StudentProgress from "./pages/student/StudentProgress";
 import StudentRivals from "./pages/student/StudentRivals";
 import StudentPowerUps from "./pages/student/StudentPowerUps";
 import StudentSocialFeed from "./pages/student/StudentSocialFeed";
-import StudentQuizPage from "./pages/student/StudentAssesmentPage";
+import StudentAssesmentPage from "./pages/student/StudentAssesmentPage";
 import StudentLiveQuizTaking from "./pages/student/StudentLiveQuizTaking";
 import StudentLiveQuizResults from "./pages/student/StudentLiveQuizResults";
 import StudentChatbot from "./pages/student/StudentChatbot";
+import PublicProfilePage from "./pages/student/PublicProfilePage";
 
 // Teacher Pages
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
@@ -42,9 +44,12 @@ import LiveQuizControl from "./pages/teacher/LiveQuizControl";
 import LiveQuizResults from "./pages/teacher/LiveQuizResults";
 import TeacherEvidenceSubmission from "./pages/teacher/EvidenceSubmission";
 import TeacherAssessmentCreator from "./pages/teacher/TeacherAssessmentCreator";
+import TeacherLogin from "./pages/teacher/TeacherLogin";
+import TeacherActivate from "./pages/teacher/TeacherActivate";
 
 // Principal Pages
 import PrincipalLogin from "./pages/principal/PrincipalLogin";
+import PrincipalActivate from "./pages/principal/PrincipalActivate";
 import PrincipalDashboard from "./pages/principal/PrincipalDashboard";
 import PrincipalCourses from "./pages/principal/PrincipalCourses";
 import PrincipalCourseDetail from "./pages/principal/PrincipalCourseDetail";
@@ -76,7 +81,7 @@ import AdminUploadStudents from "./pages/admin/pages/user/AdminUploadStudents";
 import AdminTeachersPage from "./pages/admin/pages/teacher/AdminTeachersPage";
 import AdminUploadTeachers from "./pages/admin/pages/teacher/AdminUploadTeachers";
 import AdminAssetsPage from "./pages/admin/pages/assets/AdminAssetsPage";
-import StudentAssesmentPage from "./pages/student/StudentAssesmentPage";
+import AdminChallengesPage from "./pages/admin/pages/challenges/AdminChallengesPage";
 
 function App() {
   return (
@@ -91,6 +96,11 @@ function App() {
 
         {/* Principal Auth Routes */}
         <Route path="/principal/login" element={<PrincipalLogin />} />
+        <Route path="/principal/activate" element={<PrincipalActivate />} />
+
+        {/* Teacher Auth Routes */}
+        <Route path="/teacher/login" element={<TeacherLogin />} />
+        <Route path="/teacher/activate" element={<TeacherActivate />} />
 
         {/* Legacy Role Selection (Keeping just in case, or remove) */}
         <Route path="/select-role" element={<RoleSelection />} />
@@ -120,6 +130,10 @@ function App() {
           <Route path="/student/rivals" element={<StudentRivals />} />
           <Route path="/student/powerups" element={<StudentPowerUps />} />
           <Route path="/student/social" element={<StudentSocialFeed />} />
+          <Route
+            path="/student/profile/:studentId"
+            element={<PublicProfilePage />}
+          />
           <Route path="/student/faq" element={<StudentFAQPage />} />
           <Route
             path="/student/live-quiz/:sessionId/take"
@@ -221,6 +235,14 @@ function App() {
           <Route path="/principal/faq" element={<PrincipalFAQPage />} />
 
           {/* Admin Routes (protected) */}
+          <Route
+            path="/admin/challenges"
+            element={
+              <RequireAdmin>
+                <AdminChallengesPage />
+              </RequireAdmin>
+            }
+          />
           <Route
             path="/admin/dashboard"
             element={

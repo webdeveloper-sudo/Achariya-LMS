@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import FileUploadZone from "./FileUploadZone";
 import { X, Image as ImageIcon } from "lucide-react";
 
@@ -56,7 +56,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       )}
 
       {!isUploading && imageUrl && (
-        <div className="relative group rounded-xl overflow-hidden border border-gray-200 bg-gray-50 shadow-sm mt-2 transition-all hover:shadow-md">
+        <div className="relative group rounded-xl overflow-hidden border border-gray-300 bg-gray-50 shadow-sm mt-2 transition-all hover:shadow-md">
           {/* Image Preview */}
           <div className="aspect-video w-full flex items-center justify-center bg-gray-100 overflow-hidden relative">
             <img
@@ -87,7 +87,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           <div className="px-4 py-2 bg-white border-t flex items-center gap-2">
             <ImageIcon className="w-4 h-4 text-blue-500" />
             <span className="text-xs text-gray-500 truncate flex-1">
-              {typeof value === "object" ? value.fileName : "Image URL"}
+              {value !== null && typeof value === "object"
+                ? value.fileName
+                : "Image URL"}
             </span>
           </div>
         </div>

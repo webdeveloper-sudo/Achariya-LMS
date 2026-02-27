@@ -1,20 +1,19 @@
 import { Save, Trash2, X } from "lucide-react";
 import ConfirmationPopup from "../../../../components/ConfirmationPopup";
 import { useState } from "react";
+import { allschoolsdata } from "@/data/global/global";
 
 interface AdminEditUserFormProps {
   editFormData: any;
   setEditFormData: React.Dispatch<React.SetStateAction<any>>;
-  uniqueSchools: string[];
   onCancel: () => void;
   onSave: () => void;
-  onDelete: () => void; // New prop for delete action
+  onDelete: () => void;
 }
 
 const AdminEditUserForm = ({
   editFormData,
   setEditFormData,
-  uniqueSchools,
   onCancel,
   onSave,
   onDelete,
@@ -189,9 +188,9 @@ const AdminEditUserForm = ({
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             >
               <option value="">Select School</option>
-              {uniqueSchools.map((s) => (
-                <option key={s} value={s}>
-                  {s}
+              {allschoolsdata.map((s) => (
+                <option key={s.id} value={s.name}>
+                  {s.name}
                 </option>
               ))}
             </select>

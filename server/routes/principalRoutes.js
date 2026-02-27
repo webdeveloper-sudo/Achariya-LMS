@@ -46,4 +46,43 @@ authRouter.post("/send-otp", principalController.sendLoginOtp);
 // Verify OTP  →  POST /api/v1/principals/auth/verify-otp
 authRouter.post("/verify-otp", principalController.verifyLoginOtp);
 
+// Login with Password  →  POST /api/v1/principals/auth/login-password
+authRouter.post("/login-password", principalController.loginWithPassword);
+
+// Activate Account (set password after OTP)  →  POST /api/v1/principals/auth/activate
+authRouter.post("/activate", principalController.activatePrincipal);
+
+// Reset Password
+authRouter.post("/reset-password", principalController.resetPassword);
+
+// Dashboard  →  GET /api/v1/principals/auth/dashboard
+authRouter.get(
+  "/dashboard",
+  authenticate,
+  principalController.getPrincipalDashboard,
+);
+
+// School-scoped data routes (all JWT protected)
+authRouter.get(
+  "/students",
+  authenticate,
+  principalController.getSchoolStudents,
+);
+authRouter.get(
+  "/teachers",
+  authenticate,
+  principalController.getSchoolTeachers,
+);
+authRouter.get("/courses", authenticate, principalController.getSchoolCourses);
+authRouter.get(
+  "/courses/:courseId",
+  authenticate,
+  principalController.getSchoolCourseDetail,
+);
+authRouter.get(
+  "/students/:studentId",
+  authenticate,
+  principalController.getSchoolStudentById,
+);
+
 module.exports = { adminRouter, authRouter };

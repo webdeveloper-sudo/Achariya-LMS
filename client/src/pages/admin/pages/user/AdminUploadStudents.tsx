@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+﻿import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft,
@@ -15,7 +15,7 @@ import * as XLSX from "xlsx";
 const AdminUploadStudents = () => {
   const schoolOptions = allschoolsdata;
 
-  const [file, setFile] = useState<File | null>(null);
+  const [, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -25,8 +25,8 @@ const AdminUploadStudents = () => {
   const [previewData, setPreviewData] = useState<any[]>([]);
   const [headers, setHeaders] = useState<string[]>([]);
   const filteredSchools = useMemo(() => {
-    return schoolOptions.filter((s) =>
-      s.toLowerCase().includes(schoolSearch.trim().toLowerCase())
+    return schoolOptions.filter((s: any) =>
+      s.name.toLowerCase().includes(schoolSearch.trim().toLowerCase()),
     );
   }, [schoolOptions, schoolSearch]);
 
@@ -113,7 +113,7 @@ const AdminUploadStudents = () => {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       console.log("Upload response:", response.data);
@@ -201,29 +201,29 @@ const AdminUploadStudents = () => {
           </div>
 
           {showSchoolPicker && (
-            <div className="absolute z-20 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-56 overflow-y-auto">
+            <div className="absolute z-20 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-56 overflow-y-auto">
               {filteredSchools.length === 0 && (
                 <div className="px-4 py-3 text-sm text-gray-500">
                   No schools found
                 </div>
               )}
-              {filteredSchools.map((school) => (
+              {filteredSchools.map((school: any) => (
                 <button
-                  key={school}
+                  key={school.id}
                   type="button"
                   onClick={() => {
-                    setSelectedSchool(school);
+                    setSelectedSchool(school.name);
                     setShowSchoolPicker(false);
-                    setSchoolSearch(school);
+                    setSchoolSearch(school.name);
                     setError(null);
                   }}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-blue-50 ${
-                    selectedSchool === school
+                    selectedSchool === school.name
                       ? "bg-blue-50 font-semibold text-blue-700"
                       : "text-gray-800"
                   }`}
                 >
-                  {school}
+                  {school.name}
                 </button>
               ))}
             </div>

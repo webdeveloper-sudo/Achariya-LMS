@@ -5,7 +5,7 @@ import axiosInstance from "../../../../api/axiosInstance";
 import * as XLSX from "xlsx";
 
 const AdminUploadTeachers = () => {
-  const [file, setFile] = useState<File | null>(null);
+  const [, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -87,7 +87,7 @@ const AdminUploadTeachers = () => {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       console.log("Upload response:", response.data);

@@ -8,8 +8,12 @@ const BadgeSchema = new mongoose.Schema({
 
   // Criteria (JSON Logic for Automatic Awarding)
   criteria: {
-    type: { type: String, enum: ["COUNT", "SCORE", "STREAK", "TIME"] },
+    type: {
+      type: String,
+      enum: ["COUNT", "SCORE", "STREAK", "TIME", "TIME_WINDOW"],
+    },
     threshold: Number,
+
     target: String, // e.g. 'QUIZ_PERFECT'
   },
 
@@ -17,6 +21,14 @@ const BadgeSchema = new mongoose.Schema({
   creditReward: { type: Number, default: 50 },
 
   category: { type: String, enum: ["LEARNING", "SOCIAL", "MASTERY"] },
+
+  // Track students who earned this badge
+  availedBy: [
+    {
+      studentId: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
+      earnedAt: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 module.exports = mongoose.model("Badge", BadgeSchema);

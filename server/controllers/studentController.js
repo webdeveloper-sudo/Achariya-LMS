@@ -11,7 +11,7 @@ const jwt = require("jsonwebtoken");
 // LAZY LOAD: Don't require gamificationController at top level to avoid circular dependency
 // const GamificationController = require("./gamificationController");
 // const BadgeService = require("../services/BadgeService");
-const crypto = require("crypto");
+const ActivityLog = require("../models/ActivityLog");
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev_super_secret_change_me";
 
@@ -557,10 +557,11 @@ exports.sendOtp = async (req, res) => {
     const otp = crypto.randomInt(100000, 999999).toString();
 
     // Store OTP
-    await Otp.deleteMany({ admissionNo });
+    await Otp.deleteMany({ identifier: admissionNo });
 
     const newOtp = new Otp({
-      admissionNo,
+      identifier: admissionNo,
+      admissionNo: admissionNo,
       otp,
       contactType,
     });
@@ -628,6 +629,65 @@ exports.sendOtp = async (req, res) => {
   }
 };
 
+// --- PUBLIC PROFILE ENDPOINT ---
+exports.getPublicProfile = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+
+    // Find student but exclude sensitive fields
+    const student = await Student.findById(studentId)
+      .select(
+        "studentName class section avatar gamification enrolledCourses badges totalCredits currentStreak longestStreak",
+      )
+      .lean();
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    // Get recent activity for this student
+    const recentActivity = await ActivityLog.find({
+      actorId: studentId,
+      visibility: "PUBLIC",
+    })
+      .sort({ timestamp: -1 })
+      .limit(10)
+      .lean();
+
+    // Map to simple response
+    const profileResponse = {
+      profile: {
+        id: student._id,
+        name: student.studentName,
+        class: student.class,
+        section: student.section,
+        avatar: student.avatar,
+        credits: student.totalCredits || 0,
+        streak: student.currentStreak || 0,
+        badges: student.gamification?.badges || [],
+        enrolledCount: student.enrolledCourses?.length || 0,
+        rank: student.gamification?.rank || "Novice",
+      },
+      activity: recentActivity,
+      isOwner: req.user.id === studentId,
+    };
+
+    // Requirement: Show powerups ONLY to owner
+    if (req.user.id === studentId) {
+      // Find powerup definitions to get icons/names if needed,
+      // but student.gamification.ownedPowerUps already has cached name or we can link.
+      // Let's populate details manually or just send the array if it's sufficient.
+      profileResponse.profile.powerUps =
+        student.gamification?.ownedPowerUps || [];
+    }
+
+    res.json(profileResponse);
+  } catch (error) {
+    console.error("Error fetching public profile:", error);
+    res.status(500).json({ message: "Error fetching student profile" });
+  }
+};
+
 // 3. Verify OTP
 exports.verifyOtp = async (req, res) => {
   try {
@@ -639,7 +699,7 @@ exports.verifyOtp = async (req, res) => {
         .json({ message: "Admission number and OTP are required" });
     }
 
-    const otpRecord = await Otp.findOne({ admissionNo, otp });
+    const otpRecord = await Otp.findOne({ identifier: admissionNo, otp });
 
     if (!otpRecord) {
       return res.status(400).json({ message: "Invalid or expired OTP" });
@@ -687,6 +747,12 @@ exports.completeOnboarding = async (req, res) => {
     student.status = "Active";
     student.onboardedAt = new Date();
     student.onboarded = true;
+
+    // Assign random avatar if none exists
+    if (!student.avatar) {
+      const avatarIndex = Math.floor(Math.random() * 10) + 1;
+      student.avatar = `/uploads/avatars/avatar_${avatarIndex}.png`;
+    }
 
     // Initialize/Reset credits for onboarding
     student.credits = [
@@ -819,11 +885,20 @@ exports.login = async (req, res) => {
       );
     }
 
-    // Update Student Stats
-    student.gamification.currentStreak = streakCount;
-    if (streakCount > (student.gamification.longestStreak || 0)) {
-      student.gamification.longestStreak = streakCount;
+    // Log check-in for analytics heatmap
+    const lastDateStr = lastActivity
+      ? lastActivity.toISOString().split("T")[0]
+      : null;
+    const todayStr = now.toISOString().split("T")[0];
+
+    if (lastDateStr !== todayStr) {
+      student.progressLog.push({
+        action: "daily_checkin",
+        completedAt: now,
+        refTitle: "Daily Attendance",
+      });
     }
+
     student.gamification.lastActivityDate = now;
 
     // Check Badge Triggers
@@ -1041,5 +1116,179 @@ exports.getModule = async (req, res) => {
     }
     console.error("Error fetching module:", error);
     res.status(500).json({ message: "Error fetching module" });
+  }
+};
+
+// 10. Get Student Progress
+exports.getStudentProgress = async (req, res) => {
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const studentId = req.user.id;
+    const student = await Student.findById(studentId)
+      .populate("enrolledCourses.courseId", "title thumbnail")
+      .lean();
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    const now = new Date();
+
+    // --- 1. Weekly Activity & Heatmap Data ---
+    const activityMap = {}; // date_str -> { count: 0, time: 0, quizzes: 0 }
+
+    // Initialize last 7 days in map for graph
+    const last7Days = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date();
+      d.setDate(now.getDate() - i);
+      const dateStr = d.toISOString().split("T")[0];
+      const dayName = d.toLocaleDateString("en-US", { weekday: "short" });
+      last7Days.push({ date: dateStr, day: dayName });
+      // Pre-fill map for these days so we have 0s
+      if (!activityMap[dateStr]) {
+        activityMap[dateStr] = {
+          count: 0,
+          time: 0,
+          quizzes: 0,
+          completion: 0,
+        };
+      }
+    }
+
+    // Process logs
+    (student.progressLog || []).forEach((log) => {
+      if (!log.completedAt) return;
+      const dateStr = new Date(log.completedAt).toISOString().split("T")[0];
+
+      if (!activityMap[dateStr]) {
+        activityMap[dateStr] = {
+          count: 0,
+          time: 0,
+          quizzes: 0,
+          completion: 0,
+        };
+      }
+
+      activityMap[dateStr].count += 1;
+      activityMap[dateStr].time += log.durationMinutes || 0;
+
+      if (log.action === "complete_assessment") {
+        activityMap[dateStr].quizzes += 1;
+      }
+    });
+
+    // Format for Weekly Graph (Last 7 days reverse chronological -> chronological)
+    const weeklyActivity = last7Days.reverse().map((d) => {
+      const data = activityMap[d.date];
+      const completion = Math.min(100, (data.count / 5) * 100);
+      return {
+        day: d.day,
+        completion: Math.round(completion),
+        quizzes: data.quizzes,
+        timeSpent: data.time,
+      };
+    });
+
+    // --- 2. Timeline (Recent Activity) ---
+    // Take last 10 activities from progressLog
+    const timeline = (student.progressLog || [])
+      .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))
+      .slice(0, 10)
+      .map((log) => ({
+        id: log._id,
+        action: log.action,
+        refTitle: log.refTitle,
+        score: log.score,
+        date: log.completedAt,
+      }));
+
+    // Format for Heatmap (Ensure we send data for the whole year)
+    const heatmapData = Object.keys(activityMap).map((date) => ({
+      date: date,
+      count: activityMap[date].count,
+    }));
+
+    // --- 3. Course Progress ---
+    const courseProgress = (student.enrolledCourses || []).map((c) => ({
+      id: c.courseId ? c.courseId._id : c._id,
+      title: c.title || (c.courseId ? c.courseId.title : "Unknown Course"),
+      progress: c.progress || 0,
+      lastAccessed: c.lastAccessed || c.enrolledAt,
+    }));
+
+    // --- 4. Quiz Performance ---
+    let totalQuizzes = 0;
+    let totalScoreVal = 0;
+    let perfectScores = 0;
+
+    (student.enrolledCourses || []).forEach((course) => {
+      if (course.assessmentProgress) {
+        course.assessmentProgress.forEach((assess) => {
+          const bestScore = assess.highestScore || 0;
+          if (assess.attempts > 0) {
+            totalQuizzes++;
+            totalScoreVal += bestScore;
+            if (bestScore === 100) perfectScores++;
+          }
+        });
+      }
+    });
+
+    const avgScore =
+      totalQuizzes > 0 ? Math.round(totalScoreVal / totalQuizzes) : 0;
+
+    res.json({
+      weeklyActivity,
+      timeline, // New field
+      heatmapData,
+      courseProgress,
+      quizStats: {
+        averageScore: avgScore,
+        completedQuizzes: totalQuizzes,
+        perfectScores: perfectScores,
+      },
+      signupDate: student.createdAt,
+    });
+  } catch (error) {
+    console.error("Error fetching progress:", error);
+    res.status(500).json({ message: "Error fetching progress" });
+  }
+};
+
+// 6. Reset Password
+exports.resetPassword = async (req, res) => {
+  try {
+    const { admissionNo, otp, password } = req.body;
+
+    if (!admissionNo || !otp || !password) {
+      return res
+        .status(400)
+        .json({ message: "Admission number, OTP and password are required" });
+    }
+
+    const otpRecord = await Otp.findOne({ identifier: admissionNo, otp }); // Notice I changed it to identifier in Otp schema earlier
+    if (!otpRecord) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    const student = await Student.findOne({ admissionNo });
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    student.password = await bcrypt.hash(password, salt);
+    await student.save();
+
+    await Otp.deleteMany({ identifier: admissionNo });
+
+    res.json({ message: "Password reset successfully! You can now log in." });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).json({ message: "Error resetting password" });
   }
 };

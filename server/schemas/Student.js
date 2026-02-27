@@ -39,6 +39,10 @@ const studentSchema = new mongoose.Schema(
       required: true,
       unique: true, // Assuming uniqueness is desired for mandatory emails
     },
+    avatar: {
+      type: String,
+      default: null,
+    },
     password: {
       type: String,
       select: false, // Do not return password by default
@@ -140,7 +144,8 @@ const studentSchema = new mongoose.Schema(
         },
         completedModules: [
           {
-            type: String, // Module ID
+            moduleId: { type: String }, // Module ObjectId as string
+            completedAt: { type: Date, default: Date.now },
           },
         ],
         currentModule: {
@@ -200,6 +205,25 @@ const studentSchema = new mongoose.Schema(
           metadata: Object, // e.g. { "quizScore": 100 }
         },
       ],
+      // Owned Power-ups
+      ownedPowerUps: [
+        {
+          powerUpId: { type: String, ref: "PowerUp" },
+          purchasedAt: { type: Date, default: Date.now },
+          isActive: { type: Boolean, default: true },
+          expiresAt: { type: Date },
+          metadata: Object,
+        },
+      ],
+      // Marketplace purchases (Themes, Avatars, etc.)
+      purchasedMarketplaceItems: [
+        {
+          itemId: String,
+          itemType: String,
+          purchasedAt: { type: Date, default: Date.now },
+          metadata: Object,
+        },
+      ],
     },
 
     // --- SOCIAL GRAPH ---
@@ -230,6 +254,40 @@ const studentSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+
+    // --- PROGRESS LOG (timestamped activity for challenge evaluation) ---
+    progressLog: [
+      {
+        action: {
+          type: String,
+          enum: [
+            "complete_module",
+            "complete_assessment",
+            "complete_course",
+            "login",
+            "purchase_powerup",
+            "daily_checkin",
+          ],
+        },
+        refId: { type: String }, // moduleId / assessmentId / courseId
+        refTitle: { type: String }, // cached name
+        score: { type: Number, default: 0 }, // percentage, for assessments
+        durationMinutes: { type: Number, default: 0 }, // time taken
+        completedAt: { type: Date, default: Date.now },
+      },
+    ],
+
+    // --- CLAIMED CHALLENGES (to prevent double-claiming per period) ---
+    claimedChallenges: [
+      {
+        challengeId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "SystemChallenge",
+        },
+        claimedAt: { type: Date, default: Date.now },
+        periodStart: { type: Date }, // start of the daily/weekly window
+      },
+    ],
   },
   {
     timestamps: true,

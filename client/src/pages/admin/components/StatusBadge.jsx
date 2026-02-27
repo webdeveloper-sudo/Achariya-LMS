@@ -2,7 +2,7 @@ import React from 'react';
 
 const StatusBadge = ({ status }) => {
     const styles = {
-        draft: 'bg-gray-100 text-gray-700 border-gray-200',
+        draft: 'bg-gray-100 text-gray-700 border-gray-300',
         published: 'bg-green-100 text-green-700 border-green-200',
         archived: 'bg-orange-100 text-orange-700 border-orange-200'
     };

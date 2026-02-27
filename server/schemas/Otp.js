@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 
 const otpSchema = new mongoose.Schema({
-  admissionNo: {
+  identifier: {
     type: String,
     required: true,
+    trim: true,
+  },
+  admissionNo: {
+    type: String,
     trim: true,
   },
   otp: {
@@ -22,7 +26,7 @@ const otpSchema = new mongoose.Schema({
   },
 });
 
-// Index to quickly look up OTPs by admission number
-otpSchema.index({ admissionNo: 1 });
+// Index to quickly look up OTPs by identifier
+otpSchema.index({ identifier: 1 });
 
 module.exports = mongoose.model("Otp", otpSchema);

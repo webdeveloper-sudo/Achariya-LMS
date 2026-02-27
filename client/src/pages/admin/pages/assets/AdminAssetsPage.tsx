@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft,
@@ -8,11 +8,11 @@ import {
   Music,
   MonitorPlay,
   File,
-  Filter,
   RefreshCw,
+  FolderOpen,
 } from "lucide-react";
 import axiosInstance from "../../../../api/axiosInstance";
-import ConfirmationPopup from "../../../../components/ConfirmationPopup"; // Adjust if necessary
+import ConfirmationPopup from "../../../../components/ConfirmationPopup";
 
 interface AssetFile {
   relativePath: string;
@@ -20,7 +20,7 @@ interface AssetFile {
   size: number;
   mtime: string;
   type: string;
-  folder: string; // 'images', 'documents', etc.
+  folder: string;
   isUsed: boolean;
   previewUrl: string;
 }
@@ -38,11 +38,8 @@ const AdminAssetsPage = () => {
   const [allFiles, setAllFiles] = useState<AssetFile[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("images");
-  const [filterStatus, setFilterStatus] = useState<"all" | "used" | "unused">(
-    "all"
-  );
+  const [filterStatus] = useState<"all" | "used" | "unused">("all");
 
-  // Confirmation State
   const [confirmPopup, setConfirmPopup] = useState({
     isOpen: false,
     title: "",
@@ -73,7 +70,7 @@ const AdminAssetsPage = () => {
     let files = allFiles.filter((f) => {
       if (activeTab === "other") {
         return !["images", "documents", "audio", "slides", "temp"].includes(
-          f.folder
+          f.folder,
         );
       }
       return f.folder === activeTab;
@@ -91,10 +88,10 @@ const AdminAssetsPage = () => {
   const handleDeleteClick = (file: AssetFile) => {
     setConfirmPopup({
       isOpen: true,
-      title: "Delete Asset",
-      message: `Are you sure you want to delete ${file.fileName}? ${
+      title: "Authorize Asset Deletion",
+      message: `CRITICAL: Proceed with permanent deletion of asset ${file.fileName}? ${
         file.isUsed
-          ? "WARNING: This file is currently marked as USED in the system. Deleting it will break links."
+          ? "SYSTEM WARNING: Asset is actively linked within the platform architecture. Deletion may cause catastrophic UI errors."
           : ""
       }`,
       onConfirm: () => executeDelete(file),
@@ -108,15 +105,14 @@ const AdminAssetsPage = () => {
       await axiosInstance.delete("/admin/assets", {
         data: { relativePath: file.relativePath },
       });
-      // Remove from state
       setAllFiles((prev) =>
-        prev.filter((f) => f.relativePath !== file.relativePath)
+        prev.filter((f) => f.relativePath !== file.relativePath),
       );
       setConfirmPopup((prev) => ({ ...prev, isOpen: false }));
     } catch (err: any) {
       console.error("Delete failed", err);
       alert(
-        "Failed to delete asset: " + (err.response?.data?.error || err.message)
+        "Asset purge failure: " + (err.response?.data?.error || err.message),
       );
       setConfirmPopup((prev) => ({ ...prev, isLoading: false, isOpen: false }));
     }
@@ -131,29 +127,51 @@ const AdminAssetsPage = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50 flex flex-col">
-      <div className="mb-6 flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Manage Assets</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Server Uploads Management
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={fetchAssets}
-            className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
-            title="Refresh"
-          >
-            <RefreshCw className="w-5 h-5 text-gray-700" />
-          </button>
+    <div className="space-y-12 pb-20 px-8">
+      {/* Admin Header */}
+      <div className="border-b border-black pb-12">
+        <Link
+          to="/admin/dashboard"
+          className="inline-flex items-center text-[13px] hover:text-black mb-10 transition-colors capitalize text-gray-500"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          System Authority Terminal
+        </Link>
+
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 text-center sm:text-left">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-6 justify-center sm:justify-start">
+              <div className="bg-black p-2 rounded-sm border border-black">
+                <FolderOpen className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-[13px] capitalize text-black font-medium">
+                Asset Architecture
+              </span>
+            </div>
+            <h1 className="text-4xl text-black mb-6 leading-tight capitalize">
+              Media <span className="text-gray-400">Database</span>
+            </h1>
+            <p className="text-gray-600 text-[15px] max-w-xl leading-relaxed mx-auto sm:mx-0">
+              Direct management and archival of platform media assets and
+              structural files.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-4 justify-center sm:justify-start lg:mx-0 mx-auto">
+            <button
+              onClick={fetchAssets}
+              className="inline-flex items-center px-6 py-3.5 border border-black text-black rounded-sm text-[13px] capitalize hover:bg-black hover:text-white transition shadow-sm"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Synchronize Database
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Sticky Navbar */}
-      <div className="sticky top-0 z-20 bg-white shadow-sm border rounded-xl mb-6 overflow-hidden">
-        {/* Main Tabs */}
-        <div className="flex overflow-x-auto border-b">
+      {/* Control Tabs */}
+      <div className="bg-white border border-black rounded-sm overflow-hidden sticky top-8 z-20">
+        <div className="flex overflow-x-auto">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const count = allFiles.filter((f) => f.folder === tab.id).length;
@@ -161,19 +179,19 @@ const AdminAssetsPage = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center px-6 py-4 border-b-2 font-medium whitespace-nowrap transition-colors ${
+                className={`flex-1 flex items-center justify-center px-6 py-4 font-medium whitespace-nowrap transition-all border-b-2 text-[13px] capitalize ${
                   activeTab === tab.id
-                    ? "border-blue-600 text-blue-600 bg-blue-50/50"
-                    : "border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    ? "border-black text-black bg-gray-50/50"
+                    : "border-transparent text-gray-400 hover:text-black hover:bg-gray-50"
                 }`}
               >
-                <Icon className="w-4 h-4 mr-2" />
+                <Icon className="w-4 h-4 mr-3" />
                 {tab.label}
                 <span
-                  className={`ml-2 text-xs py-0.5 px-2 rounded-full ${
+                  className={`ml-3 text-[10px] py-0.5 px-2 rounded-sm font-mono ${
                     activeTab === tab.id
-                      ? "bg-blue-100 text-blue-700"
-                      : "bg-gray-100"
+                      ? "bg-black text-white"
+                      : "bg-gray-100 text-gray-500"
                   }`}
                 >
                   {count}
@@ -182,113 +200,66 @@ const AdminAssetsPage = () => {
             );
           })}
         </div>
-
-        {/* Filter Bar */}
-        {/* <div className="flex items-center p-3 gap-2 bg-gray-50/50">
-          <Filter className="w-4 h-4 text-gray-500 ml-2" />
-          <span className="text-sm font-semibold text-gray-700 mr-2">
-            Filter:
-          </span>
-
-          {(["all", "used", "unused"] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilterStatus(status)}
-              className={`px-3 py-1 text-sm rounded-md capitalize transition ${
-                filterStatus === status
-                  ? "bg-white text-gray-800 shadow-sm border font-medium"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {status}
-            </button>
-          ))}
-
-          <div className="ml-auto text-sm text-gray-500">
-            Showing {filteredFiles.length} files
-          </div>
-        </div> */}
       </div>
 
-      {/* Content */}
-      <div className="flex-1">
+      {/* Media Grid / List */}
+      <div className="min-h-[400px]">
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="flex flex-col justify-center items-center py-32 gap-6">
+            <FolderOpen className="w-12 h-12 text-gray-200 animate-pulse" />
+            <p className="text-[13px] text-gray-400 capitalize">
+              Synchronizing Asset Archive...
+            </p>
           </div>
         ) : filteredFiles.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-xl border border-dashed">
-            <p className="text-gray-500">
-              No {activeTab} files found in {filterStatus} category.
+          <div className="text-center py-32 border border-dashed border-black rounded-sm flex flex-col items-center gap-6">
+            <File className="w-12 h-12 text-gray-200" />
+            <p className="text-gray-400 text-[13px] capitalize">
+              Zero active assets detected within {activeTab} protocol.
             </p>
           </div>
         ) : activeTab === "images" ? (
-          /* Grid for Images */
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
             {filteredFiles.map((file) => (
               <div
                 key={file.relativePath}
-                className={`group relative bg-white rounded-lg border overflow-hidden hover:shadow-md transition ${
-                  file.isUsed ? "border-green-200" : "border-red-100"
-                }`}
+                className="group relative bg-white border border-black rounded-sm overflow-hidden hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all flex flex-col"
               >
-                <div className="aspect-square bg-gray-100 relative">
+                <div className="aspect-square bg-gray-50 relative border-b border-black grayscale group-hover:grayscale-0 transition-all duration-700">
                   <img
                     src={`${axiosInstance.defaults.baseURL?.replace(
                       "/api/v1",
-                      ""
+                      "",
                     )}/${
                       file.previewUrl.startsWith("/")
                         ? file.previewUrl.slice(1)
                         : file.previewUrl
                     }`}
-                    // Note: previewUrl from API is "/assets/..."
-                    // If baseURL includes /api/v1, we need to strip or just use relative if proxy?
-                    // Actually the API returns `/assets/temp/...`.
-                    // If running on port 5173 and server 8000, we need full URL or proxy.
-                    // For safety, let's try just the path if proxy is set, or full url.
-                    // The server response `previewUrl` is `/assets/images/...`.
-                    // Browsers handle `/assets` relative to current origin (client).
-                    // But assets are on server (8000). Client is 5173.
-                    // So we need `http://localhost:8000/assets...`.
-                    // I'll assume axiosInstance.defaults.baseURL is http://localhost:8000/api/v1
-                    // So I need to strip /api/v1 and append.
                     onError={(e) =>
                       (e.currentTarget.src =
-                        "https://placehold.co/200?text=IMG")
+                        "https://placehold.co/200?text=ASSET_ERR")
                     }
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all"
                   />
 
                   <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => handleDeleteClick(file)}
-                      className="p-1.5 bg-white text-red-600 rounded-full shadow hover:bg-red-50"
+                      className="p-1.5 bg-white border border-black text-black rounded-sm hover:bg-black hover:text-white transition-colors"
+                      title="Purge Asset"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
-
-                  {/* <div className="absolute top-2 left-2">
-                    <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${
-                        file.isUsed
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
-                    >
-                      {file.isUsed ? "Used" : "Unused"}
-                    </span>
-                  </div> */}
                 </div>
-                <div className="p-2">
+                <div className="p-4 flex-1 flex flex-col justify-between">
                   <p
-                    className="text-xs font-medium text-gray-700 truncate"
+                    className="text-[11px] font-medium text-black truncate mb-1"
                     title={file.fileName}
                   >
                     {file.fileName}
                   </p>
-                  <p className="text-[10px] text-gray-500 mt-0.5">
+                  <p className="text-[10px] text-gray-400 font-mono tracking-tighter">
                     {formatSize(file.size)}
                   </p>
                 </div>
@@ -296,55 +267,48 @@ const AdminAssetsPage = () => {
             ))}
           </div>
         ) : (
-          /* List for others */
-          <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-gray-50 text-gray-700 font-semibold">
-                <tr>
-                  <th className="px-6 py-3">File Name</th>
-                  <th className="px-6 py-3">Type</th>
-                  <th className="px-6 py-3">Size</th>
-                  {/* <th className="px-6 py-3">Status</th> */}
-                  <th className="px-6 py-3 text-right">Action</th>
+          <div className="bg-white rounded-sm border border-black overflow-hidden shadow-none">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-black text-[11px] uppercase tracking-widest text-white/70">
+                  <th className="py-5 px-6 font-medium">Asset Protocol Name</th>
+                  <th className="py-5 px-6 font-medium">Architecture Type</th>
+                  <th className="py-5 px-6 font-medium text-right">
+                    Volume Size
+                  </th>
+                  <th className="py-5 px-6 font-medium text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredFiles.map((file) => (
-                  <tr key={file.relativePath} className="hover:bg-gray-50">
-                    <td className="px-6 py-3 font-medium text-gray-800">
-                      <div className="flex items-center gap-2">
+                  <tr
+                    key={file.relativePath}
+                    className="hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="py-4 px-6 font-medium text-black">
+                      <div className="flex items-center gap-3">
                         <File className="w-4 h-4 text-gray-400" />
                         <a
                           href={`http://localhost:8000/${file.previewUrl}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="hover:underline hover:text-blue-600"
+                          className="hover:underline text-[13px] text-black"
                         >
                           {file.fileName}
                         </a>
                       </div>
                     </td>
-                    <td className="px-6 py-3 text-gray-500 uppercase">
+                    <td className="py-4 px-6 text-[11px] text-gray-400 font-mono  uppercase tracking-widest">
                       {file.type}
                     </td>
-                    <td className="px-6 py-3 text-gray-500 font-mono">
+                    <td className="py-4 px-6 text-[12px] text-black font-mono text-right">
                       {formatSize(file.size)}
                     </td>
-                    {/* <td className="px-6 py-3">
-                      <span
-                        className={`text-xs px-2 py-1 rounded-full font-bold ${
-                          file.isUsed
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {file.isUsed ? "USED" : "UNUSED"}
-                      </span>
-                    </td> */}
-                    <td className="px-6 py-3 text-right">
+                    <td className="py-4 px-6 text-right">
                       <button
                         onClick={() => handleDeleteClick(file)}
-                        className="text-gray-400 hover:text-red-600 transition"
+                        className="p-2 border border-black rounded-sm text-black hover:bg-black hover:text-white transition-all active:scale-90 inline-block"
+                        title="Purge Asset"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -357,7 +321,6 @@ const AdminAssetsPage = () => {
         )}
       </div>
 
-      {/* Confirmation Popup */}
       <ConfirmationPopup
         isOpen={confirmPopup.isOpen}
         title={confirmPopup.title}
@@ -365,8 +328,8 @@ const AdminAssetsPage = () => {
         onConfirm={confirmPopup.onConfirm}
         onCancel={() => setConfirmPopup((prev) => ({ ...prev, isOpen: false }))}
         isLoading={confirmPopup.isLoading}
-        type="danger"
-        confirmText="Yes, Delete"
+        type="warning"
+        confirmText="Confirm Purge"
       />
     </div>
   );

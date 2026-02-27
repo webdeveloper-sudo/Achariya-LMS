@@ -1,297 +1,562 @@
-import { useNavigate } from 'react-router-dom';
-import { Users, GraduationCap, BookOpen, Award, ChevronRight, Server } from 'lucide-react';
-import { sampleData, getTopPerformers, getTopBadgeHolders, getHighTrafficCourses } from '../../data/sampleData';
+﻿import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import {
+  Users,
+  GraduationCap,
+  BookOpen,
+  TrendingUp,
+  ChevronRight,
+  Award,
+  Activity,
+  UserCheck,
+  RefreshCw,
+  AlertCircle,
+  Loader2,
+  Star,
+  FileText,
+  Zap,
+} from "lucide-react";
+import axiosInstance from "../../api/axiosInstance";
 
+// Types
+interface Metrics {
+  totalStudents: number;
+  totalTeachers: number;
+  totalCourses: number;
+  onboardedCount: number;
+  avgCompletion: number;
+  avgCredits: number;
+  recentlyActive: number;
+  newThisMonth: number;
+}
+
+interface TopPerformer {
+  _id: string;
+  name: string;
+  class: string;
+  section: string;
+  completion: number;
+  credits: number;
+  badges: number;
+}
+
+interface ClassCompletion {
+  className: string;
+  count: number;
+  avgCompletion: number;
+}
+
+interface CourseSummary {
+  _id: string;
+  courseId: string;
+  title: string;
+  subjectCode: string;
+  status: string;
+  gradesEligible: string[];
+  moduleCount: number;
+}
+
+interface DashboardData {
+  school: { name: string; id: number };
+  principal: { id: string; name: string; email: string };
+  metrics: Metrics;
+  topPerformers: TopPerformer[];
+  completionByClass: ClassCompletion[];
+  courses: CourseSummary[];
+}
+
+// Helper
+const rankBg = (idx: number) =>
+  idx === 0
+    ? "bg-yellow-400"
+    : idx === 1
+      ? "bg-gray-400"
+      : idx === 2
+        ? "bg-orange-400"
+        : "bg-green-50";
+
+const rankText = (idx: number) => (idx < 3 ? "text-white" : "text-[#008000]");
+
+// Component
 const PrincipalDashboard = () => {
-    const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const navigate = useNavigate();
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [lastFetched, setLastFetched] = useState<Date | null>(null);
 
-    // Get school-specific data
-    const schoolId = user.email?.includes('college') ? 2 : 1;
-    const school = sampleData.schools.find(s => s.id === schoolId);
-    const schoolStudents = sampleData.students.filter(s => s.school_id === schoolId);
-    const schoolTeachers = sampleData.teachers.filter(t => t.school_id === schoolId);
-    const schoolCourses = sampleData.courses.filter(c => c.school_id === schoolId);
+  const fetchDashboard = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await axiosInstance.get("/principals/auth/dashboard");
+      setData(res.data);
+      setLastFetched(new Date());
+    } catch (err: any) {
+      setError(
+        err?.response?.data?.message ||
+          "Failed to load dashboard. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // Calculate metrics
-    const totalStudents = schoolStudents.length;
-    const totalTeachers = schoolTeachers.length;
-    const totalCourses = schoolCourses.length;
-    const avgCompletion = Math.round(schoolStudents.reduce((sum, s) => sum + s.completion, 0) / totalStudents);
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
 
-    // Get top performers
-    const topPerformers = getTopPerformers(5).filter(s => s.school_id === schoolId);
-    const topBadgeHolders = getTopBadgeHolders(5).filter((u: any) => {
-        if (u.type === 'Student') return schoolStudents.some(s => s.id === u.id);
-        return schoolTeachers.some(t => t.id === u.id);
-    });
-    const highTrafficCourses = getHighTrafficCourses().filter(c => c.school_id === schoolId);
-
-    const completionData = sampleData.completionByGrade.filter(g => {
-        if (schoolId === 1) return g.grade.includes('10') || g.grade.includes('12');
-        return g.grade.includes('CS');
-    });
-
+  // Loading
+  if (loading) {
     return (
-        <div>
-            {/* School Header - Clickable */}
-            <div
-                onClick={() => navigate(`/principal/school/${schoolId}`)}
-                className="mb-4 sm:mb-6 cursor-pointer hover:bg-gray-50 p-3 sm:p-4 rounded-lg transition -m-3 sm:-m-4"
-            >
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">{school?.name}</h1>
-                <p className="text-sm sm:text-base text-gray-600">Principal Dashboard - {school?.location} • Click for details →</p>
-            </div>
-
-            {/* Key Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                <div
-                    onClick={() => { navigate('/principal/students'); window.scrollTo(0, 0); }}
-                    className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border hover:shadow-md cursor-pointer transition"
-                >
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-xs sm:text-sm text-gray-600">Total Students</p>
-                            <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">{totalStudents}</p>
-                        </div>
-                        <div className="bg-blue-500 p-3 rounded-lg">
-                            <Users className="w-6 h-6 text-white" />
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    onClick={() => { navigate('/principal/teachers'); window.scrollTo(0, 0); }}
-                    className="bg-white rounded-xl shadow-sm p-6 border hover:shadow-md cursor-pointer transition"
-                >
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-600">Total Teachers</p>
-                            <p className="text-3xl font-bold text-gray-800 mt-2">{totalTeachers}</p>
-                        </div>
-                        <div className="bg-green-500 p-3 rounded-lg">
-                            <GraduationCap className="w-6 h-6 text-white" />
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    onClick={() => { navigate('/principal/courses'); window.scrollTo(0, 0); }}
-                    className="bg-white rounded-xl shadow-sm p-6 border hover:shadow-md cursor-pointer transition"
-                >
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-600">Total Courses</p>
-                            <p className="text-3xl font-bold text-gray-800 mt-2">{totalCourses}</p>
-                        </div>
-                        <div className="bg-purple-500 p-3 rounded-lg">
-                            <BookOpen className="w-6 h-6 text-white" />
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    onClick={() => { navigate('/principal/system-stats'); window.scrollTo(0, 0); }}
-                    className="bg-white rounded-xl shadow-sm p-6 border hover:shadow-md cursor-pointer transition"
-                >
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-600">System Stats</p>
-                            <p className="text-3xl font-bold text-gray-800 mt-2">{avgCompletion}%</p>
-                            <p className="text-xs text-gray-500">Avg Completion</p>
-                        </div>
-                        <div className="bg-orange-500 p-3 rounded-lg">
-                            <Server className="w-6 h-6 text-white" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                {/* Completion by Class - CLICKABLE */}
-                <div
-                    onClick={() => { navigate('/principal/class-analytics'); window.scrollTo(0, 0); }}
-                    className="bg-white rounded-xl shadow-sm p-6 border hover:shadow-md cursor-pointer transition"
-                >
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-bold text-gray-800">Completion by Class</h2>
-                        <ChevronRight className="w-5 h-5 text-gray-400" />
-                    </div>
-                    <p className="text-sm text-gray-600 mb-4">Click for detailed analytics →</p>
-                    <div className="space-y-3">
-                        {completionData.map((grade) => (
-                            <div key={grade.grade}>
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span className="text-gray-700 font-medium">{grade.grade}</span>
-                                    <span className="text-gray-600">{grade.completion}%</span>
-                                </div>
-                                <div className="w-full bg-gray-200 rounded-full h-3">
-                                    <div
-                                        className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full"
-                                        style={{ width: `${grade.completion}%` }}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Weekly Active Students - CLICKABLE */}
-                <div
-                    onClick={() => { navigate('/principal/courses'); window.scrollTo(0, 0); }}
-                    className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border hover:shadow-md cursor-pointer transition"
-                >
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-xl font-bold text-gray-800">Weekly Active Students</h2>
-                        <ChevronRight className="w-5 h-5 text-gray-400" />
-                    </div>
-                    <p className="text-sm text-gray-600 mb-4">Click for activity breakdown →</p>
-                    <div className="space-y-3">
-                        {sampleData.weeklyActivity.slice(0, 4).map((item, idx) => (
-                            <div key={idx} className="flex items-center">
-                                <span className="w-20 text-sm font-medium text-gray-600">{item.week}</span>
-                                <div className="flex-1 mx-4">
-                                    <div className="bg-gray-200 rounded-full h-6">
-                                        <div
-                                            className="bg-green-500 h-6 rounded-full flex items-center justify-end pr-2"
-                                            style={{ width: `${(item.students / 60) * 100}%` }}
-                                        >
-                                            <span className="text-xs font-bold text-white">{item.students}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                {/* Top 5 Performers */}
-                <div className="bg-white rounded-xl shadow-sm p-6 border">
-                    <h2 className="text-xl font-bold text-gray-800 mb-4">Top 5 Performing Students</h2>
-                    <div className="space-y-3">
-                        {topPerformers.map((student, idx) => (
-                            <div
-                                key={student.id}
-                                onClick={() => { navigate(`/principal/student/${student.id}`); window.scrollTo(0, 0); }}
-                                className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition"
-                            >
-                                <div className="flex items-center">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${idx === 0 ? 'bg-yellow-500' : idx === 1 ? 'bg-gray-400' : idx === 2 ? 'bg-orange-600' : 'bg-blue-100'
-                                        }`}>
-                                        <span className={`text-sm font-bold ${idx < 3 ? 'text-white' : 'text-blue-600'}`}>
-                                            {idx + 1}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold text-gray-800">{student.name}</p>
-                                        <p className="text-xs text-gray-500">{student.class}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center">
-                                    <span className="text-lg font-bold text-green-600 mr-2">{student.completion}%</span>
-                                    <ChevronRight className="w-4 h-4 text-gray-400" />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Top Badge Holders */}
-                <div className="bg-white rounded-xl shadow-sm p-6 border">
-                    <h2 className="text-xl font-bold text-gray-800 mb-4">Top 5 Badge Holders</h2>
-                    <div className="space-y-3">
-                        {topBadgeHolders.map((user: any) => (
-                            <div key={`${user.type}-${user.id}`} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg">
-                                <div className="flex items-center">
-                                    <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
-                                        <Award className="w-5 h-5 text-yellow-600" />
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold text-gray-800">{user.name}</p>
-                                        <p className="text-xs text-gray-500">{user.type} • {user.class || user.department}</p>
-                                    </div>
-                                </div>
-                                <span className="text-lg font-bold text-yellow-600">{user.badges} 🏆</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* High Traffic Courses */}
-            <div className="bg-white rounded-xl shadow-sm p-6 border mb-8">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">High Traffic Courses</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {highTrafficCourses.map((course) => (
-                        <div
-                            key={course.id}
-                            onClick={() => { navigate(`/principal/course/${course.id}`); window.scrollTo(0, 0); }}
-                            className="p-4 border border-orange-200 bg-orange-50 rounded-lg hover:shadow-md cursor-pointer transition"
-                        >
-                            <div className="flex items-start justify-between mb-2">
-                                <h3 className="font-bold text-gray-800">{course.title}</h3>
-                                <span className="px-2 py-1 bg-orange-500 text-white text-xs rounded-full">High</span>
-                            </div>
-                            <p className="text-sm text-gray-600 mb-3">{course.subject}</p>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">{course.enrollments} enrolled</span>
-                                <span className="font-semibold text-orange-600">{course.active_users} active</span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* All Courses Table */}
-            <div className="bg-white rounded-xl shadow-sm p-6 border">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">All Courses</h2>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="border-b">
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Course</th>
-                                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Subject</th>
-                                <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Enrollments</th>
-                                <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Completion</th>
-                                <th className="text-right py-3 px-4 text-sm font-semibold text-gray-700">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {schoolCourses.map((course) => (
-                                <tr key={course.id} className="border-b hover:bg-gray-50">
-                                    <td className="py-3 px-4">
-                                        <p className="font-semibold text-gray-800">{course.title}</p>
-                                        <p className="text-xs text-gray-500">{course.level}</p>
-                                    </td>
-                                    <td className="py-3 px-4 text-sm text-gray-600">{course.subject}</td>
-                                    <td className="py-3 px-4 text-center text-sm font-semibold">{course.enrollments}</td>
-                                    <td className="py-3 px-4 text-center">
-                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${course.completion_avg >= 85 ? 'bg-green-100 text-green-700' :
-                                            course.completion_avg >= 70 ? 'bg-yellow-100 text-yellow-700' :
-                                                'bg-red-100 text-red-700'
-                                            }`}>
-                                            {course.completion_avg}%
-                                        </span>
-                                    </td>
-                                    <td className="py-3 px-4 text-right">
-                                        <button
-                                            onClick={() => navigate(`/principal/course/${course.id}`)}
-                                            className="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center ml-auto"
-                                        >
-                                            View Details
-                                            <ChevronRight className="w-4 h-4 ml-1" />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-6">
+        <Loader2
+          className="w-8 h-8 animate-spin"
+          style={{ color: "#008000" }}
+        />
+        <p className="text-[11px] text-gray-400 capitalize">
+          Synchronizing Institutional Infrastructure...
+        </p>
+      </div>
     );
+  }
+
+  // Error
+  if (error || !data) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-6 text-center px-6">
+        <div className="bg-red-50 p-4 rounded-full">
+          <AlertCircle className="w-10 h-10 text-red-400" />
+        </div>
+        <div>
+          <h2 className="text-xl text-gray-900 capitalize mb-2">
+            Synchronization Failure
+          </h2>
+          <p className="text-gray-600 text-sm">{error}</p>
+        </div>
+        <button
+          onClick={fetchDashboard}
+          className="flex items-center gap-3 px-8 py-3.5 bg-gray-900 text-white rounded-md text-[13px] capitalize hover:bg-[#008000] transition shadow-sm"
+        >
+          <RefreshCw size={16} /> Re-sync Terminal
+        </button>
+      </div>
+    );
+  }
+
+  const {
+    school,
+    principal,
+    metrics,
+    topPerformers,
+    completionByClass,
+    courses,
+  } = data;
+  const onboardPct =
+    metrics.totalStudents > 0
+      ? Math.round((metrics.onboardedCount / metrics.totalStudents) * 100)
+      : 0;
+
+  // Render
+  return (
+    <div className="space-y-12 pb-20">
+      {/* Institutional Header */}
+      <div className="border-b border-gray-100 pb-12">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 text-center sm:text-left">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-6 justify-center sm:justify-start">
+              <div className="bg-green-50 p-2 rounded border border-green-100">
+                <Activity className="w-5 h-5" style={{ color: "#008000" }} />
+              </div>
+              <span
+                className="text-[13px] capitalize"
+                style={{ color: "#008000" }}
+              >
+                Institutional Executive Hub
+              </span>
+            </div>
+            <h1 className="text-4xl text-gray-900 mb-6 leading-tight capitalize">
+              {school.name} <span className="text-gray-400">Terminal</span>
+            </h1>
+            <p className="text-gray-600 text-[15px] max-w-xl leading-relaxed mx-auto sm:mx-0">
+              Strategic oversight for {principal.name}. Last system
+              synchronization trace: {lastFetched?.toLocaleTimeString()}.
+            </p>
+
+            <div className="mt-10 flex flex-wrap gap-4 justify-center sm:justify-start">
+              <button
+                onClick={fetchDashboard}
+                className="bg-gray-900 text-white px-8 py-3.5 rounded-md text-[13px] capitalize hover:bg-[#008000] transition shadow-sm flex items-center gap-2"
+              >
+                <RefreshCw size={14} /> Sync Metrics
+              </button>
+              <button
+                onClick={() => navigate("/principal/courses")}
+                className="bg-white text-gray-700 border border-gray-300 px-8 py-3.5 rounded-md text-[13px] capitalize hover:bg-gray-50 transition flex items-center gap-2"
+              >
+                Curriculum Inventory <ChevronRight size={14} />
+              </button>
+            </div>
+          </div>
+
+          <div className="w-full lg:w-96 bg-white p-8 rounded-md border border-gray-100 shadow-sm relative overflow-hidden text-center sm:text-left">
+            <div className="relative z-10">
+              <p
+                className="text-[11px] capitalize mb-4 flex items-center gap-2 justify-center sm:justify-start"
+                style={{ color: "#008000" }}
+              >
+                <Zap size={12} fill="#008000" /> Executive Analytics
+              </p>
+              <h3 className="text-xl text-gray-900 mb-8 capitalize">
+                Institutional Health
+              </h3>
+              <div className="space-y-4">
+                <div className="flex justify-between text-[11px] capitalize">
+                  <span className="text-gray-400">Synchronization Level</span>
+                  <span style={{ color: "#008000" }}>{onboardPct}% Active</span>
+                </div>
+                <div className="w-full bg-gray-50 rounded-full h-1 overflow-hidden">
+                  <div
+                    className="h-full transition-all duration-1000"
+                    style={{
+                      width: `${onboardPct}%`,
+                      backgroundColor: "#008000",
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Metric Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          {
+            label: "Academic Staff",
+            val: metrics.totalTeachers,
+            icon: GraduationCap,
+            link: "/principal/teachers",
+          },
+          {
+            label: "Student Body",
+            val: metrics.totalStudents,
+            icon: Users,
+            link: "/principal/students",
+          },
+          {
+            label: "Curriculum Assets",
+            val: metrics.totalCourses,
+            icon: BookOpen,
+            link: "/principal/courses",
+          },
+          {
+            label: "Cohort Proficiency",
+            val: `${metrics.avgCompletion}%`,
+            icon: TrendingUp,
+            link: "#",
+          },
+        ].map((stat, i) => (
+          <div
+            key={i}
+            onClick={() => stat.link !== "#" && navigate(stat.link)}
+            className="group bg-white rounded-md p-8 border border-gray-100 shadow-sm hover:border-green-100 transition-all cursor-pointer text-center sm:text-left"
+          >
+            <div className="bg-gray-50 text-gray-400 w-12 h-12 rounded flex items-center justify-center mb-6 mx-auto sm:mx-0 group-hover:bg-green-50 group-hover:text-[#008000] transition-colors">
+              <stat.icon
+                size={22}
+                className="group-hover:scale-110 transition-transform"
+              />
+            </div>
+            <p className="text-[11px] text-gray-400 capitalize mb-2 group-hover:text-[#008000] transition-colors">
+              {stat.label}
+            </p>
+            <p className="text-4xl text-gray-900 tracking-tight tabular-nums">
+              {stat.val}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Secondary Audit Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {/* Onboarding & Activity */}
+        <div className="lg:col-span-4 space-y-12">
+          {/* Onboarding Card */}
+          <div className="bg-white rounded-md p-8 border border-gray-100 shadow-sm text-center sm:text-left">
+            <div className="flex items-center gap-4 mb-8 justify-center sm:justify-start">
+              <div
+                className="bg-gray-50 p-2.5 rounded border border-gray-100"
+                style={{ color: "#008000" }}
+              >
+                <UserCheck size={20} />
+              </div>
+              <div>
+                <h2 className="text-xl text-gray-900 capitalize">Registry</h2>
+                <p className="text-gray-400 text-[11px] capitalize mt-1">
+                  Operational Sync
+                </p>
+              </div>
+            </div>
+            <p className="text-4xl text-gray-900 tracking-tight mb-4 tabular-nums">
+              {metrics.onboardedCount}
+              <span className="text-sm text-gray-300 ml-2 font-normal">
+                / {metrics.totalStudents}
+              </span>
+            </p>
+            <div className="w-full bg-gray-50 rounded-full h-1 overflow-hidden mb-4">
+              <div
+                className="h-full transition-all duration-1000"
+                style={{ width: `${onboardPct}%`, backgroundColor: "#008000" }}
+              />
+            </div>
+            <p className="text-[11px] capitalize" style={{ color: "#008000" }}>
+              {onboardPct}% Activation Efficiency
+            </p>
+          </div>
+
+          {/* Performance Card */}
+          <div className="bg-white rounded-md p-8 border border-gray-100 shadow-sm text-center sm:text-left">
+            <div className="flex items-center gap-4 mb-8 justify-center sm:justify-start">
+              <div
+                className="bg-gray-50 p-2.5 rounded border border-gray-100"
+                style={{ color: "#008000" }}
+              >
+                <Star size={20} />
+              </div>
+              <div>
+                <h2 className="text-xl text-gray-900 capitalize">Economy</h2>
+                <p className="text-gray-400 text-[11px] capitalize mt-1">
+                  Academic Credits
+                </p>
+              </div>
+            </div>
+            <p className="text-4xl text-gray-900 tracking-tight mb-4 tabular-nums">
+              {metrics.avgCredits}
+            </p>
+            <p className="text-[11px] capitalize" style={{ color: "#008000" }}>
+              Median Asset Value Per Participant
+            </p>
+          </div>
+        </div>
+
+        {/* Completion by Class */}
+        <div className="lg:col-span-8 bg-white rounded-md border border-gray-100 shadow-sm overflow-hidden text-center sm:text-left">
+          <div className="p-8 border-b border-gray-50 flex items-center justify-between">
+            <div className="flex items-center gap-4 justify-center sm:justify-start">
+              <div
+                className="bg-gray-50 p-2.5 rounded border border-gray-100"
+                style={{ color: "#008000" }}
+              >
+                <FileText size={20} />
+              </div>
+              <div>
+                <h2 className="text-xl text-gray-900 capitalize">
+                  Classification Audit
+                </h2>
+                <p className="text-gray-400 text-[11px] capitalize mt-1">
+                  Cross-Division Benchmarking
+                </p>
+              </div>
+            </div>
+            <TrendingUp size={18} className="text-gray-200 hidden sm:block" />
+          </div>
+
+          <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
+            {completionByClass.map((item) => (
+              <div key={item.className} className="space-y-4">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <p className="text-sm text-gray-900 capitalize font-medium">
+                      Division {item.className}
+                    </p>
+                    <p className="text-[11px] text-gray-400 capitalize mt-1">
+                      {item.count} Active Units
+                    </p>
+                  </div>
+                  <span
+                    className="text-sm font-medium tabular-nums"
+                    style={{ color: "#008000" }}
+                  >
+                    {item.avgCompletion}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-50 rounded-full h-1 overflow-hidden">
+                  <div
+                    className="h-full transition-all duration-1000"
+                    style={{
+                      width: `${item.avgCompletion}%`,
+                      backgroundColor:
+                        item.avgCompletion >= 75
+                          ? "#008000"
+                          : item.avgCompletion >= 40
+                            ? "#f59e0b"
+                            : "#dc2626",
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Top Performers & Courses */}
+      <div className="space-y-12">
+        {/* Top Performers */}
+        <div className="bg-white rounded-md border border-gray-100 shadow-sm overflow-hidden text-center sm:text-left">
+          <div className="p-8 border-b border-gray-50 flex items-center justify-between">
+            <div className="flex items-center gap-4 justify-center sm:justify-start">
+              <div
+                className="bg-gray-50 p-2.5 rounded border border-gray-100"
+                style={{ color: "#008000" }}
+              >
+                <Award size={20} />
+              </div>
+              <div>
+                <h2 className="text-xl text-gray-900 capitalize">
+                  Performance Distinction
+                </h2>
+                <p className="text-gray-400 text-[11px] capitalize mt-1">
+                  High-Efficiency Cohort
+                </p>
+              </div>
+            </div>
+            <Award size={18} className="text-gray-200 hidden sm:block" />
+          </div>
+
+          <div className="p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+            {topPerformers.map((s, idx) => (
+              <div
+                key={s._id}
+                onClick={() => navigate(`/principal/student/${s._id}`)}
+                className="p-6 border border-gray-50 rounded-md hover:border-green-100 transition-all cursor-pointer group text-center"
+              >
+                <div
+                  className={`w-12 h-12 rounded-md flex items-center justify-center font-medium text-sm mx-auto mb-6 ${rankBg(idx)} ${rankText(idx)} shadow-sm transition-transform group-hover:scale-105`}
+                >
+                  {String(idx + 1).padStart(2, "0")}
+                </div>
+                <p className="text-[13px] text-gray-900 capitalize mb-1 truncate font-medium group-hover:text-[#008000] transition-colors">
+                  {s.name}
+                </p>
+                <p className="text-[11px] text-gray-400 capitalize mb-6">
+                  {s.class} {s.section}
+                </p>
+                <div className="flex justify-between items-center bg-gray-50 p-3 rounded-md">
+                  <span
+                    className="text-[11px] font-medium tabular-nums"
+                    style={{ color: "#008000" }}
+                  >
+                    {s.completion}%
+                  </span>
+                  <span className="text-[11px] font-medium text-amber-600 tabular-nums">
+                    {s.credits} CR
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Course Audit Table */}
+        <div className="bg-white rounded-md border border-gray-100 shadow-sm overflow-hidden">
+          <div className="p-8 border-b border-gray-50 flex items-center justify-between">
+            <div className="flex items-center gap-4 justify-center sm:justify-start">
+              <div
+                className="bg-gray-50 p-2.5 rounded border border-gray-100"
+                style={{ color: "#008000" }}
+              >
+                <BookOpen size={20} />
+              </div>
+              <div>
+                <h2 className="text-xl text-gray-900 capitalize">
+                  Curriculum Registry
+                </h2>
+                <p className="text-gray-400 text-[11px] capitalize mt-1">
+                  Active Instructional Library
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/principal/courses"
+              className="px-6 py-2 bg-gray-50 text-gray-600 rounded-md text-[11px] capitalize hover:bg-green-50 hover:text-[#008000] transition-colors flex items-center gap-2 border border-gray-100"
+            >
+              Full Inventory <ChevronRight size={14} />
+            </Link>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-50/50">
+                  <th className="px-8 py-5 text-left text-[11px] font-medium text-gray-400 uppercase tracking-wider">
+                    Asset Designation
+                  </th>
+                  <th className="px-8 py-5 text-left text-[11px] font-medium text-gray-400 uppercase tracking-wider">
+                    Operational Code
+                  </th>
+                  <th className="px-8 py-5 text-center text-[11px] font-medium text-gray-400 uppercase tracking-wider">
+                    Grade Stratum
+                  </th>
+                  <th className="px-8 py-5 text-center text-[11px] font-medium text-gray-400 uppercase tracking-wider">
+                    Quantifiable Units
+                  </th>
+                  <th className="px-8 py-5 text-center text-[11px] font-medium text-gray-400 uppercase tracking-wider">
+                    Deployment Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {courses.map((c) => (
+                  <tr
+                    key={c._id}
+                    className="group cursor-pointer hover:bg-gray-50/50 transition-colors"
+                    onClick={() => navigate(`/principal/course/${c._id}`)}
+                  >
+                    <td className="px-8 py-6">
+                      <p className="text-sm text-gray-900 capitalize font-medium group-hover:text-[#008000] transition-colors">
+                        {c.title}
+                      </p>
+                    </td>
+                    <td className="px-8 py-6">
+                      <span className="text-[11px] text-gray-500 font-mono">
+                        {c.subjectCode}
+                      </span>
+                    </td>
+                    <td className="px-8 py-6 text-center">
+                      <span className="text-[11px] text-gray-600 capitalize">
+                        {c.gradesEligible.length > 0
+                          ? c.gradesEligible.join(", ")
+                          : "Institutional Universal"}
+                      </span>
+                    </td>
+                    <td className="px-8 py-6 text-center text-sm text-gray-900 tabular-nums">
+                      {c.moduleCount}
+                    </td>
+                    <td className="px-8 py-6 text-center">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-1 rounded-sm text-[10px] capitalize font-medium border ${
+                          c.status === "published"
+                            ? "bg-green-50 text-[#008000] border-green-100"
+                            : "bg-yellow-50 text-yellow-600 border-yellow-100"
+                        }`}
+                      >
+                        {c.status === "published"
+                          ? "Active Stream"
+                          : "Draft Logic"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default PrincipalDashboard;

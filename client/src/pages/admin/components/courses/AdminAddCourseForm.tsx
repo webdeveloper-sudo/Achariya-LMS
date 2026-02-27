@@ -1,10 +1,5 @@
-import { X, Save, Search, Plus, Loader2 } from "lucide-react";
-import {
-  allschoolsdata,
-  allsubjects,
-  ALL_CLASSES,
-  allboards,
-} from "@/data/global/global";
+import { X, Save, Loader2 } from "lucide-react";
+import { allschoolsdata, ALL_CLASSES } from "@/data/global/global";
 import { useState, useEffect, useRef } from "react";
 import ImageUploader from "@/pages/admin/components/uploaders/ImageUploader";
 import axiosInstance from "@/api/axiosInstance";

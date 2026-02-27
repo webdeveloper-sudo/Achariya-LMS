@@ -154,7 +154,7 @@ const StudentChatbot = ({ studentId, studentName }: StudentChatbotProps) => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-[576px] h-[80vh] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-200">
+        <div className="fixed bottom-6 right-6 w-[576px] h-[80vh] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border border-gray-300">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
             <div className="flex items-center">

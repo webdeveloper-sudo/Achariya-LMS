@@ -5,10 +5,9 @@ const path = require("path");
 const teacherController = require("../controllers/teacherController");
 const { authenticate, requireAdmin } = require("../middleware/authMiddleware");
 
-// Configure multer for file uploads (Reuse logic if possible, but distinct here for safety)
+// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // You might want a different folder or same
     cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
@@ -29,33 +28,43 @@ const upload = multer({
   },
 });
 
-// Routes
-router.post(
-  "/upload",
-  authenticate,
-  requireAdmin,
-  upload.single("file"),
-  teacherController.uploadFile
-);
-router.post(
-  "/save",
-  authenticate,
-  requireAdmin,
-  teacherController.saveTeachers
-);
-router.post(
-  "/create",
-  authenticate,
-  requireAdmin,
-  teacherController.createTeacher
-);
-router.get("/", teacherController.getTeachers); // Open read for now, or restrict
-router.put("/:id", authenticate, requireAdmin, teacherController.updateTeacher);
-router.delete(
-  "/:id",
-  authenticate,
-  requireAdmin,
-  teacherController.deleteTeacher
-);
+// --- ADMIN ROUTES ---
+const adminRouter = express.Router();
+adminRouter.use(authenticate, requireAdmin);
 
-module.exports = router;
+adminRouter.post(
+  "/upload",
+  upload.single("file"),
+  teacherController.uploadFile,
+);
+adminRouter.post("/save", teacherController.saveTeachers);
+adminRouter.post("/create", teacherController.createTeacher);
+adminRouter.get("/", teacherController.getTeachers);
+adminRouter.put("/:id", teacherController.updateTeacher);
+adminRouter.delete("/:id", teacherController.deleteTeacher);
+
+// --- TEACHER PORTAL ROUTES ---
+const portalRouter = express.Router();
+portalRouter.use(authenticate);
+
+portalRouter.get("/dashboard", teacherController.getTeacherDashboard);
+portalRouter.get("/courses", teacherController.getTeacherCourses);
+portalRouter.get("/course/:courseId", teacherController.getTeacherCourseDetail);
+portalRouter.get("/students", teacherController.getTeacherStudents);
+portalRouter.get(
+  "/student/:studentId",
+  teacherController.getTeacherStudentDetail,
+);
+portalRouter.get("/evidence", teacherController.getTeacherEvidence);
+
+// --- PUBLIC AUTH ROUTES ---
+const authRouter = express.Router();
+authRouter.post("/verify-account", teacherController.verifyTeacherAccount);
+authRouter.post("/send-otp", teacherController.sendOtp);
+authRouter.post("/verify-otp", teacherController.verifyOtp);
+authRouter.post("/complete-activation", teacherController.completeActivation);
+authRouter.post("/login", teacherController.login);
+authRouter.post("/forgot-password", teacherController.forgotPassword);
+authRouter.post("/reset-password", teacherController.resetPassword);
+
+module.exports = { adminRouter, portalRouter, authRouter };

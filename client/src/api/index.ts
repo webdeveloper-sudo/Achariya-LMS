@@ -29,6 +29,44 @@ export const studentAuthApi = {
     }),
   login: (admissionNumber: string, password: string) =>
     client.post("/students/login", { admissionNo: admissionNumber, password }),
+  resetPassword: (data: {
+    admissionNumber: string;
+    otp: string;
+    password: string;
+  }) =>
+    client.post("/students/reset-password", {
+      admissionNo: data.admissionNumber,
+      otp: data.otp,
+      password: data.password,
+    }),
+};
+
+export const teacherAuthApi = {
+  verifyAccount: (identifier: string) =>
+    client.post("/teacher/auth/verify-account", { identifier }),
+  sendOtp: (identifier: string) =>
+    client.post("/teacher/auth/send-otp", { identifier }),
+  verifyOtp: (identifier: string, otp: string) =>
+    client.post("/teacher/auth/verify-otp", { identifier, otp }),
+  completeActivation: (data: any) =>
+    client.post("/teacher/auth/complete-activation", data),
+  login: (email: string, password: string) =>
+    client.post("/teacher/auth/login", { email, password }),
+  forgotPassword: (email: string) =>
+    client.post("/teacher/auth/forgot-password", { email }),
+  resetPassword: (data: any) =>
+    client.post("/teacher/auth/reset-password", data),
+};
+
+export const principalAuthApi = {
+  sendOtp: (email: string) =>
+    client.post("/principals/auth/send-otp", { email }),
+  verifyOtp: (email: string, otp: string) =>
+    client.post("/principals/auth/verify-otp", { email, otp }),
+  loginWithPassword: (email: string, password: string) =>
+    client.post("/principals/auth/login-password", { email, password }),
+  activatePrincipal: (data: any) =>
+    client.post("/principals/auth/activate", data),
 };
 
 export const studentApi = {
@@ -57,8 +95,12 @@ export const studentApi = {
     client.post(`/students/module/${moduleId}/quiz/submit`, data),
   getWallet: () => client.get("/gamification/wallet"),
   getBadges: () => client.get("/gamification/badges"),
-  getLeaderboard: (type: "weekly" | "alltime") =>
+  syncBadges: () => client.post("/gamification/sync-badges"),
+  getLeaderboard: (type: "weekly" | "alltime" | "class") =>
     client.get(`/gamification/leaderboard?type=${type}`),
+  getPowerUps: () => client.get("/gamification/powerups"),
+  purchasePowerUp: (powerUpId: string) =>
+    client.post("/gamification/purchase-powerup", { powerUpId }),
   // Social
   getPotentialRivals: () => client.get("/social/rivals"),
   getMyChallenges: () => client.get("/social/challenges"),
@@ -66,34 +108,40 @@ export const studentApi = {
   acceptChallenge: (challengeId: string) =>
     client.post(`/social/challenge/${challengeId}/accept`),
   getFeed: () => client.get("/social/feed"),
+  likeActivity: (activityId: string) =>
+    client.post(`/social/activity/${activityId}/like`),
+  commentOnActivity: (activityId: string, text: string) =>
+    client.post(`/social/activity/${activityId}/comment`, { text }),
+  postAchievement: (data: { title: string; type: string }) =>
+    client.post("/social/share-achievement", data),
+  getPublicProfile: (studentId: string) =>
+    client.get(`/students/public-profile/${studentId}`),
 };
 
 export const teacherApi = {
-  getDashboard: (email: string) =>
-    client.get(`/teacher/dashboard?email=${email}`),
-  getCourses: (email: string) => client.get(`/teacher/courses?email=${email}`),
-  getCourseStudents: (courseId: number, email: string) =>
-    client.get(`/teacher/course/${courseId}/students?email=${email}`),
-  getAtRiskStudents: (email: string) =>
-    client.get(`/teacher/at-risk-students?email=${email}`),
-  submitEvidence: (data: any, email: string) =>
-    client.post(`/teacher/evidence?email=${email}`, data),
-  getWallet: (email: string) => client.get(`/teacher/wallet?email=${email}`),
+  getDashboard: () => client.get("/teacher/dashboard"),
+  getCourses: () => client.get("/teacher/courses"),
+  getCourseDetail: (courseId: string) =>
+    client.get(`/teacher/course/${courseId}`),
+  getTeacherStudents: () => client.get("/teacher/students"),
+  getStudentDetail: (studentId: string) =>
+    client.get(`/teacher/student/${studentId}`),
+  getCourseStudents: (courseId: string) =>
+    client.get(`/teacher/course/${courseId}/students`),
+  getAtRiskStudents: () => client.get("/teacher/at-risk-students"),
+  submitEvidence: (data: any) => client.post("/teacher/evidence", data),
+  getEvidence: () => client.get("/teacher/evidence"),
+  getWallet: () => client.get("/teacher/wallet"),
 };
 
 export const principalApi = {
-  getDashboard: (email: string) =>
-    client.get(`/principal/dashboard?email=${email}`),
-  getCompletionByGrade: (email: string) =>
-    client.get(`/principal/completion-by-grade?email=${email}`),
-  getWeeklyActive: (email: string) =>
-    client.get(`/principal/weekly-active?email=${email}`),
-  getTopPerformers: (email: string) =>
-    client.get(`/principal/top-performers?email=${email}`),
-  getCourses: (email: string) =>
-    client.get(`/principal/courses?email=${email}`),
-  exportSummary: (email: string) =>
-    client.get(`/principal/export?email=${email}`),
+  getDashboard: () => client.get("/principals/auth/dashboard"),
+  getCompletionByGrade: () =>
+    client.get("/principals/auth/completion-by-grade"),
+  getWeeklyActive: () => client.get("/principals/auth/weekly-active"),
+  getTopPerformers: () => client.get("/principals/auth/top-performers"),
+  getCourses: () => client.get("/principals/auth/courses"),
+  exportSummary: () => client.get("/principals/auth/export"),
 };
 
 export const adminApi = {

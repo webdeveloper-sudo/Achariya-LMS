@@ -4,25 +4,6 @@ import { User, GraduationCap, Users, Settings, ArrowRight } from "lucide-react";
 const LandingPage = () => {
   const navigate = useNavigate();
 
-  const selectRole = (role: string) => {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    user.selectedRole = role;
-    localStorage.setItem("user", JSON.stringify(user));
-
-    if (role === "Student") {
-      navigate("/student/login"); // Student specific flow
-    } else {
-      // Keep existing minimal flow for others for now or redirect to their specific login
-      // For now, map to legacy login or direct dashboard if reusing previous logic
-      // But prompt implies separate access. We'll stick to a simple mapping.
-      // Actually, if they select Teacher/Principal/Admin they might need to login too.
-      // The prompt says "Student Login (Returning Users)..." implying separate page.
-      // I'll send others to the generic login page or their specific dashboards if "demo" mode persists.
-      // Let's settle on sending non-students to the main login for now, or handle them later.
-      navigate("/login");
-    }
-  };
-
   const roles = [
     {
       id: "student",
@@ -42,7 +23,7 @@ const LandingPage = () => {
       color: "from-green-500 to-green-600",
       textColor: "text-green-600",
       bg: "bg-green-50",
-      action: () => navigate("/login"),
+      action: () => navigate("/teacher/login"),
     },
     {
       id: "principal",
@@ -52,7 +33,7 @@ const LandingPage = () => {
       color: "from-purple-500 to-purple-600",
       textColor: "text-purple-600",
       bg: "bg-purple-50",
-      action: () => navigate("/login"),
+      action: () => navigate("/principal/login"),
     },
     {
       id: "admin",

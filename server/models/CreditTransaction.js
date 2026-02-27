@@ -17,10 +17,12 @@ const CreditTransactionSchema = new mongoose.Schema({
     required: true,
     enum: [
       "MODULE_COMPLETION",
+      "COURSE_COMPLETION",
       "QUIZ_PASS",
       "QUIZ_PERFECT",
       "DAILY_STREAK",
       "BADGE_BONUS",
+      "CHALLENGE",
       "CHALLENGE_WIN",
       "CHALLENGE_PARTICIPATION",
       "STORE_PURCHASE",

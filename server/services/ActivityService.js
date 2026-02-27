@@ -15,6 +15,7 @@ exports.logActivity = async ({
   object,
   targetName,
   visibility = "PUBLIC",
+  actorRole = "student",
 }) => {
   try {
     const student = await Student.findById(actorId).select(
@@ -25,12 +26,14 @@ exports.logActivity = async ({
     const log = new ActivityLog({
       actorId,
       actorName: student.studentName,
+      actorRole,
       verb,
       object,
       targetName,
       visibility,
       schoolId: student.school_id,
       timestamp: new Date(),
+      interactions: { likes: [], comments: [] },
     });
 
     await log.save();
@@ -42,26 +45,60 @@ exports.logActivity = async ({
 
 /**
  * Get Activity Feed
- * @param {string} studentId - The student specific feed (friends + self + rivals)
+ * @param {string} studentId - The student specific feed (prioritize same school)
  * @param {number} limit
  */
-exports.getFeed = async (studentId, limit = 20) => {
+exports.getFeed = async (studentId, limit = 50) => {
   try {
-    const student = await Student.findById(studentId);
+    const student = await Student.findById(studentId).select("school_id");
     if (!student) return [];
 
-    // For now, simple global feed of same school OR just self/rivals
-    // Let's do a broader feed for engagement: Same School
+    const userSchoolId = student.school_id;
 
-    const feed = await ActivityLog.find({
-      schoolId: student.school_id,
-      visibility: "PUBLIC",
-    })
-      .sort({ timestamp: -1 })
-      .limit(limit)
-      .populate("actorId", "avatar"); // If actorId ref is Student
+    // Aggregation for prioritized feed
+    const feed = await ActivityLog.aggregate([
+      {
+        $match: {
+          visibility: "PUBLIC",
+        },
+      },
+      {
+        $addFields: {
+          // Priority 1: Same school, Priority 0: Other schools
+          isSameSchool: {
+            $cond: [{ $eq: ["$schoolId", userSchoolId] }, 1, 0],
+          },
+        },
+      },
+      {
+        $sort: {
+          isSameSchool: -1, // Same school first
+          timestamp: -1, // Then newest first
+        },
+      },
+      { $limit: limit },
+      {
+        // Join with Student to get avatar
+        $lookup: {
+          from: "students",
+          localField: "actorId",
+          foreignField: "_id",
+          as: "actorInfo",
+        },
+      },
+      {
+        $addFields: {
+          actorAvatar: { $arrayElemAt: ["$actorInfo.avatar", 0] },
+        },
+      },
+      {
+        $project: {
+          actorInfo: 0,
+          isSameSchool: 0,
+        },
+      },
+    ]);
 
-    // Remap to frontend-friendly format if needed
     return feed;
   } catch (error) {
     console.error("Get Feed Error:", error);

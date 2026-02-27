@@ -1,155 +1,177 @@
 import { Link } from "react-router-dom";
-import { Users, BookOpen, FileQuestion, Settings } from "lucide-react";
+import {
+  Users,
+  BookOpen,
+  FileQuestion,
+  Settings,
+  Trophy,
+  Shield,
+  Activity,
+  BarChart3,
+  Database,
+} from "lucide-react";
 import { sampleData } from "../../data/sampleData";
 
 const AdminDashboard = () => {
   const totalUsers =
-    sampleData.students.length + sampleData.teachers.length + 2; // +2 for principals
+    sampleData.students.length + sampleData.teachers.length + 2;
   const totalCourses = sampleData.courses.length;
   const totalModules = sampleData.modules.length;
-  const totalQuestions = 120; // From seed data
+  const totalQuestions = 120;
 
   return (
-    <div>
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">
-        Admin Dashboard
-      </h1>
-
-      {/* System Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-        <Link
-          to="/admin/users"
-          className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border hover:shadow-md transition"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs sm:text-sm text-gray-600">Total Users</p>
-              <p className="text-2xl sm:text-3xl font-bold text-gray-800 mt-1 sm:mt-2">
-                {totalUsers}
-              </p>
-            </div>
-            <div className="bg-blue-500 p-3 rounded-lg">
-              <Users className="w-6 h-6 text-white" />
-            </div>
+    <div className="space-y-12 pb-20">
+      {/* Admin Header */}
+      <div className="border-b border-black pb-12">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="bg-black p-2 rounded-sm">
+            <Shield className="w-5 h-5 text-white" />
           </div>
-        </Link>
-
-        <Link
-          to="/admin/courses"
-          className="bg-white rounded-xl shadow-sm p-6 border hover:shadow-md transition"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total Courses</p>
-              <p className="text-3xl font-bold text-gray-800 mt-2">
-                {totalCourses}
-              </p>
-            </div>
-            <div className="bg-green-500 p-3 rounded-lg">
-              <BookOpen className="w-6 h-6 text-white" />
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          to="/admin/courses"
-          className="bg-white rounded-xl shadow-sm p-6 border hover:shadow-md transition"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total Modules</p>
-              <p className="text-3xl font-bold text-gray-800 mt-2">
-                {totalModules}
-              </p>
-            </div>
-            <div className="bg-purple-500 p-3 rounded-lg">
-              <BookOpen className="w-6 h-6 text-white" />
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          to="/admin/question-bank"
-          className="bg-white rounded-xl shadow-sm p-6 border hover:shadow-md transition"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Quiz Questions</p>
-              <p className="text-3xl font-bold text-gray-800 mt-2">
-                {totalQuestions}
-              </p>
-            </div>
-            <div className="bg-orange-500 p-3 rounded-lg">
-              <FileQuestion className="w-6 h-6 text-white" />
-            </div>
-          </div>
-        </Link>
+          <span className="text-[11px] uppercase tracking-widest font-medium text-black">
+            System Authority
+          </span>
+        </div>
+        <h1 className="text-4xl text-black mb-6 leading-tight capitalize">
+          Administrative <span className="text-gray-400">Terminal</span>
+        </h1>
+        <p className="text-gray-600 text-[15px] max-w-xl leading-relaxed capitalize">
+          Root-level oversight of institutional entities, curriculum assets, and
+          platform telemetry.
+        </p>
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Link
-          to="/admin/users"
-          className="bg-blue-50 border border-blue-200 rounded-xl p-6 hover:shadow-md cursor-pointer transition"
-        >
-          <Users className="w-8 h-8 text-blue-600 mb-3" />
-          <h3 className="font-bold text-gray-800 mb-1">Manage Users</h3>
-          <p className="text-sm text-gray-600">Add, edit, or remove users</p>
-        </Link>
-
-        <Link
-          to="/admin/courses"
-          className="bg-green-50 border border-green-200 rounded-xl p-6 hover:shadow-md cursor-pointer transition"
-        >
-          <BookOpen className="w-8 h-8 text-green-600 mb-3" />
-          <h3 className="font-bold text-gray-800 mb-1">Manage Courses</h3>
-          <p className="text-sm text-gray-600">Create and edit courses</p>
-        </Link>
-
-        <Link
-          to="/admin/question-bank"
-          className="bg-purple-50 border border-purple-200 rounded-xl p-6 hover:shadow-md cursor-pointer transition"
-        >
-          <FileQuestion className="w-8 h-8 text-purple-600 mb-3" />
-          <h3 className="font-bold text-gray-800 mb-1">Question Bank</h3>
-          <p className="text-sm text-gray-600">Manage quiz questions</p>
-        </Link>
-
-        <Link
-          to="/admin/config"
-          className="bg-orange-50 border border-orange-200 rounded-xl p-6 hover:shadow-md cursor-pointer transition"
-        >
-          <Settings className="w-8 h-8 text-orange-600 mb-3" />
-          <h3 className="font-bold text-gray-800 mb-1">System Config</h3>
-          <p className="text-sm text-gray-600">Configure system settings</p>
-        </Link>
-
-        <Link
-          to="/admin/teachers"
-          className="bg-teal-50 border border-teal-200 rounded-xl p-6 hover:shadow-md cursor-pointer transition"
-        >
-          <Users className="w-8 h-8 text-teal-600 mb-3" />
-          <h3 className="font-bold text-gray-800 mb-1">Manage Teachers</h3>
-          <p className="text-sm text-gray-600">Add, edit, or remove teachers</p>
-        </Link>
-        <Link
-          to="/admin/principals"
-          className="bg-purple-50 border border-purple-200 rounded-xl p-6 hover:shadow-md cursor-pointer transition"
-        >
-          <Users className="w-8 h-8 text-purple-600 mb-3" />
-          <h3 className="font-bold text-gray-800 mb-1">Manage Principals</h3>
-          <p className="text-sm text-gray-600">
-            Add principals & assign schools
-          </p>
-        </Link>
+      {/* System Overview Registry */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          {
+            label: "Total Identities",
+            val: totalUsers,
+            icon: Users,
+            path: "/admin/users",
+          },
+          {
+            label: "Course Assets",
+            val: totalCourses,
+            icon: BookOpen,
+            path: "/admin/courses",
+          },
+          {
+            label: "Unit Archival",
+            val: totalModules,
+            icon: Database,
+            path: "/admin/courses",
+          },
+          {
+            label: "Validation Bank",
+            val: totalQuestions,
+            icon: FileQuestion,
+            path: "/admin/question-bank",
+          },
+        ].map((stat, i) => (
+          <Link
+            key={i}
+            to={stat.path}
+            className="group bg-white border border-black p-8 rounded-sm hover:bg-black transition-all"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div className="bg-gray-50 text-black w-10 h-10 rounded-sm flex items-center justify-center group-hover:bg-white transition-colors">
+                <stat.icon size={20} />
+              </div>
+              <span className="text-[10px] uppercase tracking-tighter text-gray-400 group-hover:text-white/40">
+                Trace {i + 1}
+              </span>
+            </div>
+            <p className="text-[11px] text-gray-400 uppercase tracking-wider mb-2 group-hover:text-white/60 transition-colors capitalize">
+              {stat.label}
+            </p>
+            <p className="text-4xl text-black tracking-tight tabular-nums group-hover:text-white transition-colors">
+              {stat.val}
+            </p>
+          </Link>
+        ))}
       </div>
 
-      {/* All Schools */}
-      <div className="bg-white rounded-xl shadow-sm p-6 border mb-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">
-          Schools Overview
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Tactical Control Units */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          {
+            label: "User Management",
+            desc: "Identity Protocol Control",
+            icon: Users,
+            path: "/admin/users",
+          },
+          {
+            label: "Curriculum Registry",
+            desc: "Asset Initialization",
+            icon: BookOpen,
+            path: "/admin/courses",
+          },
+          {
+            label: "Validation Engine",
+            desc: "Quiz Logic Bank",
+            icon: FileQuestion,
+            path: "/admin/question-bank",
+          },
+          {
+            label: "System Parameters",
+            desc: "Node Configuration",
+            icon: Settings,
+            path: "/admin/config",
+          },
+          {
+            label: "Faculty Directory",
+            desc: "Personnel Oversight",
+            icon: Users,
+            path: "/admin/teachers",
+          },
+          {
+            label: "Principal Registry",
+            desc: "Institutional Assignment",
+            icon: Users,
+            path: "/admin/principals",
+          },
+          {
+            label: "Challenge Logic",
+            desc: "Engagement Gamification",
+            icon: Trophy,
+            path: "/admin/challenges",
+          },
+          {
+            label: "System Telemetry",
+            desc: "Node Health Audit",
+            icon: Activity,
+            path: "/admin/monitoring",
+          },
+        ].map((unit, i) => (
+          <Link
+            key={i}
+            to={unit.path}
+            className="bg-white border border-black p-6 rounded-sm hover:invert transition-all"
+          >
+            <unit.icon className="w-6 h-6 text-black mb-4" />
+            <h3 className="text-sm font-medium text-black capitalize mb-1">
+              {unit.label}
+            </h3>
+            <p className="text-[11px] text-gray-400 capitalize">{unit.desc}</p>
+          </Link>
+        ))}
+      </div>
+
+      {/* Institutional Hierarchy */}
+      <div className="bg-white border border-black p-8 rounded-sm">
+        <div className="flex items-center justify-between mb-10">
+          <div>
+            <h2 className="text-xl text-black capitalize">
+              Institutional Registry
+            </h2>
+            <p className="text-gray-400 text-[11px] capitalize mt-1">
+              Cross-Campus Operational Status
+            </p>
+          </div>
+          <BarChart3 className="text-gray-200" size={24} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {sampleData.schools.map((school) => {
             const schoolStudents = sampleData.students.filter(
               (s) => s.school_id === school.id,
@@ -165,30 +187,40 @@ const AdminDashboard = () => {
               <Link
                 key={school.id}
                 to={`/principal/school/${school.id}`}
-                className="p-4 border rounded-lg hover:shadow-md transition cursor-pointer"
+                className="p-6 border border-gray-100 rounded-sm hover:border-black transition-all flex flex-col md:flex-row justify-between gap-6"
               >
-                <h3 className="font-bold text-gray-800 mb-1">{school.name}</h3>
-                <p className="text-sm text-gray-600 mb-3">
-                  {school.location} • {school.type}
-                </p>
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <p className="text-2xl font-bold text-blue-600">
+                <div className="space-y-1">
+                  <h3 className="text-[15px] font-medium text-black capitalize">
+                    {school.name}
+                  </h3>
+                  <p className="text-[11px] text-gray-400 capitalize">
+                    {school.location} • {school.type}
+                  </p>
+                </div>
+                <div className="flex gap-8">
+                  <div className="text-center">
+                    <p className="text-xl text-black font-medium tabular-nums">
                       {schoolStudents.length}
                     </p>
-                    <p className="text-xs text-gray-600">Students</p>
+                    <p className="text-[9px] uppercase tracking-tighter text-gray-400 mt-1">
+                      Students
+                    </p>
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-green-600">
+                  <div className="text-center">
+                    <p className="text-xl text-black font-medium tabular-nums">
                       {schoolTeachers.length}
                     </p>
-                    <p className="text-xs text-gray-600">Teachers</p>
+                    <p className="text-[9px] uppercase tracking-tighter text-gray-400 mt-1">
+                      Teachers
+                    </p>
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-purple-600">
+                  <div className="text-center">
+                    <p className="text-xl text-black font-medium tabular-nums">
                       {schoolCourses.length}
                     </p>
-                    <p className="text-xs text-gray-600">Courses</p>
+                    <p className="text-[9px] uppercase tracking-tighter text-gray-400 mt-1">
+                      Courses
+                    </p>
                   </div>
                 </div>
               </Link>
@@ -197,36 +229,33 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Platform Metrics */}
-      <div className="mb-6 sm:mb-8">
-        <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">
-          Platform Metrics
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <p className="text-3xl font-bold text-gray-800">
-              {sampleData.students.length}
-            </p>
-            <p className="text-sm text-gray-600">Students</p>
-          </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <p className="text-3xl font-bold text-gray-800">
-              {sampleData.teachers.length}
-            </p>
-            <p className="text-sm text-gray-600">Teachers</p>
-          </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <p className="text-3xl font-bold text-gray-800">
-              {sampleData.enrollments.length}
-            </p>
-            <p className="text-sm text-gray-600">Enrollments</p>
-          </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <p className="text-3xl font-bold text-gray-800">
-              {sampleData.courses.length}
-            </p>
-            <p className="text-sm text-gray-600">Active Courses</p>
-          </div>
+      {/* Platform Telemetry Log */}
+      <div className="bg-black p-8 rounded-sm text-white">
+        <div className="flex items-center gap-3 mb-10">
+          <Activity size={18} className="text-white" />
+          <h2 className="text-lg uppercase tracking-widest font-medium">
+            Platform Telemetry
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+          {[
+            { label: "Active Identities", val: sampleData.students.length },
+            { label: "Faculty Presence", val: sampleData.teachers.length },
+            { label: "Protocol Licenses", val: sampleData.enrollments.length },
+            { label: "Instructional Streams", val: sampleData.courses.length },
+          ].map((metric, i) => (
+            <div
+              key={i}
+              className="space-y-2 border-l border-white/10 pl-6 first:border-0 first:pl-0"
+            >
+              <p className="text-3xl font-light tracking-tighter tabular-nums">
+                {metric.val}
+              </p>
+              <p className="text-[10px] uppercase tracking-wider text-white/40 capitalize">
+                {metric.label}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
   onRemove,
   isUploading,
 }) => {
-  const getAcceptTypes = () => {
+  const getAcceptTypes = (): Record<string, string[]> | undefined => {
     if (type === "pdf") return { "application/pdf": [".pdf"] };
     if (type === "ppt")
       return {
@@ -41,8 +41,8 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
     type === "pdf"
       ? "Upload PDF Document"
       : type === "ppt"
-      ? "Upload Presentation (PPT/PPTX)"
-      : "Upload Document";
+        ? "Upload Presentation (PPT/PPTX)"
+        : "Upload Document";
 
   return (
     <div className="w-full space-y-3">
@@ -63,7 +63,7 @@ const DocumentUploader: React.FC<DocumentUploaderProps> = ({
       )}
 
       {!isUploading && value && (
-        <div className="relative group flex items-center justify-between p-4 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all mt-2">
+        <div className="relative group flex items-center justify-between p-4 bg-white border border-gray-300 rounded-xl shadow-sm hover:shadow-md transition-all mt-2">
           <div className="flex items-center gap-4 overflow-hidden">
             <div className="p-2 bg-gray-50 rounded-lg flex-shrink-0">
               {getIcon()}

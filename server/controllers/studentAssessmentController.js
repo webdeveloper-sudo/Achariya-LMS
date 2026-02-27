@@ -127,7 +127,7 @@ exports.getAssessmentForStudent = async (req, res) => {
 exports.submitAssessment = async (req, res) => {
   try {
     const { studentId, assessmentId } = req.params;
-    const { score, totalMarks, moduleId, courseId } = req.body;
+    const { score, totalMarks, moduleId, courseId, timeTaken = 0 } = req.body;
 
     const student = await Student.findById(studentId);
     if (!student)
@@ -207,13 +207,15 @@ exports.submitAssessment = async (req, res) => {
 
     let creditsAwarded = 0;
     let moduleCompleted = false;
+    // Collect progressLog entries — written atomically AFTER student.save()
+    const progressLogEntries = [];
 
     if (passed && !progress.isCompleted) {
       progress.isCompleted = true;
 
       // Award Credits (Assessment specific)
       const assessment = await Assessment.findById(assessmentId);
-      const points = (assessment && assessment.credits) || 10; // Default 10 if not specified
+      const points = (assessment && assessment.credits) || 10;
 
       if (points > 0) {
         await GamificationController.awardCredits(
@@ -227,8 +229,17 @@ exports.submitAssessment = async (req, res) => {
         creditsAwarded += points;
       }
 
-      // Bonus: Perfect Score on First Attempt? (Attempts logic is a bit fuzzy here, but if attempts==1 and passed, it's first try)
-      // progress.attempts was incremented above. So if attempts === 1, it's first try.
+      // Queue progressLog entry — will be written atomically below
+      progressLogEntries.push({
+        action: "complete_assessment",
+        refId: assessmentId,
+        refTitle: assessment?.title || "Assessment",
+        score: percentage,
+        durationMinutes: 0,
+        completedAt: new Date(),
+      });
+
+      // Bonus: Perfect Score on First Attempt
       if (progress.attempts === 1 && passed) {
         await GamificationController.awardCredits(
           student._id,
@@ -285,11 +296,18 @@ exports.submitAssessment = async (req, res) => {
           // Mark Module as Completed in Student Record
           const moduleObjectId = moduleDoc._id.toString();
 
-          if (!enrolledCourse.completedModules.includes(moduleObjectId)) {
-            enrolledCourse.completedModules.push(moduleObjectId);
+          const alreadyCompleted = enrolledCourse.completedModules.some(
+            (m) => (m.moduleId || m) === moduleObjectId,
+          );
+
+          if (!alreadyCompleted) {
+            enrolledCourse.completedModules.push({
+              moduleId: moduleObjectId,
+              completedAt: new Date(),
+            });
 
             // Award Module Credits
-            const modulePoints = moduleDoc.credits || 20; // Default 20
+            const modulePoints = moduleDoc.credits || 20;
             await GamificationController.awardCredits(
               student._id,
               modulePoints,
@@ -299,6 +317,16 @@ exports.submitAssessment = async (req, res) => {
               "Module",
             );
             creditsAwarded += modulePoints;
+
+            // Queue progressLog entry
+            progressLogEntries.push({
+              action: "complete_module",
+              refId: moduleObjectId,
+              refTitle: moduleDoc.title || "Module",
+              score: 0,
+              durationMinutes: 0,
+              completedAt: new Date(),
+            });
           }
         }
       }
@@ -348,7 +376,7 @@ exports.submitAssessment = async (req, res) => {
 
       if (completedModulesList && completedModulesList.length > 0) {
         completedModulesCount = activeModuleIdStrings.filter((mId) =>
-          completedModulesList.includes(mId),
+          completedModulesList.some((m) => (m.moduleId || m) === mId),
         ).length;
       }
 
@@ -358,17 +386,41 @@ exports.submitAssessment = async (req, res) => {
           : 0;
 
       enrolledCourse.progress = Math.min(newProgress, 100);
+
+      // Queue course completion progressLog entry if newly complete
+      if (enrolledCourse.progress === 100) {
+        // We check DB state (not in-memory) later; queue unconditionally and
+        // the $push is idempotent enough for our purposes (challengeController
+        // de-dupes by action+refId when evaluating).
+        progressLogEntries.push({
+          action: "complete_course",
+          refId: courseId,
+          refTitle: enrolledCourse.title || "Course",
+          score: 0,
+          durationMinutes: 0,
+          completedAt: new Date(),
+        });
+      }
     }
 
-    // Check for Badges (Pass '0' for time explicitly as we don't track it yet)
-    // The BadgeService checks if badges are already earned, so safe to call repeatedly.
+    // Save the core progress changes (assessmentProgress + completedModules + enrolledCourse.progress)
+    // NOTE: Do NOT mutate student.progressLog before here — awardCredits() calls findByIdAndUpdate
+    // which bumps __v, causing a VersionError if we then call student.save() with stale __v.
+    await student.save();
+
+    // Now atomically push all queued progressLog entries (separate update avoids VersionError)
+    if (progressLogEntries.length > 0) {
+      await Student.findByIdAndUpdate(student._id, {
+        $push: { progressLog: { $each: progressLogEntries } },
+      });
+    }
+
+    // Check for Badges (Now that all progress and logs are saved)
     const newBadges = await BadgeService.checkAssessmentBadges(
       student._id,
       percentage,
-      0,
+      timeTaken,
     );
-
-    await student.save();
 
     res.json({
       success: true,

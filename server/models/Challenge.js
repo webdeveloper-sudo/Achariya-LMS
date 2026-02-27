@@ -13,18 +13,25 @@ const ChallengeSchema = new mongoose.Schema({
     required: true,
   },
 
-  // What are they doing?
+  // Metadata
+  title: { type: String, required: true },
+  description: String,
+  type: {
+    type: String,
+    enum: ["DAILY_STREAK", "ASSESSMENT_DUEL", "MODULE_RACE", "CREDIT_WAR"],
+    default: "ASSESSMENT_DUEL",
+  },
+
+  // What are they doing? (Optional for generic races)
   targetModel: {
     type: String,
     enum: ["Assessment", "Module"],
-    default: "Assessment",
   },
   targetId: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     refPath: "targetModel",
   },
-  targetName: String, // Cached name for display
+  targetValue: { type: Number, default: 1 }, // e.g. score 100, or 7 day streak
 
   // State Machine
   status: {
@@ -41,24 +48,25 @@ const ChallengeSchema = new mongoose.Schema({
   },
 
   // The stakes
-  wager: { type: Number, default: 0 }, // If we allow betting credits
-  reward: { type: Number, default: 20 }, // System reward
+  wager: { type: Number, default: 0 },
+  reward: { type: Number, default: 20 },
 
   // Outcomes
   results: {
-    initiatorScore: Number,
-    initiatorTime: Number, // Seconds
+    initiatorScore: { type: Number, default: 0 },
+    initiatorTime: { type: Number, default: 0 },
     initiatorCompletedAt: Date,
 
-    opponentScore: Number,
-    opponentTime: Number,
+    opponentScore: { type: Number, default: 0 },
+    opponentTime: { type: Number, default: 0 },
     opponentCompletedAt: Date,
   },
 
-  winner: { type: mongoose.Schema.Types.ObjectId, ref: "Student" }, // Null if tie/incomplete
+  winner: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
 
+  startDate: { type: Date },
+  endDate: { type: Date },
   createdAt: { type: Date, default: Date.now },
-  expiresAt: { type: Date }, // Auto-cancel if not accepted
 });
 
 module.exports = mongoose.model("Challenge", ChallengeSchema);

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, UserPlus, Edit2, X, Save } from "lucide-react";
+import { ArrowLeft, UserPlus, Edit2, X, Database, Users } from "lucide-react";
 import axiosInstance from "../../../../api/axiosInstance";
 import { useEffect, useState, useMemo } from "react";
 import AdminFilterComponent from "../../components/AdminFilterComponent";
@@ -8,20 +8,20 @@ import AdminAddUserForm from "../../components/user/AdminAddUserForm";
 import AdminEditUserForm from "../../components/user/AdminEditUserForm";
 
 interface User {
-  _id: string; // Assuming MongoDB _id
+  _id: string;
   id?: string;
   admissionNo: string;
-  admissionno?: string; // Handle legacy case
+  admissionno?: string;
   name: string;
   class: string;
   section: string;
   mobileNo: string;
-  credits?: any[]; // Changed from number to array as per schema
-  totalCredits?: number; // Added field
+  credits?: any[];
+  totalCredits?: number;
   school: string;
   status: string;
   role?: string;
-  department?: string; // Handle legacy case
+  department?: string;
   email?: string;
   onboarded?: boolean;
 }
@@ -68,14 +68,12 @@ const AdminUsersPage = () => {
     }
   };
 
-  // Helper to extract unique values for filters
   const getUniqueValues = (key: keyof User | "department") => {
     return [
       ...new Set(
         allUsers
           .map((u) => {
             if (key === "class") return u.class || u.department;
-            // Handle array/object properties safely if they are used here (though mostly strings)
             return u[key as keyof User];
           })
           .filter(Boolean),
@@ -135,27 +133,17 @@ const AdminUsersPage = () => {
     });
   }, [allUsers, searchQuery, filters]);
 
-  // Handle Edit Click
   const handleEditClick = (user: User) => {
     setSelectedUser(user);
     setEditFormData({ ...user });
     setIsEditModalOpen(true);
   };
 
-  // Handle Input Change in Edit Modal
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-    setEditFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // Handle Save Update
   const handleUpdateClick = () => {
     setConfirmPopup({
       isOpen: true,
-      title: "Confirm Update",
-      message: `Are you sure you want to update details for ${editFormData.name}?`,
+      title: "Authorize Identity Update",
+      message: `Synchronize modified parameters for subject: ${editFormData.name}?`,
       onConfirm: executeUpdate,
       isLoading: false,
     });
@@ -163,14 +151,10 @@ const AdminUsersPage = () => {
 
   const executeUpdate = async () => {
     if (!selectedUser) return;
-
     setConfirmPopup((prev) => ({ ...prev, isLoading: true }));
     try {
       const idToUpdate = selectedUser._id || selectedUser.id;
-
       await axiosInstance.put(`/admin/students/${idToUpdate}`, editFormData);
-
-      // Update local state
       setAllUsers((prev) =>
         prev.map((u) =>
           u._id === idToUpdate || u.id === idToUpdate
@@ -178,15 +162,11 @@ const AdminUsersPage = () => {
             : u,
         ),
       );
-
       setIsEditModalOpen(false);
       setConfirmPopup((prev) => ({ ...prev, isOpen: false }));
     } catch (err: any) {
       console.error("Failed to update user", err);
-      alert(
-        err.response?.data?.message ||
-          "Failed to update user. Please try again.",
-      );
+      alert("Identity synchronization failure.");
       setConfirmPopup((prev) => ({ ...prev, isLoading: false, isOpen: false }));
     }
   };
@@ -194,205 +174,197 @@ const AdminUsersPage = () => {
   const executeDelete = async (id: string) => {
     try {
       await axiosInstance.delete(`/admin/students/${id}`);
-      // Update local UI
       setAllUsers((prev) => prev.filter((u) => u._id !== id && u.id !== id));
-      setIsEditModalOpen(false); // Close the modal
+      setIsEditModalOpen(false);
     } catch (err: any) {
-      console.error("Failed to delete user", err);
-      alert(err.response?.data?.message || "Failed to delete user.");
+      alert("Identity purge failure.");
     }
   };
 
   return (
-    <div>
-      <Link
-        to="/admin/dashboard"
-        className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4"
-      >
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Dashboard
-      </Link>
+    <div className="space-y-12 pb-20 px-8">
+      {/* Header */}
+      <div className="border-b border-black pb-12">
+        <Link
+          to="/admin/dashboard"
+          className="inline-flex items-center text-[13px] hover:text-black mb-10 transition-colors capitalize text-gray-500"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          System Authority Terminal
+        </Link>
 
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">User Management</h1>
-          <p className="text-sm">Total Students: {allUsers.length}</p>
-        </div>
-        <div className="flex gap-3">
-          <Link
-            to="/admin/users/upload"
-            className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-          >
-            <UserPlus className="w-4 h-4 mr-2" />
-            Upload Students
-          </Link>
-          <button
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-            onClick={() => setAddNewUserOpen(true)}
-          >
-            <UserPlus className="w-4 h-4 mr-2" />
-            Add New User
-          </button>
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 text-center sm:text-left">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-6 justify-center sm:justify-start">
+              <div className="bg-black p-2 rounded-sm border border-black">
+                <Users className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-[13px] capitalize text-black font-medium">
+                Participant Registry
+              </span>
+            </div>
+            <h1 className="text-4xl text-black mb-6 leading-tight capitalize">
+              Identity <span className="text-gray-400">Vault</span>
+            </h1>
+            <p className="text-gray-600 text-[15px] max-w-xl leading-relaxed mx-auto sm:mx-0">
+              Management of institutional subject identities and credentials.
+              Registered Entities: {allUsers.length}
+            </p>
+          </div>
 
-          <button
-            className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-            onClick={() =>
-              setConfirmPopup({
-                isOpen: true,
-                title: "Delete ALL Students?",
-                message:
-                  "WARNING: This will permanently delete ALL student records from the database. This action cannot be undone. Are you absolutely sure?",
-                onConfirm: async () => {
-                  setConfirmPopup((prev) => ({ ...prev, isLoading: true }));
-                  try {
-                    const res = await axiosInstance.delete(
-                      "/admin/students/deleteAll",
-                    );
-                    alert(
-                      res.data.message || "All students deleted successfully.",
-                    );
-                    setAllUsers([]); // Clear local state
-                  } catch (err: any) {
-                    console.error("Failed to delete all students", err);
-                    alert(
-                      err.response?.data?.message ||
-                        "Failed to delete all students.",
-                    );
-                  } finally {
-                    setConfirmPopup((prev) => ({
-                      ...prev,
-                      isOpen: false,
-                      isLoading: false,
-                    }));
-                  }
-                },
-                isLoading: false,
-              })
-            }
-          >
-            <X className="w-4 h-4 mr-2" />
-            Delete All
-          </button>
+          <div className="flex flex-wrap gap-4 justify-center sm:justify-start lg:mx-0 mx-auto">
+            <Link
+              to="/admin/users/upload"
+              className="inline-flex items-center px-6 py-3.5 border border-black text-black rounded-sm text-[13px] capitalize hover:bg-gray-50 transition"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Batch Initialization
+            </Link>
+            <button
+              onClick={() => setAddNewUserOpen(true)}
+              className="inline-flex items-center px-6 py-3.5 bg-black text-white rounded-sm text-[13px] capitalize hover:bg-gray-800 transition shadow-sm"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              New Identity
+            </button>
+            <button
+              className="inline-flex items-center px-4 py-2 border border-red-600 text-red-600 rounded-sm text-[11px] capitalize hover:bg-red-50 transition"
+              onClick={() =>
+                setConfirmPopup({
+                  isOpen: true,
+                  title: "Wipe Identity Vault?",
+                  message:
+                    "CRITICAL: Authorize total purge of all student identities. This operation is non-reversible.",
+                  onConfirm: async () => {
+                    setConfirmPopup((prev) => ({ ...prev, isLoading: true }));
+                    try {
+                      await axiosInstance.delete("/admin/students/deleteAll");
+                      setAllUsers([]);
+                    } catch (err: any) {
+                      alert("Vault purge failure.");
+                    } finally {
+                      setConfirmPopup((prev) => ({
+                        ...prev,
+                        isOpen: false,
+                        isLoading: false,
+                      }));
+                    }
+                  },
+                  isLoading: false,
+                })
+              }
+            >
+              <X className="w-4 h-4 mr-2" />
+              Total Purge
+            </button>
+          </div>
         </div>
-        <AdminAddUserForm
-          isOpen={addNewUserOpen}
-          onClose={() => setAddNewUserOpen(false)}
-          onUserAdded={fetchstudnets}
+      </div>
+
+      {/* Filter Component - Needs to be B&W aware or replaced with custom */}
+      <div className="bg-white border border-black rounded-sm">
+        <AdminFilterComponent
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Filter by Name, Admission Protocol, or Terminal ID..."
+          filters={filters}
+          onFilterChange={(key, value) =>
+            setFilters((prev) => ({ ...prev, [key]: value }))
+          }
+          filterOptions={{
+            school: uniqueSchools.map((s) => ({ label: s, value: s })),
+            class: uniqueClasses.map((c) => ({ label: c, value: c })),
+            section: uniqueSections.map((s) => ({ label: s, value: s })),
+            status: uniqueStatuses.map((s) => ({ label: s, value: s })),
+          }}
         />
       </div>
 
-      <AdminFilterComponent
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        searchPlaceholder="Search Name, Admission No, Mobile..."
-        filters={filters}
-        onFilterChange={(key, value) =>
-          setFilters((prev) => ({ ...prev, [key]: value }))
-        }
-        filterOptions={{
-          school: uniqueSchools.map((s) => ({ label: s, value: s })),
-          class: uniqueClasses.map((c) => ({ label: c, value: c })),
-          section: uniqueSections.map((s) => ({ label: s, value: s })),
-          status: uniqueStatuses.map((s) => ({ label: s, value: s })),
-        }}
-      />
-
-      <div className="bg-white rounded-xl shadow-sm p-6 border">
+      {/* Registry Table */}
+      <div className="bg-white border border-black rounded-sm shadow-none overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b">
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  Admission No
-                </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  Name
-                </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  Section
-                </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  Mobile No
-                </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  Credits
-                </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  School
-                </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  Status
-                </th>
-                <th className="text-right py-3 px-4 text-sm font-semibold text-gray-700">
-                  Actions
-                </th>
+              <tr className="bg-black text-[11px] uppercase tracking-widest text-white/70">
+                <th className="py-5 px-6 font-medium">Admission Protocol</th>
+                <th className="py-5 px-6 font-medium">Subject Designation</th>
+                <th className="py-5 px-6 font-medium">Strata / Section</th>
+                <th className="py-5 px-6 font-medium">Terminal Channel</th>
+                <th className="py-5 px-6 font-medium">Asset Credits</th>
+                <th className="py-5 px-6 font-medium">Institutional Hub</th>
+                <th className="py-5 px-6 font-medium">Operational Status</th>
+                <th className="py-5 px-6 font-medium text-right">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-8 text-gray-500">
-                    Loading users...
+                  <td colSpan={8} className="text-center py-20">
+                    <div className="flex flex-col items-center gap-4">
+                      <Database className="w-10 h-10 text-gray-200 animate-pulse" />
+                      <p className="text-[11px] text-gray-400 capitalize">
+                        Synchronizing subjects...
+                      </p>
+                    </div>
                   </td>
                 </tr>
               ) : filteredUsers.length > 0 ? (
                 filteredUsers.map((user) => (
                   <tr
                     key={`${user.role || "user"}-${user.id || user._id}`}
-                    className="border-b hover:bg-gray-50"
+                    className="hover:bg-gray-50 transition-colors group"
                   >
-                    <td className="py-3 px-4">
-                      <p className="font-semibold text-gray-800">
-                        {user.admissionNo || user.admissionno}
+                    <td className="py-5 px-6 font-mono text-[12px] text-gray-400">
+                      {user.admissionNo || user.admissionno}
+                    </td>
+                    <td className="py-5 px-6">
+                      <p className="text-[14px] font-medium text-black capitalize group-hover:underline cursor-pointer">
+                        {user.name}
                       </p>
                     </td>
-                    <td className="py-3 px-4">
-                      <p className="font-semibold text-gray-800">{user.name}</p>
-                      <p className="text-xs text-gray-500">
-                        {user.class || user.department}
-                      </p>
+                    <td className="py-5 px-6">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[12px] text-gray-600 bg-gray-50 px-2 py-0.5 border border-gray-100 rounded-sm">
+                          {user.class || user.department}
+                        </span>
+                        <span className="text-[10px] text-gray-400 font-mono tracking-tighter">
+                          {user.section}
+                        </span>
+                      </div>
                     </td>
-                    <td className="py-3 px-4 text-left">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          user.role === "Student"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-green-100 text-green-700"
-                        }`}
-                      >
-                        {user.section}
-                      </span>
-                    </td>
-
-                    <td className="py-3 px-4 text-left text-sm font-semibold text-blue-600">
+                    <td className="py-5 px-6 text-[13px] font-medium text-black font-mono">
                       {user.mobileNo}
                     </td>
-                    <td className="py-3 px-4 text-left text-sm font-semibold text-purple-600">
+                    <td className="py-5 px-6 text-[13px] font-medium text-black tabular-nums">
                       {user.totalCredits || 0}
                     </td>
-                    <td className="py-3 px-4 text-left text-sm">
+                    <td className="py-5 px-6 text-[12px] text-gray-500 capitalize">
                       {user.school}
                     </td>
-                    <td className="py-3 px-4 text-left">
-                      <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
+                    <td className="py-5 px-6">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-sm text-[10px] uppercase font-bold border ${user.status === "active" ? "bg-black text-white border-black" : "bg-white text-black border-gray-200"}`}
+                      >
                         {user.status}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-right">
+                    <td className="py-5 px-6 text-right">
                       <button
                         onClick={() => handleEditClick(user)}
-                        className="text-blue-600 hover:text-blue-800 bg-blue-50 p-2 rounded-lg transition-colors"
-                        title="Edit User"
+                        className="p-2 border border-black rounded-sm text-black hover:bg-black hover:text-white transition-all active:scale-90"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 size={14} />
                       </button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} className="text-center py-8 text-gray-500">
-                    No users found matching your filters.
+                  <td
+                    colSpan={8}
+                    className="text-center py-20 text-gray-400 text-[13px] capitalize"
+                  >
+                    Zero subjects detected matching current filter protocol.
                   </td>
                 </tr>
               )}
@@ -401,14 +373,17 @@ const AdminUsersPage = () => {
         </div>
       </div>
 
-      {/* Edit User Modal */}
+      {/* Forms & Modals */}
+      <AdminAddUserForm
+        isOpen={addNewUserOpen}
+        onClose={() => setAddNewUserOpen(false)}
+        onUserAdded={fetchstudnets}
+      />
 
-      {/* Edit User Modal */}
       {isEditModalOpen && (
         <AdminEditUserForm
           editFormData={editFormData}
           setEditFormData={setEditFormData}
-          uniqueSchools={uniqueSchools}
           onCancel={() => setIsEditModalOpen(false)}
           onSave={handleUpdateClick}
           onDelete={() => {
@@ -418,6 +393,7 @@ const AdminUsersPage = () => {
           }}
         />
       )}
+
       <ConfirmationPopup
         isOpen={confirmPopup.isOpen}
         title={confirmPopup.title}
@@ -426,7 +402,7 @@ const AdminUsersPage = () => {
         onCancel={() => setConfirmPopup((prev) => ({ ...prev, isOpen: false }))}
         isLoading={confirmPopup.isLoading}
         type="warning"
-        confirmText="Yes, Proceed"
+        confirmText="Exceute Operation"
       />
     </div>
   );

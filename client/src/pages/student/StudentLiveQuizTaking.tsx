@@ -1,4 +1,4 @@
-// Student Live Quiz Taking Page
+﻿// Student Live Quiz Taking Page
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Send } from 'lucide-react';
@@ -28,7 +28,7 @@ const StudentLiveQuizTaking = () => {
         { id: 1, text: "What is 2 + 2?", options: ["3", "4", "5", "6"], correctAnswer: 1 },
         { id: 2, text: "Capital of France?", options: ["London", "Berlin", "Paris", "Madrid"], correctAnswer: 2 },
         { id: 3, text: "Which is a prime number?", options: ["4", "6", "7", "8"], correctAnswer: 2 },
-        { id: 4, text: "What is 5 × 6?", options: ["25", "30", "35", "40"], correctAnswer: 1 },
+        { id: 4, text: "What is 5 Ã— 6?", options: ["25", "30", "35", "40"], correctAnswer: 1 },
         { id: 5, text: "Largest ocean?", options: ["Atlantic", "Pacific", "Indian", "Arctic"], correctAnswer: 1 },
         { id: 6, text: "What is 10 - 3?", options: ["5", "6", "7", "8"], correctAnswer: 2 },
         { id: 7, text: "Who wrote Hamlet?", options: ["Dickens", "Shakespeare", "Austen", "Tolkien"], correctAnswer: 1 },
@@ -44,13 +44,13 @@ const StudentLiveQuizTaking = () => {
                 getSessionById(sessionId).then((firebaseSession) => {
                     if (firebaseSession) {
                         // Use REAL session from Firebase with correct endTime
-                        console.log('✅ Loaded session from Firebase:', firebaseSession);
+                        console.log('âœ… Loaded session from Firebase:', firebaseSession);
                         setSession(firebaseSession);
                         // CRITICAL: Set endTime ONCE - prevents timer reset
                         setQuizEndTime(firebaseSession.endTime.toDate());
                     } else {
                         // Fallback to mock session (for demo purposes)
-                        console.log('⚠️ No Firebase session, using mock');
+                        console.log('âš ï¸ No Firebase session, using mock');
                         // Calculate endTime ONCE here, not in toDate()
                         const mockEndTime = new Date(Date.now() + 120000);
                         const mockStartTime = new Date();
@@ -110,7 +110,7 @@ const StudentLiveQuizTaking = () => {
             const timeLeft = quizEndTime.getTime() - now;
 
             if (timeLeft <= 0) {
-                console.log('⏰ FALLBACK: Quiz time expired - auto-submitting');
+                console.log('â° FALLBACK: Quiz time expired - auto-submitting');
                 clearInterval(checkExpired);
                 handleSubmit();
             }
@@ -123,20 +123,20 @@ const StudentLiveQuizTaking = () => {
     useEffect(() => {
         if (!sessionId || !session || isSubmitting) return;
 
-        console.log('👂 Listening for teacher ending quiz early...');
+        console.log('ðŸ‘‚ Listening for teacher ending quiz early...');
         const sessionRef = doc(db, 'liveQuizSessions', sessionId);
 
         const unsubscribe = onSnapshot(sessionRef, (snapshot) => {
             const data = snapshot.data();
 
             if (data?.status === 'completed' && !isSubmitting) {
-                console.log('🛑 Teacher ended quiz early - auto-submitting student answers');
+                console.log('ðŸ›‘ Teacher ended quiz early - auto-submitting student answers');
                 handleSubmit();
             }
         });
 
         return () => {
-            console.log('🔌 Unsubscribing from session status listener');
+            console.log('ðŸ”Œ Unsubscribing from session status listener');
             unsubscribe();
         };
     }, [sessionId, session, isSubmitting]);
@@ -295,7 +295,7 @@ const StudentLiveQuizTaking = () => {
                                 onClick={() => handleAnswerSelect(index)}
                                 className={`w-full p-4 rounded-xl border-2 transition text-left ${selectedAnswers[currentQuestionIndex] === index
                                     ? 'border-blue-600 bg-blue-50 text-blue-900'
-                                    : 'border-gray-200 hover:border-blue-300 text-gray-700'
+                                    : 'border-gray-300 hover:border-blue-300 text-gray-700'
                                     }`}>
                                 <div className="flex items-center gap-3">
                                     <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${selectedAnswers[currentQuestionIndex] === index
@@ -356,3 +356,4 @@ const StudentLiveQuizTaking = () => {
 };
 
 export default StudentLiveQuizTaking;
+

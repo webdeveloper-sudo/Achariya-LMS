@@ -1,57 +1,78 @@
+import { Trophy, Zap } from "lucide-react";
+
 interface StreakWidgetProps {
-    currentStreak: number;
-    longestStreak: number;
+  currentStreak: number;
 }
 
-const StreakWidget = ({ currentStreak, longestStreak }: StreakWidgetProps) => {
-    // Determine next milestone
-    const getNextMilestone = () => {
-        if (currentStreak < 7) return { target: 7, name: 'Week Warrior' };
-        if (currentStreak < 30) return { target: 30, name: 'Monthly Master' };
-        if (currentStreak < 100) return { target: 100, name: 'Century Champion' };
-        return { target: 100, name: 'Century Champion' };
-    };
+const StreakWidget = ({ currentStreak }: StreakWidgetProps) => {
+  // Determine next milestone
+  const getNextMilestone = () => {
+    if (currentStreak < 7) return { target: 7, name: "WEEK WARRIOR" };
+    if (currentStreak < 30) return { target: 30, name: "MONTHLY MASTER" };
+    if (currentStreak < 100) return { target: 100, name: "CENTURY CHAMPION" };
+    return { target: 365, name: "ANNUAL LEGEND" };
+  };
 
-    const milestone = getNextMilestone();
-    const progress = (currentStreak / milestone.target) * 100;
+  const milestone = getNextMilestone();
+  const progress = (currentStreak / milestone.target) * 100;
 
-    return (
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl shadow-sm p-4">
-            <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                    <span className="text-3xl animate-pulse">🔥</span>
-                    <div>
-                        <h3 className="font-bold text-2xl text-amber-900">{currentStreak}</h3>
-                        <p className="text-xs text-amber-700">Day Streak</p>
-                    </div>
-                </div>
-                <div className="text-right">
-                    <p className="text-xs text-amber-600">Best</p>
-                    <p className="font-semibold text-amber-900">{longestStreak} days</p>
-                </div>
-            </div>
+  return (
+    <div className="relative overflow-hidden bg-white border border-gray-300 rounded-md p-8 shadow-sm group">
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50/50 blur-3xl rounded-full -z-0 group-hover:scale-110 transition-transform duration-700"></div>
 
-            {/* Progress to next milestone */}
-            <div className="mb-2">
-                <div className="flex justify-between text-xs mb-1 text-amber-700">
-                    <span>Next: {milestone.name}</span>
-                    <span>{currentStreak}/{milestone.target}</span>
-                </div>
-                <div className="w-full bg-amber-200 rounded-full h-2">
-                    <div
-                        className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${Math.min(progress, 100)}%` }}
-                    />
-                </div>
-            </div>
+      <div className="flex items-center justify-between relative z-10"></div>
 
-            {currentStreak >= 7 && (
-                <p className="text-xs text-center text-amber-700 mt-2">
-                    🏆 Keep it up! You're on fire!
-                </p>
-            )}
+      {/* Progress to next milestone */}
+      <div className="relative z-10 space-y-4">
+        <div className="flex justify-between items-end">
+          <div>
+            <p className="text-[11px]  text-gray-700 uppercase tracking-widest mb-1.5">
+              Current Milestone
+            </p>
+            <p className="text-xl font-bold text-gray-900 tracking-tight uppercase">
+              {milestone.name}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-xl font-semibold text-gray-600 tracking-tight">
+              {currentStreak}
+              <span className="text-gray-600 mx-1">/</span>
+              {milestone.target}
+            </p>
+          </div>
         </div>
-    );
+
+        <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden border border-gray-100">
+          <div
+            className="absolute top-0 left-0 h-full bg-blue-900 transition-all duration-1000 shadow-[0_0_8px_rgba(37,99,235,0.4)]"
+            style={{ width: `${Math.min(progress, 100)}%` }}
+          />
+        </div>
+
+        <div className="flex justify-between items-center px-1">
+          <div className="flex items-center gap-2">
+            <Zap size={11} className="text-blue-900" />
+            <span className="text-[11px] text-gray-800 uppercase tracking-widest">
+              Synchronization Active
+            </span>
+          </div>
+          <span className="text-[14px] text-blue-900 uppercase tracking-widest">
+            <span>{Math.round(progress)}%</span> Complete
+          </span>
+        </div>
+      </div>
+
+      {currentStreak >= 7 && (
+        <div className="mt-8 flex items-center justify-center gap-3 py-3 bg-emerald-50 border border-emerald-100 rounded-md animate-in fade-in">
+          <Trophy className="w-4 h-4 text-emerald-600" />
+          <p className="text-[9px] font-bold uppercase tracking-widest text-emerald-600">
+            Performance Standard: Elite
+          </p>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default StreakWidget;

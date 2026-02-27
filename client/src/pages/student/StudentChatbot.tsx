@@ -1,4 +1,4 @@
-// Student AI Chatbot Interface
+﻿// Student AI Chatbot Interface
 import { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, Sparkles, X, ArrowLeft, Lightbulb } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -46,7 +46,7 @@ const StudentChatbot = () => {
     useEffect(() => {
         const welcomeMessage: ChatMessage = {
             role: 'assistant',
-            content: `👋 Hi! I'm your AI Study Assistant!\n\nI can help you with:\n• Explaining difficult concepts\n• Breaking down complex topics\n• Answering academic questions\n• Guiding you through problems\n\n${context?.courseName ? `📚 Currently helping with: **${context.courseName}**${context.moduleName ? ` - ${context.moduleName}` : ''}` : ''}\n\nWhat would you like to learn about today?`,
+            content: `ðŸ‘‹ Hi! I'm your AI Study Assistant!\n\nI can help you with:\nâ€¢ Explaining difficult concepts\nâ€¢ Breaking down complex topics\nâ€¢ Answering academic questions\nâ€¢ Guiding you through problems\n\n${context?.courseName ? `ðŸ“š Currently helping with: **${context.courseName}**${context.moduleName ? ` - ${context.moduleName}` : ''}` : ''}\n\nWhat would you like to learn about today?`,
             timestamp: new Date()
         };
         setMessages([welcomeMessage]);
@@ -124,7 +124,7 @@ const StudentChatbot = () => {
                             </h1>
                             {context?.courseName && (
                                 <p className="text-sm text-blue-100">
-                                    {context.courseName}{context.moduleName && ` • ${context.moduleName}`}
+                                    {context.courseName}{context.moduleName && ` â€¢ ${context.moduleName}`}
                                 </p>
                             )}
                         </div>
@@ -173,10 +173,10 @@ const StudentChatbot = () => {
                                         let formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
                                         // Check if it's a bullet point
-                                        if (formatted.startsWith('•')) {
+                                        if (formatted.startsWith('â€¢')) {
                                             return (
                                                 <div key={i} className="flex items-start gap-2 my-1">
-                                                    <span className="text-blue-500 font-bold">•</span>
+                                                    <span className="text-blue-500 font-bold">â€¢</span>
                                                     <span dangerouslySetInnerHTML={{ __html: formatted.substring(1) }} />
                                                 </div>
                                             );
@@ -257,7 +257,7 @@ const StudentChatbot = () => {
             </div>
 
             {/* Sticky Input */}
-            <div className="bg-white border-t-2 border-gray-200 p-4 shadow-lg">
+            <div className="bg-white border-t-2 border-gray-300 p-4 shadow-lg">
                 <div className="max-w-4xl mx-auto flex gap-2">
                     <input
                         ref={inputRef}
@@ -278,7 +278,7 @@ const StudentChatbot = () => {
                     </button>
                 </div>
                 <p className="text-xs text-gray-500 text-center mt-2">
-                    Press Enter to send • Shift+Enter for new line
+                    Press Enter to send â€¢ Shift+Enter for new line
                 </p>
             </div>
         </div>
@@ -286,3 +286,4 @@ const StudentChatbot = () => {
 };
 
 export default StudentChatbot;
+

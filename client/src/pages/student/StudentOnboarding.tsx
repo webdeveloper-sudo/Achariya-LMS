@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+﻿import { useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   ArrowRight,
   Mail,
@@ -22,6 +22,9 @@ type Step =
 
 const StudentOnboarding = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isForgotMode = searchParams.get("mode") === "forgot";
+
   const [step, setStep] = useState<Step>("ADMISSION_VERIFY");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +37,7 @@ const StudentOnboarding = () => {
     studentId: string;
   } | null>(null);
   const [selectedContact, setSelectedContact] = useState<"email" | "mobile">(
-    "email"
+    "email",
   );
   const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
@@ -53,9 +56,15 @@ const StudentOnboarding = () => {
       const data = response.data;
 
       if (data && data.student) {
-        if (data.student.onboarded) {
+        if (data.student.onboarded && !isForgotMode) {
           alert("Account already activated! Please log in.");
           navigate("/student/login");
+          return;
+        }
+
+        if (!data.student.onboarded && isForgotMode) {
+          alert("Account not activated yet! Please activate first.");
+          navigate("/student/onboarding");
           return;
         }
 
@@ -73,7 +82,7 @@ const StudentOnboarding = () => {
       setError(
         err.response?.data?.message ||
           err.message ||
-          "Admission number not found."
+          "Admission number not found.",
       );
     } finally {
       setLoading(false);
@@ -89,7 +98,7 @@ const StudentOnboarding = () => {
     } catch (err: any) {
       console.error("Send OTP Error:", err);
       setError(
-        err.response?.data?.message || err.message || "Failed to send OTP."
+        err.response?.data?.message || err.message || "Failed to send OTP.",
       );
     } finally {
       setLoading(false);
@@ -108,7 +117,7 @@ const StudentOnboarding = () => {
       setError(
         err.response?.data?.message ||
           err.message ||
-          "Invalid OTP. Please try again."
+          "Invalid OTP. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -130,32 +139,41 @@ const StudentOnboarding = () => {
 
     setLoading(true);
     try {
-      const response = await studentAuthApi.completeOnboarding({
-        admissionNumber,
-        password,
-      });
+      if (isForgotMode) {
+        await studentAuthApi.resetPassword({
+          admissionNumber,
+          otp,
+          password,
+        });
+        setStep("SUCCESS");
+      } else {
+        const response = await studentAuthApi.completeOnboarding({
+          admissionNumber,
+          password,
+        });
 
-      // Save token immediately so they are logged in
-      if (response.data && response.data.token) {
-        localStorage.setItem("token", response.data.token);
-        if (response.data.student) {
-          const user = {
-            ...response.data.student,
-            role: "Student",
-            email: response.data.student.email,
-          };
-          // Update global store
-          useStudentStore.getState().login(user, response.data.token);
+        // Save token immediately so they are logged in
+        if (response.data && response.data.token) {
+          localStorage.setItem("token", response.data.token);
+          if (response.data.student) {
+            const user = {
+              ...response.data.student,
+              role: "Student",
+              email: response.data.student.email,
+            };
+            // Update global store
+            useStudentStore.getState().login(user, response.data.token);
+          }
         }
-      }
 
-      setStep("SUCCESS");
+        setStep("SUCCESS");
+      }
     } catch (err: any) {
       console.error("Onboarding Complete Error:", err);
       setError(
         err.response?.data?.message ||
           err.message ||
-          "Failed to create account."
+          "Failed to create account.",
       );
     } finally {
       setLoading(false);
@@ -170,7 +188,7 @@ const StudentOnboarding = () => {
           <form onSubmit={handleInformationVerify} className="space-y-6">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-gray-800">
-                Verify Identity
+                {isForgotMode ? "Reset Password" : "Verify Identity"}
               </h2>
               <p className="text-gray-500">
                 Enter your admission number to begin
@@ -223,7 +241,7 @@ const StudentOnboarding = () => {
                 className={`w-full p-4 border rounded-xl flex items-center justify-between transition-all ${
                   selectedContact === "email"
                     ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-200 hover:border-blue-300"
+                    : "border-gray-300 hover:border-blue-300"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -253,7 +271,7 @@ const StudentOnboarding = () => {
                 className={`w-full p-4 border rounded-xl flex items-center justify-between transition-all ${
                   selectedContact === "mobile"
                     ? "border-blue-500 bg-blue-50 text-blue-700"
-                    : "border-gray-200 hover:border-blue-300"
+                    : "border-gray-300 hover:border-blue-300"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -341,9 +359,13 @@ const StudentOnboarding = () => {
           <form onSubmit={handleComplete} className="space-y-6">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-gray-800">
-                Secure Your Account
+                {isForgotMode ? "Reset Password" : "Secure Your Account"}
               </h2>
-              <p className="text-gray-500">Create a strong password</p>
+              <p className="text-gray-500">
+                {isForgotMode
+                  ? "Create a new strong password"
+                  : "Create a strong password"}
+              </p>
             </div>
 
             <div className="space-y-4">
@@ -395,6 +417,8 @@ const StudentOnboarding = () => {
             >
               {loading ? (
                 <Loader2 className="animate-spin" />
+              ) : isForgotMode ? (
+                "Reset Password"
               ) : (
                 "Complete Setup"
               )}
@@ -412,9 +436,15 @@ const StudentOnboarding = () => {
               You're All Set!
             </h2>
             <p className="text-gray-600 mb-8">
-              Your account has been successfully verified and secured.
+              {isForgotMode
+                ? "Your password has been successfully reset."
+                : "Your account has been successfully verified and secured."}
               <br />
-              You've earned <strong>5 credits</strong> for onboarding!
+              {!isForgotMode && (
+                <>
+                  You've earned <strong>5 credits</strong> for onboarding!
+                </>
+              )}
             </p>
             <Link
               to="/student/dashboard"
@@ -428,7 +458,7 @@ const StudentOnboarding = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 student-context">
       <div className="mb-8">
         <img
           src="/achariya-logo.jpg"
@@ -471,7 +501,7 @@ const StudentOnboarding = () => {
 
         {error && (
           <div className="mb-6 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-600 flex items-start gap-2">
-            <span className="mt-0.5">⚠️</span> {error}
+            <span className="mt-0.5">âš ï¸</span> {error}
           </div>
         )}
 

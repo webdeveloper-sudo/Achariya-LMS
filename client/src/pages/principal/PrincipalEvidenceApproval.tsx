@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, XCircle, Clock, FileText } from 'lucide-react';
 
@@ -107,7 +107,7 @@ const PrincipalEvidenceApproval = () => {
                 </h2>
 
                 {pendingEvidence.length === 0 ? (
-                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
+                    <div className="bg-gray-50 border border-gray-300 rounded-xl p-8 text-center">
                         <Clock className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                         <p className="text-gray-600">No pending evidence to review</p>
                     </div>
@@ -119,13 +119,13 @@ const PrincipalEvidenceApproval = () => {
                                     <div className="flex-1">
                                         <h3 className="text-lg font-bold text-gray-800 mb-1">{evidence.title}</h3>
                                         <p className="text-sm text-gray-600 mb-2">
-                                            {evidence.teacherName} • {evidence.courseName}
+                                            {evidence.teacherName} â€¢ {evidence.courseName}
                                         </p>
                                         <p className="text-sm text-gray-700 mb-3">{evidence.description}</p>
                                         <div className="flex items-center text-sm text-gray-500">
                                             <FileText className="w-4 h-4 mr-1" />
                                             <span>{evidence.fileName}</span>
-                                            <span className="mx-2">•</span>
+                                            <span className="mx-2">â€¢</span>
                                             <span>Submitted: {new Date(evidence.submittedAt).toLocaleDateString()}</span>
                                         </div>
                                     </div>
@@ -175,7 +175,7 @@ const PrincipalEvidenceApproval = () => {
                                     <div>
                                         <h4 className="font-semibold text-gray-800">{evidence.title}</h4>
                                         <p className="text-sm text-gray-600">
-                                            {evidence.teacherName} • {evidence.courseName}
+                                            {evidence.teacherName} â€¢ {evidence.courseName}
                                         </p>
                                     </div>
                                     <span
@@ -210,10 +210,10 @@ const PrincipalEvidenceApproval = () => {
                                         <h3 className="font-semibold text-gray-800">{evidence.title}</h3>
                                         <p className="text-sm text-gray-600 mt-1">{evidence.description}</p>
                                         <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                                            <span>📁 {evidence.fileName}</span>
-                                            <span>📅 {new Date(evidence.submittedAt).toLocaleDateString()}</span>
-                                            <span>👤 {evidence.teacherName}</span>
-                                            <span>📚 {evidence.courseName}</span>
+                                            <span>ðŸ“ {evidence.fileName}</span>
+                                            <span>ðŸ“… {new Date(evidence.submittedAt).toLocaleDateString()}</span>
+                                            <span>ðŸ‘¤ {evidence.teacherName}</span>
+                                            <span>ðŸ“š {evidence.courseName}</span>
                                         </div>
                                     </div>
                                     <span className={`px-3 py-1 rounded-full text-sm font-semibold ${evidence.status === 'Approved'
@@ -234,3 +234,4 @@ const PrincipalEvidenceApproval = () => {
     );
 };
 export default PrincipalEvidenceApproval;
+

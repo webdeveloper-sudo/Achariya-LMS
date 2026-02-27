@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, UserPlus, Edit2, Shield } from "lucide-react";
+import { ArrowLeft, UserPlus, Edit2, Shield, Database } from "lucide-react";
 import axiosInstance from "../../../../api/axiosInstance";
 import { useEffect, useState } from "react";
-import AdminFilterComponent from "../../components/AdminFilterComponent"; // Reuse
-import ConfirmationPopup from "../../../../components/ConfirmationPopup"; // Reuse
+import AdminFilterComponent from "../../components/AdminFilterComponent";
+import ConfirmationPopup from "../../../../components/ConfirmationPopup";
 import AdminAddPrincipalForm from "../../components/user/AdminAddPrincipalForm";
 import AdminEditPrincipalForm from "../../components/user/AdminEditPrincipalForm";
 
@@ -74,22 +74,19 @@ const AdminPrincipalsPage = () => {
     return matchesSearch && matchesSchool && matchesStatus;
   });
 
-  // Unique schools for filter
   const uniqueSchools = [...new Set(principals.map((p) => p.school))];
 
-  // Handle Edit Click
   const handleEditClick = (p: Principal) => {
     setSelectedPrincipal(p);
     setEditFormData({ ...p });
     setIsEditModalOpen(true);
   };
 
-  // Handle Save Update
   const handleUpdateClick = () => {
     setConfirmPopup({
       isOpen: true,
-      title: "Confirm Update",
-      message: `Update details for ${editFormData.name}?`,
+      title: "Authorize Executive Update",
+      message: `Synchronize modified parameters for executive member: ${editFormData.name}?`,
       onConfirm: executeUpdate,
       isLoading: false,
     });
@@ -97,15 +94,12 @@ const AdminPrincipalsPage = () => {
 
   const executeUpdate = async () => {
     if (!selectedPrincipal) return;
-
     setConfirmPopup((prev) => ({ ...prev, isLoading: true }));
     try {
       await axiosInstance.put(
         `/admin/principals/${selectedPrincipal._id}`,
         editFormData,
       );
-
-      // Update local state
       setPrincipals((prev) =>
         prev.map((p) =>
           p._id === selectedPrincipal._id
@@ -113,12 +107,10 @@ const AdminPrincipalsPage = () => {
             : p,
         ),
       );
-
       setIsEditModalOpen(false);
       setConfirmPopup((prev) => ({ ...prev, isOpen: false }));
     } catch (err: any) {
-      console.error("Failed to update", err);
-      alert(err.response?.data?.message || "Failed to update.");
+      alert("Executive synchronization failure.");
       setConfirmPopup((prev) => ({ ...prev, isLoading: false, isOpen: false }));
     }
   };
@@ -129,150 +121,163 @@ const AdminPrincipalsPage = () => {
       setPrincipals((prev) => prev.filter((p) => p._id !== id));
       setIsEditModalOpen(false);
     } catch (err: any) {
-      console.error("Failed to delete", err);
-      alert(err.response?.data?.message || "Failed to delete.");
+      alert("Executive purge failure.");
     }
   };
 
   return (
-    <div>
-      <Link
-        to="/admin/dashboard"
-        className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4"
-      >
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Dashboard
-      </Link>
+    <div className="space-y-12 pb-20 px-8">
+      {/* Header */}
+      <div className="border-b border-black pb-12">
+        <Link
+          to="/admin/dashboard"
+          className="inline-flex items-center text-[13px] hover:text-black mb-10 transition-colors capitalize text-gray-500"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          System Authority Terminal
+        </Link>
 
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">
-            Principal Management
-          </h1>
-          <p className="text-sm">Total Principals: {principals.length}</p>
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 text-center sm:text-left">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-6 justify-center sm:justify-start">
+              <div className="bg-black p-2 rounded-sm border border-black">
+                <Shield className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-[13px] capitalize text-black font-medium">
+                Executive Oversight
+              </span>
+            </div>
+            <h1 className="text-4xl text-black mb-6 leading-tight capitalize">
+              Principal <span className="text-gray-400">Registry</span>
+            </h1>
+            <p className="text-gray-600 text-[15px] max-w-xl leading-relaxed mx-auto sm:mx-0">
+              Direct administrative management of institutional leaders and
+              school assignments. Active Executives: {principals.length}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-4 justify-center sm:justify-start lg:mx-0 mx-auto">
+            <button
+              onClick={() => setAddOpen(true)}
+              className="inline-flex items-center px-8 py-3.5 bg-black text-white rounded-sm text-[13px] capitalize hover:bg-gray-800 transition shadow-sm"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Initialize Executive
+            </button>
+          </div>
         </div>
-        <div>
-          <button
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-            onClick={() => setAddOpen(true)}
-          >
-            <UserPlus className="w-4 h-4 mr-2" />
-            Add New Principal
-          </button>
-        </div>
-        <AdminAddPrincipalForm
-          isOpen={addOpen}
-          onClose={() => setAddOpen(false)}
-          onPrincipalAdded={fetchPrincipals}
+      </div>
+
+      {/* Filter Component */}
+      <div className="bg-white border border-black rounded-sm">
+        <AdminFilterComponent
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Filter by Name, Executive Email, or Hub..."
+          filters={filters}
+          onFilterChange={(key, value) =>
+            setFilters((prev) => ({ ...prev, [key]: value }))
+          }
+          filterOptions={{
+            school: uniqueSchools.map((s) => ({ label: s, value: s })),
+            class: [],
+            section: [],
+            status: [
+              { label: "Active", value: "Active" },
+              { label: "Inactive", value: "Inactive" },
+            ],
+          }}
         />
       </div>
 
-      <AdminFilterComponent
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        searchPlaceholder="Search Name, Email, School..."
-        filters={filters}
-        onFilterChange={(key, value) =>
-          setFilters((prev) => ({ ...prev, [key]: value }))
-        }
-        filterOptions={{
-          school: uniqueSchools.map((s) => ({ label: s, value: s })),
-          class: [], // Not applicable
-          section: [], // Not applicable
-          status: [
-            { label: "Active", value: "Active" },
-            { label: "Inactive", value: "Inactive" },
-          ],
-        }}
-        // Hide irrelevant filters
-      />
-
-      <div className="bg-white rounded-xl shadow-sm p-6 border mt-4">
+      {/* Registry Table */}
+      <div className="bg-white border border-black rounded-sm shadow-none mt-4 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b">
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  Name
+              <tr className="bg-black text-[11px] uppercase tracking-widest text-white/70">
+                <th className="py-5 px-6 font-medium">Executive Designation</th>
+                <th className="py-5 px-6 font-medium">Digital Terminal</th>
+                <th className="py-5 px-6 font-medium">Direct Channel</th>
+                <th className="py-5 px-6 font-medium">Institutional Hub</th>
+                <th className="py-5 px-6 font-medium text-center">
+                  Protocol ID
                 </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  Email
-                </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  Mobile
-                </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  School
-                </th>
-                <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">
-                  ID
-                </th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                  Status
-                </th>
-                <th className="text-right py-3 px-4 text-sm font-semibold text-gray-700">
-                  Actions
-                </th>
+                <th className="py-5 px-6 font-medium">Operational Status</th>
+                <th className="py-5 px-6 font-medium text-right">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-8 text-gray-500">
-                    Loading...
+                  <td colSpan={7} className="text-center py-20">
+                    <div className="flex flex-col items-center gap-4">
+                      <Database className="w-10 h-10 text-gray-200 animate-pulse" />
+                      <p className="text-[11px] text-gray-400 capitalize">
+                        Synchronizing executives...
+                      </p>
+                    </div>
                   </td>
                 </tr>
               ) : filteredPrincipals.length > 0 ? (
                 filteredPrincipals.map((p) => (
-                  <tr key={p._id} className="border-b hover:bg-gray-50">
-                    <td className="py-3 px-4">
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-                          <Shield className="w-4 h-4 text-purple-600" />
+                  <tr
+                    key={p._id}
+                    className="hover:bg-gray-50 transition-colors group"
+                  >
+                    <td className="py-5 px-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-8 h-8 rounded-sm bg-gray-50 border border-black/5 flex items-center justify-center text-black font-bold text-[10px] group-hover:bg-black group-hover:text-white transition-all">
+                          {p.name.charAt(0)}
                         </div>
-                        <p className="font-semibold text-gray-800">{p.name}</p>
+                        <p className="text-[14px] font-medium text-black capitalize group-hover:underline cursor-pointer">
+                          {p.name}
+                        </p>
                       </div>
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">
+                    <td className="py-5 px-6 text-[13px] text-gray-500 font-mono">
                       {p.email}
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">
+                    <td className="py-5 px-6 text-[13px] text-gray-500 font-mono">
                       {p.mobile}
                     </td>
                     <td
-                      className="py-3 px-4 text-sm text-gray-600 truncate max-w-xs"
+                      className="py-5 px-6 text-[12px] text-gray-400 capitalize truncate max-w-xs"
                       title={p.school}
                     >
                       {p.school}
                     </td>
-                    <td className="py-3 px-4 text-center text-sm font-mono text-gray-500">
+                    <td className="py-5 px-6 text-center text-[12px] font-mono text-gray-900 font-bold">
                       {p.school_id}
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-5 px-6">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-sm text-[10px] uppercase font-bold border ${
                           p.status === "Active"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
+                            ? "bg-black text-white border-black"
+                            : "bg-white text-black border-gray-200"
                         }`}
                       >
                         {p.status}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-right">
+                    <td className="py-5 px-6 text-right">
                       <button
                         onClick={() => handleEditClick(p)}
-                        className="text-blue-600 hover:text-blue-800 bg-blue-50 p-2 rounded-lg transition-colors"
+                        className="p-2 border border-black rounded-sm text-black hover:bg-black hover:text-white transition-all active:scale-90"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 size={14} />
                       </button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="text-center py-8 text-gray-500">
-                    No principals found.
+                  <td
+                    colSpan={7}
+                    className="text-center py-20 text-gray-400 text-[13px] capitalize"
+                  >
+                    Zero executives detected matching current filter protocol.
                   </td>
                 </tr>
               )}
@@ -281,7 +286,13 @@ const AdminPrincipalsPage = () => {
         </div>
       </div>
 
-      {/* Edit Modal */}
+      {/* Forms & Modals */}
+      <AdminAddPrincipalForm
+        isOpen={addOpen}
+        onClose={() => setAddOpen(false)}
+        onPrincipalAdded={fetchPrincipals}
+      />
+
       {isEditModalOpen && (
         <AdminEditPrincipalForm
           editFormData={editFormData}
@@ -303,7 +314,7 @@ const AdminPrincipalsPage = () => {
         onCancel={() => setConfirmPopup((prev) => ({ ...prev, isOpen: false }))}
         isLoading={confirmPopup.isLoading}
         type="warning"
-        confirmText="Yes, Proceed"
+        confirmText="Execute Operation"
       />
     </div>
   );

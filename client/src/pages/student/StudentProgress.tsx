@@ -1,181 +1,304 @@
-import BackButton from '../../components/BackButton';
-import { TrendingUp, BarChart3 } from 'lucide-react';
+﻿import { useEffect, useState } from "react";
+import {
+  Activity,
+  ArrowLeft,
+  Target,
+  Zap,
+  Clock,
+  Layout,
+  Star,
+  Award,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import axiosInstance from "../../api/axiosInstance";
+import CalendarHeatmapComponent from "../../components/CalendarHeatmap";
+import ChartsAndUnitsGrid from "../../components/ChartsAndUnitsGrid";
+
+interface ProgressData {
+  weeklyActivity: any[];
+  timeline: any[];
+  heatmapData: any[];
+  courseProgress: any[];
+  quizStats: {
+    totalQuizzes: number;
+    completedQuizzes: number;
+    averageScore: number;
+    totalAttempts: number;
+  };
+  signupDate: string;
+}
 
 const StudentProgress = () => {
-    // Weekly activity mock data
-    const weeklyActivity = [
-        { day: 'Mon', completion: 85, quizzes: 3, timeSpent: 120 },
-        { day: 'Tue', completion: 92, quizzes: 4, timeSpent: 145 },
-        { day: 'Wed', completion: 78, quizzes: 2, timeSpent: 95 },
-        { day: 'Thu', completion: 95, quizzes: 5, timeSpent: 160 },
-        { day: 'Fri', completion: 88, quizzes: 3, timeSpent: 130 },
-        { day: 'Sat', completion: 70, quizzes: 2, timeSpent: 85 },
-        { day: 'Sun', completion: 82, quizzes: 3, timeSpent: 110 }
-    ];
+  const [data, setData] = useState<ProgressData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
+  useEffect(() => {
+    const fetchProgress = async () => {
+      try {
+        const res = await axiosInstance.get("/students/progress");
+        setData(res.data);
+      } catch (err: any) {
+        setError(err.response?.data?.message || "Failed to load progress data");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProgress();
+  }, []);
+
+  if (loading) {
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <BackButton />
-
-            <h1 className="text-3xl font-bold text-gray-800 mb-8">📊 My Progress</h1>
-
-            {/* Weekly Activity Graph */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold flex items-center gap-2">
-                        <BarChart3 className="w-7 h-7 text-blue-600" />
-                        Weekly Activity
-                    </h2>
-                    <div className="text-sm text-gray-600">
-                        <TrendingUp className="w-5 h-5 inline mr-1 text-green-600" />
-                        +15% from last week
-                    </div>
-                </div>
-
-                {/* Line Graph */}
-                <div className="relative h-48 mb-4 mt-6">
-                    {/* Y-axis labels */}
-                    <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-500 w-8">
-                        <span>100%</span>
-                        <span>75%</span>
-                        <span>50%</span>
-                        <span>25%</span>
-                        <span>0%</span>
-                    </div>
-
-                    {/* Graph area */}
-                    <div className="ml-10 h-full relative bg-gray-50 rounded-xl p-4">
-                        <svg className="w-full h-full" viewBox="0 0 700 180" preserveAspectRatio="none">
-                            {/* Grid lines */}
-                            <line x1="0" y1="45" x2="700" y2="45" stroke="#e5e7eb" strokeWidth="1" />
-                            <line x1="0" y1="90" x2="700" y2="90" stroke="#e5e7eb" strokeWidth="1" />
-                            <line x1="0" y1="135" x2="700" y2="135" stroke="#e5e7eb" strokeWidth="1" />
-
-                            {/* Line path */}
-                            <path
-                                d={`M 50,${180 - (weeklyActivity[0].completion * 1.8)} 
-                                    L 150,${180 - (weeklyActivity[1].completion * 1.8)} 
-                                    L 250,${180 - (weeklyActivity[2].completion * 1.8)} 
-                                    L 350,${180 - (weeklyActivity[3].completion * 1.8)} 
-                                    L 450,${180 - (weeklyActivity[4].completion * 1.8)} 
-                                    L 550,${180 - (weeklyActivity[5].completion * 1.8)} 
-                                    L 650,${180 - (weeklyActivity[6].completion * 1.8)}`}
-                                fill="none"
-                                stroke="url(#lineGradient)"
-                                strokeWidth="3"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-
-                            {/* Gradient definition */}
-                            <defs>
-                                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stopColor="#3b82f6" />
-                                    <stop offset="100%" stopColor="#8b5cf6" />
-                                </linearGradient>
-                            </defs>
-
-                            {/* Data points with tooltips */}
-                            {weeklyActivity.map((item, idx) => (
-                                <g key={idx}>
-                                    <circle
-                                        cx={50 + idx * 100}
-                                        cy={180 - (item.completion * 1.8)}
-                                        r="6"
-                                        fill="#3b82f6"
-                                        stroke="#ffffff"
-                                        strokeWidth="2"
-                                        className="cursor-pointer hover:r-8 transition-all"
-                                    />
-                                </g>
-                            ))}
-                        </svg>
-
-                        {/* Tooltip overlay */}
-                        <div className="absolute inset-0 flex items-end">
-                            {weeklyActivity.map((item, idx) => (
-                                <div key={idx} className="flex-1 flex items-center justify-center relative group">
-                                    <div className="absolute bottom-0 transform translate-y-full mt-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-20">
-                                        <div className="font-semibold">{item.day}</div>
-                                        <div>{item.completion}% completion</div>
-                                        <div>{item.quizzes} quizzes</div>
-                                        <div>{item.timeSpent} min</div>
-                                    </div>
-                                    <div className="w-full h-full cursor-pointer"></div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* X-axis labels */}
-                    <div className="ml-10 flex justify-between mt-2 text-xs text-gray-600">
-                        {weeklyActivity.map((item, idx) => (
-                            <span key={idx} className="flex-1 text-center">{item.day}</span>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Legend */}
-                <div className="flex items-center justify-center gap-8 text-sm text-gray-600 border-t pt-4">
-                    <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 bg-gradient-to-t from-blue-600 to-blue-400 rounded"></div>
-                        <span>Completion %</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4 text-green-600" />
-                        <span>Hover for details</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Existing progress content... */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Course Progress */}
-                <div className="bg-white rounded-xl shadow-lg p-6">
-                    <h3 className="text-xl font-bold mb-4">📚 Course Progress</h3>
-                    <div className="space-y-4">
-                        <div>
-                            <div className="flex justify-between mb-2">
-                                <span className="text-gray-700">Advanced Mathematics</span>
-                                <span className="text-blue-600 font-bold">85%</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-3">
-                                <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full" style={{ width: '85%' }}></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div className="flex justify-between mb-2">
-                                <span className="text-gray-700">Physics Fundamentals</span>
-                                <span className="text-green-600 font-bold">92%</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-3">
-                                <div className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full" style={{ width: '92%' }}></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Quiz Performance */}
-                <div className="bg-white rounded-xl shadow-lg p-6">
-                    <h3 className="text-xl font-bold mb-4">🎯 Quiz Performance</h3>
-                    <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                            <span className="text-gray-700">Average Score</span>
-                            <span className="text-2xl font-bold text-blue-600">92%</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-gray-700">Quizzes Completed</span>
-                            <span className="text-2xl font-bold text-green-600">24</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-gray-700">Perfect Scores</span>
-                            <span className="text-2xl font-bold text-purple-600">8</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-white gap-6">
+        <div className="w-12 h-12 border-2 border-gray-100 border-t-blue-900 rounded-full animate-spin"></div>
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+          Synchronizing Analytics...
+        </p>
+      </div>
     );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="bg-white p-12 rounded-md shadow-sm border border-gray-100 text-center max-w-lg">
+          <Activity className="w-12 h-12 text-red-500 mx-auto mb-6" />
+          <h2 className="text-xl font-bold text-gray-900 mb-2 tracking-tight">
+            Data Sync Failure
+          </h2>
+          <p className="text-gray-500 text-sm mb-8 font-medium">
+            {error || "Connection error."}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-8 py-4 bg-gray-900 text-white rounded-md font-bold text-[10px] uppercase tracking-widest hover:bg-blue-900 transition-all shadow-sm"
+          >
+            Retry Analytics
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const { timeline, heatmapData, quizStats } = data;
+
+  const getTimeAgo = (date: string) => {
+    const now = new Date();
+    const then = new Date(date);
+    const diff = Math.floor((now.getTime() - then.getTime()) / 1000);
+    if (diff < 60) return "just now";
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
+  };
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Header Section - Inspired by StudentChallenges */}
+      <div className="bg-gray-50 border-b border-gray-100  pb-12 px-6 sm:px-10 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <Link
+            to="/student/dashboard"
+            className="inline-flex items-center text-gray-500 hover:text-blue-900 mb-5 transition-colors text-[12px] uppercase tracking-widest group"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+            Dashboard
+          </Link>
+
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
+            <div>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 tracking-tight leading-tight">
+                Performance <span className="text-gray-400">Tracker</span>
+              </h1>
+              <p className="text-gray-500 text-sm font-medium max-w-2xl leading-relaxed">
+                Strategic overview of your educational commitment, assessment
+                accuracy, and chronological engagement patterns.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="bg-white p-5 px-6 rounded-md border border-gray-300 shadow-sm min-w-[160px]">
+                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                  Mastery Index
+                </p>
+                <div className="flex items-end gap-2">
+                  <span className="text-3xl font-bold text-gray-900 tracking-tight">
+                    {Math.round(quizStats.averageScore)}%
+                  </span>
+                  <Award size={14} className="text-blue-900 mb-1" />
+                </div>
+              </div>
+              <div className="bg-white p-5 px-6 rounded-md border border-gray-300 shadow-sm min-w-[160px]">
+                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                  Validated Units
+                </p>
+                <div className="flex items-end gap-2">
+                  <span className="text-3xl font-bold text-gray-900 tracking-tight">
+                    {quizStats.completedQuizzes}
+                  </span>
+                  <Star size={14} className="text-emerald-500 mb-1" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 pb-24 -mt-6 relative z-20 space-y-8">
+        {/* Heatmap Section - Now Full Width */}
+        <CalendarHeatmapComponent data={heatmapData} />
+
+        <ChartsAndUnitsGrid data={data} />
+        <div>
+          {/* Activity Timeline - Inspired by Social Feed */}
+          <div className="space-y-4 border border-gray-300 rounded-sm px-6 py-10">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-3">
+                <Zap
+                  size={40}
+                  className="text-blue-900 rounded-[100%] border border-blue-900 p-2"
+                />
+                Activity Stream
+              </h2>
+              <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-full border border-gray-100 text-[12px] text-gray-400 uppercase tracking-widest">
+                <div className="w-2 h-2 bg-blue-900 rounded-full animate-pulse"></div>
+                Chronological Log
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {timeline
+                .slice(
+                  (currentPage - 1) * itemsPerPage,
+                  currentPage * itemsPerPage,
+                )
+                .map((item: any, idx) => (
+                  <div
+                    key={item.id || idx}
+                    className="bg-white border border-gray-200 rounded-md px-4 py-6 shadow-sm hover:border-blue-100 transition-all group"
+                  >
+                    <div className="flex items-start gap-6">
+                      <div className="bg-gray-50 p-3 rounded-md border border-gray-300 text-gray-500 group-hover:bg-blue-900 group-hover:text-white group-hover:border-blue-900 transition-all duration-300">
+                        {item.action === "login" ||
+                        item.action === "daily_checkin" ? (
+                          <Clock size={20} />
+                        ) : item.action === "complete_assessment" ? (
+                          <Target size={20} />
+                        ) : (
+                          <Layout size={20} />
+                        )}
+                      </div>
+
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center mb-1">
+                          <div className="flex items-center gap-3">
+                            <h4
+                              className="font-semibold text-gray-900 tracking-tight group-hover:text-blue-900 transition-colors text-lg"
+                              style={{ textTransform: "capitalize" }}
+                            >
+                              {item.action.replace(/_/g, " ")}
+                            </h4>
+                            <span className="text-[10px] font-medium text-gray-400 uppercase tracking-widest">
+                              {getTimeAgo(item.date)}
+                            </span>
+                          </div>
+                          {item.score > 0 && (
+                            <div className="bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 text-[8px] font-bold text-emerald-600 uppercase tracking-widest">
+                              {item.score}% Validated
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-gray-500 text-xs font-medium leading-relaxed">
+                          Interaction verified with reference:{" "}
+                          <span className="text-gray-900 font-bold">
+                            {item.refTitle || "Academic Portal"}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+
+            {/* Activity Stream Pagination - Industrial Theme */}
+            {Math.ceil(timeline.length / itemsPerPage) > 1 && (
+              <div className="mt-12 flex items-center justify-center gap-3">
+                <button
+                  onClick={() => {
+                    setCurrentPage((p) => Math.max(1, p - 1));
+                    window.scrollTo({ top: 800, behavior: "smooth" });
+                  }}
+                  disabled={currentPage === 1}
+                  className="p-3 bg-white border border-gray-300 rounded-md text-gray-400 hover:text-blue-900 hover:border-blue-900 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm group"
+                >
+                  <ChevronLeft
+                    size={18}
+                    className="group-hover:-translate-x-0.5 transition-transform"
+                  />
+                </button>
+
+                {(() => {
+                  const totalPages = Math.ceil(timeline.length / itemsPerPage);
+                  let pages = [];
+                  if (totalPages <= 3) {
+                    pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+                  } else if (currentPage === 1) {
+                    pages = [1, 2, 3];
+                  } else if (currentPage === totalPages) {
+                    pages = [totalPages - 2, totalPages - 1, totalPages];
+                  } else {
+                    pages = [currentPage - 1, currentPage, currentPage + 1];
+                  }
+
+                  return pages.map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => {
+                        setCurrentPage(page);
+                        window.scrollTo({ top: 800, behavior: "smooth" });
+                      }}
+                      className={`w-12 h-12 rounded-md font-black text-[12px] transition-all border shadow-sm ${
+                        currentPage === page
+                          ? "bg-blue-900 text-white border-blue-900 shadow-lg scale-110"
+                          : "bg-white text-gray-500 border-gray-300 hover:border-blue-900 hover:text-blue-900"
+                      }`}
+                    >
+                      {page.toString().padStart(2, "0")}
+                    </button>
+                  ));
+                })()}
+
+                <button
+                  onClick={() => {
+                    setCurrentPage((p) =>
+                      Math.min(
+                        Math.ceil(timeline.length / itemsPerPage),
+                        p + 1,
+                      ),
+                    );
+                    window.scrollTo({ top: 800, behavior: "smooth" });
+                  }}
+                  disabled={
+                    currentPage === Math.ceil(timeline.length / itemsPerPage)
+                  }
+                  className="p-3 bg-white border border-gray-300 rounded-md text-gray-400 hover:text-blue-900 hover:border-blue-900 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm group"
+                >
+                  <ChevronRight
+                    size={18}
+                    className="group-hover:translate-x-0.5 transition-transform"
+                  />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default StudentProgress;

@@ -1,5 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, Edit2, Search } from "lucide-react";
+import {
+  ArrowLeft,
+  Plus,
+  Edit2,
+  Search,
+  BookOpen,
+  Database,
+  LayoutGrid,
+} from "lucide-react";
 import axiosInstance from "../../../../api/axiosInstance";
 import { useEffect, useState, useMemo } from "react";
 import ConfirmationPopup from "../../../../components/ConfirmationPopup";
@@ -15,7 +23,7 @@ interface Course {
   thumbnail: string;
   status: string;
   totalCredits: number;
-  eligibleSchools: string[] | any[]; // could be objects if populated
+  eligibleSchools: string[] | any[];
   assignedTeachers: string[] | any[];
   modules: any[];
 }
@@ -50,11 +58,8 @@ const AdminCoursesPage = () => {
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      // Assuming getCourses endpoint handles pagination or I get all.
-      // AdminTeachersPage gets all. I'll get all logic here.
-      const res = await axiosInstance.get("/admin/courses?limit=100"); // Getting specific limit
+      const res = await axiosInstance.get("/admin/courses?limit=100");
       setAllCourses(res.data.data || []);
-      console.log(res.data.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -86,8 +91,8 @@ const AdminCoursesPage = () => {
   const handleUpdateClick = () => {
     setConfirmPopup({
       isOpen: true,
-      title: "Confirm Update",
-      message: `Are you sure you want to update course ${editFormData.title}?`,
+      title: "Confirm Registry Update",
+      message: `Authorize structural modifications to course variant: ${editFormData.title}?`,
       onConfirm: executeUpdate,
       isLoading: false,
     });
@@ -101,21 +106,21 @@ const AdminCoursesPage = () => {
 
       await axiosInstance.put(
         `/admin/courses/${selectedCourse._id}`,
-        updateData
+        updateData,
       );
 
       setAllCourses((prev) =>
         prev.map((c) =>
           c._id === selectedCourse._id
             ? ({ ...c, ...editFormData } as Course)
-            : c
-        )
+            : c,
+        ),
       );
       setIsEditModalOpen(false);
       setConfirmPopup((prev) => ({ ...prev, isOpen: false }));
     } catch (err: any) {
       console.error("Update failed", err);
-      alert("Failed to update course");
+      alert("Failed to update asset");
       setConfirmPopup((prev) => ({ ...prev, isLoading: false, isOpen: false }));
     }
   };
@@ -127,92 +132,107 @@ const AdminCoursesPage = () => {
       setIsEditModalOpen(false);
     } catch (err: any) {
       console.error("Delete failed", err);
-      alert("Failed to delete course");
+      alert("Asset deletion failure");
     }
   };
 
   return (
-    <div className="p-6">
-      <Link
-        to="/admin/dashboard"
-        className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-4"
-      >
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Dashboard
-      </Link>
+    <div className="space-y-12 pb-20 px-8">
+      {/* Header */}
+      <div className="border-b border-black pb-12">
+        <Link
+          to="/admin/dashboard"
+          className="inline-flex items-center text-[13px] hover:text-black mb-10 transition-colors capitalize text-gray-500"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          System Authority Terminal
+        </Link>
 
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Course Management</h1>
-          <p className="text-sm">Total Courses: {allCourses.length}</p>
-        </div>
-        <div className="flex gap-3">
-          <button
-            onClick={() => setAddNewCourseOpen(true)}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add New Course
-          </button>
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 text-center sm:text-left">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-6 justify-center sm:justify-start">
+              <div className="bg-black p-2 rounded-sm border border-black">
+                <BookOpen className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-[13px] capitalize text-black font-medium">
+                Curriculum Inventory
+              </span>
+            </div>
+            <h1 className="text-4xl text-black mb-6 leading-tight capitalize">
+              Asset <span className="text-gray-400">Registry</span>
+            </h1>
+            <p className="text-gray-600 text-[15px] max-w-xl leading-relaxed mx-auto sm:mx-0">
+              Management and synchronization of institutional instructional
+              streams. Total Registry Count: {allCourses.length}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-4 justify-center sm:justify-start lg:mx-0 mx-auto">
+            <button
+              onClick={() => setAddNewCourseOpen(true)}
+              className="inline-flex items-center px-8 py-3.5 bg-black text-white rounded-sm text-[13px] capitalize hover:bg-gray-800 transition shadow-sm"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Initialize Asset
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-xl shadow-sm mb-6 border flex items-center">
-        <Search className="text-gray-400 w-5 h-5 mr-3" />
+      {/* Filter Terminal */}
+      <div className="bg-white p-6 rounded-sm border border-black shadow-none flex items-center">
+        <Search className="text-black w-5 h-5 mr-4" />
         <input
           type="text"
-          placeholder="Search by Title, Subject Code, or ID..."
-          className="flex-1 outline-none text-gray-700"
+          placeholder="Filter by Designation, Protocol Code, or Identity..."
+          className="flex-1 outline-none text-[13px] text-black bg-white placeholder-gray-300 capitalize"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
 
-      <AdminAddCourseForm
-        isOpen={addNewCourseOpen}
-        onClose={() => setAddNewCourseOpen(false)}
-        onCourseAdded={fetchCourses}
-      />
-
-      {/* Grid */}
+      {/* Results Deck */}
       {loading ? (
-        <div className="text-center py-20 text-gray-500">
-          Loading courses...
+        <div className="flex flex-col items-center justify-center py-32 gap-6 text-center">
+          <div className="bg-gray-50 p-6 rounded-sm border border-black">
+            <Database className="w-12 h-12 text-black animate-pulse" />
+          </div>
+          <p className="text-[11px] text-gray-400 capitalize">
+            Synchronizing Inventory Parameters...
+          </p>
         </div>
       ) : filteredCourses.length === 0 ? (
-        <div className="text-center py-20 bg-gray-50 rounded-xl border border-dashed text-gray-500">
-          No courses found.
+        <div className="flex flex-col items-center justify-center py-32 gap-6 border border-dashed border-black rounded-sm text-center">
+          <LayoutGrid className="w-12 h-12 text-gray-200" />
+          <p className="text-[13px] text-gray-400 capitalize">
+            Zero assets match current filter protocol.
+          </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredCourses.map((course) => (
             <div
               key={course._id}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border overflow-hidden flex flex-col group"
+              className="bg-white rounded-sm border border-black hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all flex flex-col group overflow-hidden"
             >
-              <div className="h-40 bg-gray-200 relative">
+              <div className="h-48 bg-gray-50 relative border-b border-black grayscale group-hover:grayscale-0 transition-all duration-700">
                 {course.thumbnail ? (
                   <img
                     src={course.thumbnail}
                     alt={course.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
-                    }}
+                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-4xl">
-                    📚
+                  <div className="w-full h-full flex items-center justify-center text-4xl opacity-10 font-bold grayscale">
+                    UI.PROTOCOL
                   </div>
                 )}
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-4 right-4">
                   <span
-                    className={`px-2 py-1 rounded text-xs font-bold ${
+                    className={`px-3 py-1 rounded-sm text-[10px] uppercase font-bold border ${
                       course.status === "published"
-                        ? "bg-green-100 text-green-700"
-                        : course.status === "draft"
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-gray-100 text-gray-700"
+                        ? "bg-black text-white border-black"
+                        : "bg-white text-black border-black"
                     }`}
                   >
                     {course.status}
@@ -220,37 +240,41 @@ const AdminCoursesPage = () => {
                 </div>
               </div>
 
-              <div className="p-5 flex-1 flex flex-col">
-                <div className="flex justify-between items-start mb-2">
-                  <h3
-                    className="font-bold text-gray-800 line-clamp-1 cursor-pointer hover:text-blue-600 transition-colors"
-                    title={course.title}
-                    onClick={() => handleManageModules(course)}
-                  >
-                    {course.title}
-                  </h3>
-                  <span className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded font-mono">
+              <div className="p-8 flex-1 flex flex-col">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3
+                      className="text-lg font-medium text-black line-clamp-1 cursor-pointer hover:underline transition-all capitalize"
+                      title={course.title}
+                      onClick={() => handleManageModules(course)}
+                    >
+                      {course.title}
+                    </h3>
+                    <p className="text-[10px] text-gray-400 capitalize mt-1 font-mono tracking-tighter">
+                      Protocol: {course.courseId}
+                    </p>
+                  </div>
+                  <span className="text-[10px] bg-gray-50 text-black border border-black/10 px-2 py-0.5 rounded-sm font-mono font-bold">
                     {course.subjectCode}
                   </span>
                 </div>
-                <p className="text-sm text-gray-500 line-clamp-2 mb-4 flex-1">
+                <p className="text-[13px] text-gray-500 line-clamp-3 mb-8 flex-1 leading-relaxed capitalize">
                   {course.description}
                 </p>
 
-                <div className="flex justify-between items-center text-xs text-gray-400 border-t pt-3 mt-auto">
-                  <span>ID: {course.courseId}</span>
-                  <div className="flex gap-2">
+                <div className="flex justify-between items-center pt-6 border-t border-gray-50 mt-auto">
+                  <div className="flex gap-4">
                     <button
                       onClick={() => handleManageModules(course)}
-                      className="px-2 py-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition"
+                      className="px-4 py-2 bg-black text-white text-[11px] capitalize rounded-sm hover:invert transition-all flex items-center gap-2"
                     >
-                      Modules
+                      Audit Units
                     </button>
                     <button
                       onClick={() => handleEditClick(course)}
-                      className="p-2 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition"
+                      className="p-2 border border-black text-black rounded-sm hover:bg-black hover:text-white transition-all"
                     >
-                      <Edit2 className="w-4 h-4" />
+                      <Edit2 size={14} />
                     </button>
                   </div>
                 </div>
@@ -260,6 +284,13 @@ const AdminCoursesPage = () => {
         </div>
       )}
 
+      {/* Forms & Modals */}
+      <AdminAddCourseForm
+        isOpen={addNewCourseOpen}
+        onClose={() => setAddNewCourseOpen(false)}
+        onCourseAdded={fetchCourses}
+      />
+
       {isEditModalOpen && selectedCourse && (
         <AdminEditCourseForm
           editFormData={editFormData}
@@ -268,7 +299,7 @@ const AdminCoursesPage = () => {
           onSave={handleUpdateClick}
           onDelete={() => {
             if (selectedCourse) {
-              if (confirm("Are you sure you want to delete this course?")) {
+              if (confirm("Authorize complete deletion of asset?")) {
                 executeDelete(selectedCourse._id);
               }
             }
@@ -276,7 +307,6 @@ const AdminCoursesPage = () => {
         />
       )}
 
-      {/* Uses global confirmation popup from re-used components */}
       <ConfirmationPopup
         isOpen={confirmPopup.isOpen}
         title={confirmPopup.title}
@@ -285,7 +315,7 @@ const AdminCoursesPage = () => {
         onCancel={() => setConfirmPopup((prev) => ({ ...prev, isOpen: false }))}
         isLoading={confirmPopup.isLoading}
         type="warning"
-        confirmText="Yes, Update"
+        confirmText="Authorize Modification"
       />
     </div>
   );

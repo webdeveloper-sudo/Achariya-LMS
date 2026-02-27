@@ -20,5 +20,16 @@ router.post(
 
 // Feed
 router.get("/feed", protect, socialController.getFeed);
+router.post(
+  "/activity/:activityId/like",
+  protect,
+  socialController.likeActivity,
+);
+router.post(
+  "/activity/:activityId/comment",
+  protect,
+  socialController.commentOnActivity,
+);
+router.post("/share-achievement", protect, socialController.shareAchievement);
 
 module.exports = router;

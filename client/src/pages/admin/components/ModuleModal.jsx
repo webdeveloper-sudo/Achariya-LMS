@@ -484,7 +484,7 @@ const ModuleModal = ({ isOpen, onClose, onSave, initialData, isEditing, courseId
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                                            <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
                                                 <ListChecks className="w-10 h-10 text-gray-300 mx-auto mb-3" />
                                                 <p className="text-gray-500 font-medium">No assessments added yet</p>
                                                 <p className="text-gray-400 text-sm mt-1">Create a quiz or exam for this module</p>

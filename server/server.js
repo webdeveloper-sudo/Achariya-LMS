@@ -33,7 +33,11 @@ app.use("/api/v1/students", require("./routes/studentRoutes")); // Student App R
 // Public course routes (previously inline, now in studentRoutes)
 app.use("/api/v1", require("./routes/studentRoutes")); // For /courses routes
 
-app.use("/api/v1/admin/teachers", require("./routes/teacherRoutes"));
+// Teacher Routes
+const teacherRoutes = require("./routes/teacherRoutes");
+app.use("/api/v1/admin/teachers", teacherRoutes.adminRouter);
+app.use("/api/v1/teacher/auth", teacherRoutes.authRouter);
+app.use("/api/v1/teacher", teacherRoutes.portalRouter);
 
 // LMS Admin Routes
 // LMS Admin Routes
@@ -44,6 +48,7 @@ app.use("/api/v1/admin/upload", require("./routes/uploadRoutes"));
 app.use("/api/v1/admin/assets", require("./routes/assetRoutes"));
 app.use("/api/v1/gamification", require("./routes/gamificationRoutes"));
 app.use("/api/v1/social", require("./routes/socialRoutes"));
+app.use("/api/v1", require("./routes/challengeRoutes")); // challenges (admin + student)
 
 // Principal Routes
 const principalRoutes = require("./routes/principalRoutes");

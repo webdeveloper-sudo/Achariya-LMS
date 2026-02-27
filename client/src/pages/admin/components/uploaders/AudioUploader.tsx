@@ -45,7 +45,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
       )}
 
       {!isUploading && value && (
-        <div className="bg-white border text-gray-800 border-gray-200 rounded-xl p-4 shadow-sm mt-2 space-y-3">
+        <div className="bg-white border text-gray-800 border-gray-300 rounded-xl p-4 shadow-sm mt-2 space-y-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3 overflow-hidden">
               <div className="p-2 bg-purple-50 rounded-lg text-purple-600">

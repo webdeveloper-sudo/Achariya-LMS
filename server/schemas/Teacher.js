@@ -73,10 +73,22 @@ const teacherSchema = new mongoose.Schema(
       default: "Active",
       enum: ["Active", "Inactive", "On Leave"],
     },
+    // Authentication fields
+    password: {
+      type: String,
+      select: false,
+    },
+    activated: {
+      type: Boolean,
+      default: false,
+    },
+    activatedAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Teacher = mongoose.model("Teacher", teacherSchema);

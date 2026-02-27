@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { X, Clock, ChevronLeft, Lightbulb, CheckCircle } from "lucide-react";
+import {
+  X,
+  Clock,
+  ChevronLeft,
+  Lightbulb,
+  CheckCircle,
+  Star,
+} from "lucide-react";
 
 interface QuizQuestion {
   id: number;
@@ -444,7 +451,7 @@ const QuizModal = ({
                   key={i}
                   src={img}
                   alt="Question Reference"
-                  className="rounded-xl border border-gray-200 w-full"
+                  className="rounded-xl border border-gray-300 w-full"
                 />
               ))}
             </div>
@@ -454,7 +461,7 @@ const QuizModal = ({
           <div className="space-y-4 max-w-3xl mx-auto">
             {/* Table for Table MCQ */}
             {question.type === "table-mcq" && question.tableRows && (
-              <div className="mb-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <div className="mb-4 bg-gray-50 p-4 rounded-lg border border-gray-300">
                 <table className="w-full text-sm">
                   <tbody>
                     {question.tableRows.map((row, idx) => (
@@ -491,7 +498,7 @@ const QuizModal = ({
                           : answers[currentQuestion] === index
                       )
                         ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
+                        : "border-gray-300 hover:border-blue-300 hover:bg-gray-50"
                     }`}
                   >
                     <div className="flex items-center">
@@ -542,7 +549,7 @@ const QuizModal = ({
                   {question.pairs.map((pair, idx) => (
                     <div
                       key={`left-${idx}`}
-                      className="p-3 bg-gray-100 rounded border border-gray-200"
+                      className="p-3 bg-gray-100 rounded border border-gray-300"
                     >
                       {pair.left}
                     </div>
@@ -606,9 +613,10 @@ const QuizModal = ({
                           [currentQuestion]: star,
                         }))
                       }
-                      className={`text-2xl transition hover:scale-110 ${ratings[currentQuestion] >= star ? "text-yellow-400" : "text-gray-300"}`}
                     >
-                      ★
+                      <Star
+                        className={`w-6 h-6 transition hover:scale-110 ${ratings[currentQuestion] >= star ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+                      />
                     </button>
                   ))}
                 </div>

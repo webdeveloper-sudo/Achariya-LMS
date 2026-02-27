@@ -1,4 +1,7 @@
 const Student = require("../schemas/Student");
+const Teacher = require("../schemas/Teacher");
+const Principal = require("../schemas/Principal");
+const ActivityLog = require("../models/ActivityLog");
 const Challenge = require("../models/Challenge");
 const ActivityService = require("../services/ActivityService");
 const mongoose = require("mongoose");
@@ -80,6 +83,23 @@ exports.getPotentialRivals = async (req, res) => {
         }
       }
 
+      // 5. Course Progress Proximity (+30 if within 15% of same course)
+      if (sharedCourses.length > 0) {
+        const primaryCourseId = sharedCourses[0];
+        const userProg =
+          student.enrolledCourses.find(
+            (c) => c.courseId?._id?.toString() === primaryCourseId,
+          )?.progress || 0;
+        const candidateProg =
+          candidate.enrolledCourses.find(
+            (c) => c.courseId?._id?.toString() === primaryCourseId,
+          )?.progress || 0;
+
+        const pDiff = Math.abs(userProg - candidateProg);
+        if (pDiff <= 10) score += 30;
+        else if (pDiff <= 25) score += 15;
+      }
+
       return {
         ...candidate,
         matchScore: score,
@@ -104,25 +124,25 @@ exports.getPotentialRivals = async (req, res) => {
  */
 exports.createChallenge = async (req, res) => {
   try {
-    const initiatorId = req.user.id;
+    const initiator = req.user.id;
     const {
-      opponentId,
+      opponentId: opponent,
       type = "DAILY_STREAK",
       targetValue = 7,
       durationDays = 7,
     } = req.body;
 
     // Validation
-    if (!opponentId)
+    if (!opponent)
       return res.status(400).json({ message: "Opponent required" });
 
     // Check if open challenge already exists
     const existing = await Challenge.findOne({
       $or: [
-        { initiatorId, opponentId, status: { $in: ["PENDING", "ACTIVE"] } },
+        { initiator, opponent, status: { $in: ["PENDING", "ACTIVE"] } },
         {
-          initiatorId: opponentId,
-          opponentId: initiatorId,
+          initiator: opponent,
+          opponent: initiator,
           status: { $in: ["PENDING", "ACTIVE"] },
         },
       ],
@@ -136,10 +156,10 @@ exports.createChallenge = async (req, res) => {
     }
 
     const challenge = new Challenge({
-      initiatorId,
-      opponentId,
-      title: `Challenge: ${type}`,
-      description: `Race to ${targetValue}!`,
+      initiator,
+      opponent,
+      title: `Challenge: ${type.replace(/_/g, " ")}`,
+      description: `Target Objective: ${targetValue}`,
       type,
       targetValue,
       status: "PENDING",
@@ -148,13 +168,12 @@ exports.createChallenge = async (req, res) => {
 
     await challenge.save();
 
-    // Add to pending requests of opponent?
-    // Using the 'social.pendingRequests' in Student schema is good practice
-    await Student.findByIdAndUpdate(opponentId, {
+    // Add to pending requests of opponent
+    await Student.findByIdAndUpdate(opponent, {
       $push: {
         "social.pendingRequests": {
-          from: initiatorId,
-          type: "RIVAL", // or CHALLENGE specifically if we differentiate
+          from: initiator,
+          type: "RIVAL",
           createdAt: new Date(),
         },
       },
@@ -179,7 +198,7 @@ exports.acceptChallenge = async (req, res) => {
     if (!challenge)
       return res.status(404).json({ message: "Challenge not found" });
 
-    if (challenge.opponentId.toString() !== userId) {
+    if (challenge.opponent.toString() !== userId) {
       return res
         .status(403)
         .json({ message: "Not authorized to accept this challenge" });
@@ -195,12 +214,12 @@ exports.acceptChallenge = async (req, res) => {
 
     // Add to rivals list for both if not already there
     await Promise.all([
-      Student.findByIdAndUpdate(challenge.initiatorId, {
-        $addToSet: { "social.rivals": challenge.opponentId },
+      Student.findByIdAndUpdate(challenge.initiator, {
+        $addToSet: { "social.rivals": challenge.opponent },
       }),
-      Student.findByIdAndUpdate(challenge.opponentId, {
-        $addToSet: { "social.rivals": challenge.initiatorId },
-        $pull: { "social.pendingRequests": { from: challenge.initiatorId } }, // Remove request
+      Student.findByIdAndUpdate(challenge.opponent, {
+        $addToSet: { "social.rivals": challenge.initiator },
+        $pull: { "social.pendingRequests": { from: challenge.initiator } }, // Remove request
       }),
     ]);
 
@@ -218,10 +237,10 @@ exports.getMyChallenges = async (req, res) => {
   try {
     const studentId = req.user.id;
     const challenges = await Challenge.find({
-      $or: [{ initiatorId: studentId }, { opponentId: studentId }],
+      $or: [{ initiator: studentId }, { opponent: studentId }],
     })
-      .populate("initiatorId", "studentName avatar")
-      .populate("opponentId", "studentName avatar");
+      .populate("initiator", "studentName avatar")
+      .populate("opponent", "studentName avatar");
 
     res.json({ challenges });
   } catch (error) {
@@ -238,6 +257,135 @@ exports.getFeed = async (req, res) => {
     const feed = await ActivityService.getFeed(studentId);
     res.json({ feed });
   } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Like/Unlike an activity
+ */
+exports.likeActivity = async (req, res) => {
+  try {
+    const { activityId } = req.params;
+    const userId = req.user.id;
+    const userRole = req.user.role || "student"; // Default to student if not specified
+
+    const activity = await ActivityLog.findById(activityId);
+    if (!activity)
+      return res.status(404).json({ message: "Activity not found" });
+
+    // Ensure interactions object exists
+    if (!activity.interactions) {
+      activity.interactions = { likes: [], comments: [] };
+    }
+
+    const likeIndex = activity.interactions.likes.indexOf(userId);
+
+    if (likeIndex > -1) {
+      // Unlike
+      activity.interactions.likes.splice(likeIndex, 1);
+    } else {
+      // Like
+      activity.interactions.likes.push(userId);
+      // Set the model based on role for mongoose refPath
+      activity.interactions.likeModel =
+        userRole === "teacher"
+          ? "Teacher"
+          : userRole === "principal"
+            ? "Principal"
+            : "Student";
+    }
+
+    await activity.save();
+    res.json({ success: true, likes: activity.interactions.likes });
+  } catch (error) {
+    console.error("Like Activity Error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Add a comment to an activity
+ * Restricted to Teachers and Principals
+ */
+exports.commentOnActivity = async (req, res) => {
+  try {
+    const { activityId } = req.params;
+    const { text } = req.body;
+    const userId = req.user.id;
+    const userRole = req.user.role || "student";
+
+    // Restriction check
+    if (userRole !== "teacher" && userRole !== "principal") {
+      return res
+        .status(403)
+        .json({ message: "Only teachers and principals can comment." });
+    }
+
+    if (!text)
+      return res.status(400).json({ message: "Comment text is required." });
+
+    const activity = await ActivityLog.findById(activityId);
+    if (!activity)
+      return res.status(404).json({ message: "Activity not found" });
+
+    // Get user name for caching in comment
+    let userName = "User";
+    if (userRole === "teacher") {
+      const teacher = await Teacher.findById(userId);
+      userName = teacher?.teacherName || "Teacher";
+    } else if (userRole === "principal") {
+      const principal = await Principal.findById(userId);
+      userName = principal?.principalName || "Principal";
+    }
+
+    const comment = {
+      userId,
+      userName,
+      userRole,
+      text,
+      createdAt: new Date(),
+    };
+
+    if (!activity.interactions) {
+      activity.interactions = { likes: [], comments: [] };
+    }
+
+    activity.interactions.comments.push(comment);
+    await activity.save();
+
+    res.json({ success: true, comment });
+  } catch (error) {
+    console.error("Comment Activity Error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Share an achievement to the social feed
+ */
+exports.shareAchievement = async (req, res) => {
+  try {
+    const { title, type } = req.body;
+    const actorId = req.user.id;
+    const actorRole = req.user.role || "student";
+
+    // Validate
+    if (!title || !type)
+      return res.status(400).json({ message: "Title and type are required." });
+
+    const log = await ActivityService.logActivity({
+      actorId,
+      verb: "POSTED",
+      object: title,
+      targetName: type,
+      visibility: "PUBLIC",
+      actorRole,
+    });
+
+    res.json({ success: true, activity: log });
+  } catch (error) {
+    console.error("Share Achievement Error:", error);
     res.status(500).json({ message: error.message });
   }
 };

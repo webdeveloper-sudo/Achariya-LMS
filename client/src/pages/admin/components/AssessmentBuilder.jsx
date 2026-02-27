@@ -158,7 +158,7 @@ const AssessmentBuilder = ({ isOpen, onClose, moduleId, courseId, assessmentId, 
     if (!isOpen && !isEmbedded) return null;
 
     const containerClass = isEmbedded 
-        ? "relative w-full h-[800px] flex flex-col bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden mt-4" 
+        ? "relative w-full h-[800px] flex flex-col bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden mt-4" 
         : "fixed inset-0 z-[60] bg-gray-100 flex flex-col";
 
     return (
@@ -307,7 +307,7 @@ const AssessmentBuilder = ({ isOpen, onClose, moduleId, courseId, assessmentId, 
                                                                             <div key={optIdx} className="flex items-center gap-3">
                                                                                 <div 
                                                                                     onClick={() => setValue(`questions.${index}.correctAnswer`, watch(`questions.${index}.options.${optIdx}`))}
-                                                                                    className={`w-8 h-8 rounded-full flex items-center justify-center cursor-pointer border transition ${watch(`questions.${index}.correctAnswer`) === watch(`questions.${index}.options.${optIdx}`) && watch(`questions.${index}.options.${optIdx}`) ? 'bg-green-500 border-green-500 text-white' : 'bg-white border-gray-200 text-gray-500 hover:border-gray-400'}`}
+                                                                                    className={`w-8 h-8 rounded-full flex items-center justify-center cursor-pointer border transition ${watch(`questions.${index}.correctAnswer`) === watch(`questions.${index}.options.${optIdx}`) && watch(`questions.${index}.options.${optIdx}`) ? 'bg-green-500 border-green-500 text-white' : 'bg-white border-gray-300 text-gray-500 hover:border-gray-400'}`}
                                                                                 >
                                                                                     {label}
                                                                                 </div>

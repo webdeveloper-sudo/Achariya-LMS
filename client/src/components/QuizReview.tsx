@@ -196,7 +196,7 @@ const QuizReview = ({ quiz, userAnswers, score, timeUsed, attemptNumber = 1, onC
                                                             ? 'bg-green-100 border-2 border-green-500'
                                                             : optIndex === userAnswer && !isCorrect
                                                                 ? 'bg-red-100 border-2 border-red-500'
-                                                                : 'bg-white border border-gray-200'
+                                                                : 'bg-white border border-gray-300'
                                                             }`}
                                                     >
                                                         <div className="flex items-center gap-2">

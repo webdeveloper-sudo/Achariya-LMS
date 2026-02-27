@@ -1,5 +1,5 @@
 import { X, Save, Trash2, Search } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { allschoolsdata, ALL_CLASSES } from "@/data/global/global";
 import axiosInstance from "@/api/axiosInstance";
 import { useAssetUpload } from "@/hooks/useAssetUpload";

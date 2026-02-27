@@ -113,6 +113,9 @@ router.post("/login", studentController.login);
 // Dashboard (Protected)
 router.get("/dashboard", authenticate, studentController.getDashboard);
 
+// Progress (Protected)
+router.get("/progress", authenticate, studentController.getStudentProgress);
+
 // Courses for students
 router.get("/courses", authenticate, studentController.getCourses);
 
@@ -134,5 +137,15 @@ router.post(
   authenticate,
   studentAssessmentController.submitAssessment,
 );
+
+// Public Profile (Protected)
+router.get(
+  "/public-profile/:studentId",
+  authenticate,
+  studentController.getPublicProfile,
+);
+
+// 6. Reset Password
+router.post("/reset-password", studentController.resetPassword);
 
 module.exports = router;
