@@ -24,9 +24,7 @@ interface Student {
   status: string;
   onboarded: boolean;
   completion: number;
-  totalCredits: number;
-  gamification?: { totalCredits: number; badges: { name: string }[] };
-  badges?: string[];
+  gamification: { totalCredits: number; badges: any[] };
   enrolledCourses?: { courseId: string }[];
 }
 
@@ -343,7 +341,7 @@ const PrincipalAllStudents = () => {
                       className="px-8 py-6 text-center text-sm tabular-nums"
                       style={{ color: "#008000" }}
                     >
-                      {s.gamification?.totalCredits ?? s.totalCredits ?? 0}
+                      {s.gamification?.totalCredits || 0}
                     </td>
                     <td className="px-8 py-6 text-right">
                       <button

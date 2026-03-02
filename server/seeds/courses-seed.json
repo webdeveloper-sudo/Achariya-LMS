@@ -1,0 +1,670 @@
+{
+  "courses": [
+    {
+      "courseId": "CRS-2026-MATH-08",
+      "title": "Mathematics",
+      "subjectCode": "MA08",
+      "description": "Complete academic curriculum for CBSE Grade VIII Mathematics.",
+      "thumbnail": "http://localhost:8000/assets/images/courses/mathematics_v8_thumb.jpg",
+      "totalCredits": 5,
+      "gradesEligible": [
+        "MONT 2",
+        "MONT 1",
+        "PRE MONT",
+        "PRE MONT TD",
+        "Grade I",
+        "Grade II",
+        "Grade III",
+        "Grade IV",
+        "Grade V",
+        "Grade VI",
+        "Grade VII",
+        "Grade VIII",
+        "Grade IX",
+        "Grade X",
+        "Grade XI (Science)",
+        "Grade XI (Commerce)",
+        "Grade XI (Humanities)",
+        "Grade XII (Science)",
+        "Grade XII (Commerce)",
+        "Grade XII (Humanities)"
+      ],
+      "eligibleSchools": [
+        "ACHARIYA ARTS AND SCIENCE COLLEGE (AASC) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ADYAR - ADYAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ALPKM - ALAPAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KKN - KK NAGAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT PP - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KP - KALAPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) MVL CHENNAI - MADURAVOYAL, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - NOLAMBUR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) PBN - PADMANAB NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) RKN - RK NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) SGM - SALIGRAMAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) THIRU NAGAR - THIRUNAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) TRICHY - TRICHY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VGM - VIRUGAMBAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VN - VENKATA NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VVK - VALASARAVAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-GM - GORIMEDU",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-LP - LAWSPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-MLP - MUTHIALPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA CENTRE FOR EXCELLENCE IN TEACHING (ACET) - VILLIANUR, PUDUCHERRY",
+        "AKLAVYA INTERNATIONAL SCHOOL - THENGAITITTU, PUDUCHERRY",
+        "ANUGRAHA TOWNSHIP MANDIR (TKM) - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - ALAPAKKAM, CHENNAI",
+        "ACHARIYA SIKSHA MANDIR (ASM) - KKL - KARAIKAL",
+        "ACHARIYA SIKSHA MANDIR (ASM) - TRICHY - TRICHY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - WESTERN GHATS INTERNATIONAL - ETTIMADAI, COIMBATORE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - FEEDER CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - PERUNDURAI CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM)-HSC",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MKM - MOOLAKULAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MP - MUTHIRAYARPALAYAM, PUDUCHERRY",
+        "AKLAVYA RP - REDDIARPALAYAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-TKM - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (9 to 12) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (1 to 8) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKHA THIRUMANDIRAM (ASTHM) - PATHUKANNU",
+        "SRI SAMPOORNA VIDYALAYAM (SSV)-VL - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - TINDIVANAM",
+        "ACHARIYA SIKSHA MANDIR (ASM) - VILLUPURAM"
+      ],
+      "assignedTeachers": [
+        {
+          "$oid": "694a46e81be3f313ecd1d95e"
+        }
+      ],
+      "modules": [
+        {
+          "$oid": "69a17f660d325de706c4ba4c"
+        },
+        {
+          "$oid": "69a17f660d325de706c4ba50"
+        },
+        {
+          "$oid": "69a17f660d325de706c4ba54"
+        }
+      ],
+      "status": "published",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "enrolledStudents": [],
+      "postedOn": {
+        "$date": "2026-01-06T05:51:10.397Z"
+      },
+      "lastUpdated": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "createdAt": {
+        "$date": "2026-01-06T05:51:10.417Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "__v": 0,
+      "_id": {
+        "$oid": "69a521c0189ea99757eefd65"
+      }
+    },
+    {
+      "courseId": "CRS-2026-SCI-08",
+      "title": "Science",
+      "subjectCode": "SC08",
+      "description": "Complete academic curriculum for CBSE Grade VIII Science.",
+      "thumbnail": "http://localhost:8000/assets/images/courses/science_v8_thumb.jpg",
+      "totalCredits": 5,
+      "gradesEligible": [
+        "MONT 2",
+        "MONT 1",
+        "PRE MONT",
+        "PRE MONT TD",
+        "Grade I",
+        "Grade II",
+        "Grade III",
+        "Grade IV",
+        "Grade V",
+        "Grade VI",
+        "Grade VII",
+        "Grade VIII",
+        "Grade IX",
+        "Grade X",
+        "Grade XI (Science)",
+        "Grade XI (Commerce)",
+        "Grade XI (Humanities)",
+        "Grade XII (Science)",
+        "Grade XII (Commerce)",
+        "Grade XII (Humanities)"
+      ],
+      "eligibleSchools": [
+        "ACHARIYA ARTS AND SCIENCE COLLEGE (AASC) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ADYAR - ADYAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ALPKM - ALAPAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KKN - KK NAGAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT PP - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KP - KALAPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) MVL CHENNAI - MADURAVOYAL, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - NOLAMBUR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) PBN - PADMANAB NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) RKN - RK NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) SGM - SALIGRAMAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) THIRU NAGAR - THIRUNAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) TRICHY - TRICHY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VGM - VIRUGAMBAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VN - VENKATA NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VVK - VALASARAVAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-GM - GORIMEDU",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-LP - LAWSPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-MLP - MUTHIALPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA CENTRE FOR EXCELLENCE IN TEACHING (ACET) - VILLIANUR, PUDUCHERRY",
+        "AKLAVYA INTERNATIONAL SCHOOL - THENGAITITTU, PUDUCHERRY",
+        "ANUGRAHA TOWNSHIP MANDIR (TKM) - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - ALAPAKKAM, CHENNAI",
+        "ACHARIYA SIKSHA MANDIR (ASM) - KKL - KARAIKAL",
+        "ACHARIYA SIKSHA MANDIR (ASM) - TRICHY - TRICHY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - WESTERN GHATS INTERNATIONAL - ETTIMADAI, COIMBATORE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - FEEDER CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - PERUNDURAI CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM)-HSC",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MKM - MOOLAKULAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MP - MUTHIRAYARPALAYAM, PUDUCHERRY",
+        "AKLAVYA RP - REDDIARPALAYAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-TKM - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (9 to 12) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (1 to 8) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKHA THIRUMANDIRAM (ASTHM) - PATHUKANNU",
+        "SRI SAMPOORNA VIDYALAYAM (SSV)-VL - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - TINDIVANAM",
+        "ACHARIYA SIKSHA MANDIR (ASM) - VILLUPURAM"
+      ],
+      "assignedTeachers": [
+        {
+          "$oid": "694a46e81be3f313ecd1d95e"
+        }
+      ],
+      "modules": [
+        {
+          "$oid": "69a17f660d325de706c4ba58"
+        },
+        {
+          "$oid": "69a17f670d325de706c4ba5c"
+        },
+        {
+          "$oid": "69a17f670d325de706c4ba60"
+        }
+      ],
+      "status": "published",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "enrolledStudents": [],
+      "postedOn": {
+        "$date": "2026-01-06T05:51:10.397Z"
+      },
+      "lastUpdated": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "createdAt": {
+        "$date": "2026-01-06T05:51:10.417Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "__v": 0,
+      "_id": {
+        "$oid": "69a521c0189ea99757eefd68"
+      }
+    },
+    {
+      "courseId": "CRS-2026-SOC-08",
+      "title": "Social Science",
+      "subjectCode": "SS08",
+      "description": "Complete academic curriculum for CBSE Grade VIII Social Science.",
+      "thumbnail": "http://localhost:8000/assets/images/courses/social_science_v8_thumb.jpg",
+      "totalCredits": 5,
+      "gradesEligible": [
+        "MONT 2",
+        "MONT 1",
+        "PRE MONT",
+        "PRE MONT TD",
+        "Grade I",
+        "Grade II",
+        "Grade III",
+        "Grade IV",
+        "Grade V",
+        "Grade VI",
+        "Grade VII",
+        "Grade VIII",
+        "Grade IX",
+        "Grade X",
+        "Grade XI (Science)",
+        "Grade XI (Commerce)",
+        "Grade XI (Humanities)",
+        "Grade XII (Science)",
+        "Grade XII (Commerce)",
+        "Grade XII (Humanities)"
+      ],
+      "eligibleSchools": [
+        "ACHARIYA ARTS AND SCIENCE COLLEGE (AASC) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ADYAR - ADYAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ALPKM - ALAPAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KKN - KK NAGAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT PP - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KP - KALAPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) MVL CHENNAI - MADURAVOYAL, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - NOLAMBUR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) PBN - PADMANAB NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) RKN - RK NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) SGM - SALIGRAMAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) THIRU NAGAR - THIRUNAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) TRICHY - TRICHY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VGM - VIRUGAMBAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VN - VENKATA NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VVK - VALASARAVAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-GM - GORIMEDU",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-LP - LAWSPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-MLP - MUTHIALPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA CENTRE FOR EXCELLENCE IN TEACHING (ACET) - VILLIANUR, PUDUCHERRY",
+        "AKLAVYA INTERNATIONAL SCHOOL - THENGAITITTU, PUDUCHERRY",
+        "ANUGRAHA TOWNSHIP MANDIR (TKM) - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - ALAPAKKAM, CHENNAI",
+        "ACHARIYA SIKSHA MANDIR (ASM) - KKL - KARAIKAL",
+        "ACHARIYA SIKSHA MANDIR (ASM) - TRICHY - TRICHY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - WESTERN GHATS INTERNATIONAL - ETTIMADAI, COIMBATORE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - FEEDER CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - PERUNDURAI CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM)-HSC",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MKM - MOOLAKULAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MP - MUTHIRAYARPALAYAM, PUDUCHERRY",
+        "AKLAVYA RP - REDDIARPALAYAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-TKM - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (9 to 12) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (1 to 8) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKHA THIRUMANDIRAM (ASTHM) - PATHUKANNU",
+        "SRI SAMPOORNA VIDYALAYAM (SSV)-VL - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - TINDIVANAM",
+        "ACHARIYA SIKSHA MANDIR (ASM) - VILLUPURAM"
+      ],
+      "assignedTeachers": [
+        {
+          "$oid": "694a46e81be3f313ecd1d95e"
+        }
+      ],
+      "modules": [
+        {
+          "$oid": "69a17f670d325de706c4ba64"
+        },
+        {
+          "$oid": "69a17f670d325de706c4ba68"
+        },
+        {
+          "$oid": "69a17f670d325de706c4ba6c"
+        }
+      ],
+      "status": "published",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "enrolledStudents": [],
+      "postedOn": {
+        "$date": "2026-01-06T05:51:10.397Z"
+      },
+      "lastUpdated": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "createdAt": {
+        "$date": "2026-01-06T05:51:10.417Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "__v": 0,
+      "_id": {
+        "$oid": "69a521c0189ea99757eefd6b"
+      }
+    },
+    {
+      "courseId": "CRS-2026-ENG-08",
+      "title": "English",
+      "subjectCode": "EN08",
+      "description": "Complete academic curriculum for CBSE Grade VIII English.",
+      "thumbnail": "http://localhost:8000/assets/images/courses/english_v8_thumb.jpg",
+      "totalCredits": 5,
+      "gradesEligible": [
+        "MONT 2",
+        "MONT 1",
+        "PRE MONT",
+        "PRE MONT TD",
+        "Grade I",
+        "Grade II",
+        "Grade III",
+        "Grade IV",
+        "Grade V",
+        "Grade VI",
+        "Grade VII",
+        "Grade VIII",
+        "Grade IX",
+        "Grade X",
+        "Grade XI (Science)",
+        "Grade XI (Commerce)",
+        "Grade XI (Humanities)",
+        "Grade XII (Science)",
+        "Grade XII (Commerce)",
+        "Grade XII (Humanities)"
+      ],
+      "eligibleSchools": [
+        "ACHARIYA ARTS AND SCIENCE COLLEGE (AASC) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ADYAR - ADYAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ALPKM - ALAPAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KKN - KK NAGAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT PP - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KP - KALAPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) MVL CHENNAI - MADURAVOYAL, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - NOLAMBUR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) PBN - PADMANAB NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) RKN - RK NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) SGM - SALIGRAMAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) THIRU NAGAR - THIRUNAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) TRICHY - TRICHY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VGM - VIRUGAMBAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VN - VENKATA NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VVK - VALASARAVAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-GM - GORIMEDU",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-LP - LAWSPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-MLP - MUTHIALPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA CENTRE FOR EXCELLENCE IN TEACHING (ACET) - VILLIANUR, PUDUCHERRY",
+        "AKLAVYA INTERNATIONAL SCHOOL - THENGAITITTU, PUDUCHERRY",
+        "ANUGRAHA TOWNSHIP MANDIR (TKM) - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - ALAPAKKAM, CHENNAI",
+        "ACHARIYA SIKSHA MANDIR (ASM) - KKL - KARAIKAL",
+        "ACHARIYA SIKSHA MANDIR (ASM) - TRICHY - TRICHY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - WESTERN GHATS INTERNATIONAL - ETTIMADAI, COIMBATORE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - FEEDER CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - PERUNDURAI CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM)-HSC",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MKM - MOOLAKULAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MP - MUTHIRAYARPALAYAM, PUDUCHERRY",
+        "AKLAVYA RP - REDDIARPALAYAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-TKM - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (9 to 12) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (1 to 8) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKHA THIRUMANDIRAM (ASTHM) - PATHUKANNU",
+        "SRI SAMPOORNA VIDYALAYAM (SSV)-VL - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - TINDIVANAM",
+        "ACHARIYA SIKSHA MANDIR (ASM) - VILLUPURAM"
+      ],
+      "assignedTeachers": [
+        {
+          "$oid": "694a46e81be3f313ecd1d95e"
+        }
+      ],
+      "modules": [
+        {
+          "$oid": "69a17f670d325de706c4ba70"
+        },
+        {
+          "$oid": "69a17f670d325de706c4ba74"
+        },
+        {
+          "$oid": "69a17f670d325de706c4ba78"
+        }
+      ],
+      "status": "published",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "enrolledStudents": [],
+      "postedOn": {
+        "$date": "2026-01-06T05:51:10.397Z"
+      },
+      "lastUpdated": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "createdAt": {
+        "$date": "2026-01-06T05:51:10.417Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "__v": 0,
+      "_id": {
+        "$oid": "69a521c0189ea99757eefd6e"
+      }
+    },
+    {
+      "courseId": "CRS-2026-HIN-08",
+      "title": "Hindi",
+      "subjectCode": "HI08",
+      "description": "Complete academic curriculum for CBSE Grade VIII Hindi.",
+      "thumbnail": "http://localhost:8000/assets/images/courses/hindi_v8_thumb.jpg",
+      "totalCredits": 5,
+      "gradesEligible": [
+        "MONT 2",
+        "MONT 1",
+        "PRE MONT",
+        "PRE MONT TD",
+        "Grade I",
+        "Grade II",
+        "Grade III",
+        "Grade IV",
+        "Grade V",
+        "Grade VI",
+        "Grade VII",
+        "Grade VIII",
+        "Grade IX",
+        "Grade X",
+        "Grade XI (Science)",
+        "Grade XI (Commerce)",
+        "Grade XI (Humanities)",
+        "Grade XII (Science)",
+        "Grade XII (Commerce)",
+        "Grade XII (Humanities)"
+      ],
+      "eligibleSchools": [
+        "ACHARIYA ARTS AND SCIENCE COLLEGE (AASC) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ADYAR - ADYAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ALPKM - ALAPAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KKN - KK NAGAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT PP - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KP - KALAPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) MVL CHENNAI - MADURAVOYAL, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - NOLAMBUR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) PBN - PADMANAB NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) RKN - RK NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) SGM - SALIGRAMAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) THIRU NAGAR - THIRUNAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) TRICHY - TRICHY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VGM - VIRUGAMBAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VN - VENKATA NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VVK - VALASARAVAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-GM - GORIMEDU",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-LP - LAWSPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-MLP - MUTHIALPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA CENTRE FOR EXCELLENCE IN TEACHING (ACET) - VILLIANUR, PUDUCHERRY",
+        "AKLAVYA INTERNATIONAL SCHOOL - THENGAITITTU, PUDUCHERRY",
+        "ANUGRAHA TOWNSHIP MANDIR (TKM) - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - ALAPAKKAM, CHENNAI",
+        "ACHARIYA SIKSHA MANDIR (ASM) - KKL - KARAIKAL",
+        "ACHARIYA SIKSHA MANDIR (ASM) - TRICHY - TRICHY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - WESTERN GHATS INTERNATIONAL - ETTIMADAI, COIMBATORE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - FEEDER CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - PERUNDURAI CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM)-HSC",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MKM - MOOLAKULAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MP - MUTHIRAYARPALAYAM, PUDUCHERRY",
+        "AKLAVYA RP - REDDIARPALAYAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-TKM - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (9 to 12) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (1 to 8) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKHA THIRUMANDIRAM (ASTHM) - PATHUKANNU",
+        "SRI SAMPOORNA VIDYALAYAM (SSV)-VL - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - TINDIVANAM",
+        "ACHARIYA SIKSHA MANDIR (ASM) - VILLUPURAM"
+      ],
+      "assignedTeachers": [
+        {
+          "$oid": "694a46e81be3f313ecd1d95e"
+        }
+      ],
+      "modules": [
+        {
+          "$oid": "69a17f670d325de706c4ba7c"
+        },
+        {
+          "$oid": "69a17f670d325de706c4ba80"
+        },
+        {
+          "$oid": "69a17f680d325de706c4ba84"
+        }
+      ],
+      "status": "published",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "enrolledStudents": [],
+      "postedOn": {
+        "$date": "2026-01-06T05:51:10.397Z"
+      },
+      "lastUpdated": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "createdAt": {
+        "$date": "2026-01-06T05:51:10.417Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "__v": 0,
+      "_id": {
+        "$oid": "69a521c0189ea99757eefd71"
+      }
+    },
+    {
+      "courseId": "CRS-2026-CS-08",
+      "title": "Computer Science",
+      "subjectCode": "CS08",
+      "description": "Complete academic curriculum for CBSE Grade VIII Computer Science.",
+      "thumbnail": "http://localhost:8000/assets/images/courses/computer_science_v8_thumb.jpg",
+      "totalCredits": 5,
+      "gradesEligible": [
+        "MONT 2",
+        "MONT 1",
+        "PRE MONT",
+        "PRE MONT TD",
+        "Grade I",
+        "Grade II",
+        "Grade III",
+        "Grade IV",
+        "Grade V",
+        "Grade VI",
+        "Grade VII",
+        "Grade VIII",
+        "Grade IX",
+        "Grade X",
+        "Grade XI (Science)",
+        "Grade XI (Commerce)",
+        "Grade XI (Humanities)",
+        "Grade XII (Science)",
+        "Grade XII (Commerce)",
+        "Grade XII (Humanities)"
+      ],
+      "eligibleSchools": [
+        "ACHARIYA ARTS AND SCIENCE COLLEGE (AASC) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ADYAR - ADYAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) ALPKM - ALAPAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KKN - KK NAGAR, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT PP - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) KP - KALAPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) MVL CHENNAI - MADURAVOYAL, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - NOLAMBUR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) PBN - PADMANAB NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) RKN - RK NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) SGM - SALIGRAMAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) THIRU NAGAR - THIRUNAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) TRICHY - TRICHY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VGM - VIRUGAMBAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VN - VENKATA NAGAR",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) VVK - VALASARAVAKKAM, CHENNAI",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-GM - GORIMEDU",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-LP - LAWSPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-MLP - MUTHIALPET, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM)-TT - THENGATHITTU, PUDUCHERRY",
+        "ACHARIYA CENTRE FOR EXCELLENCE IN TEACHING (ACET) - VILLIANUR, PUDUCHERRY",
+        "AKLAVYA INTERNATIONAL SCHOOL - THENGAITITTU, PUDUCHERRY",
+        "ANUGRAHA TOWNSHIP MANDIR (TKM) - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - ALAPAKKAM, CHENNAI",
+        "ACHARIYA SIKSHA MANDIR (ASM) - KKL - KARAIKAL",
+        "ACHARIYA SIKSHA MANDIR (ASM) - TRICHY - TRICHY",
+        "ACHARIYA SIKSHA MANDIR (ASM) - WESTERN GHATS INTERNATIONAL - ETTIMADAI, COIMBATORE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - FEEDER CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM) ERODE - PERUNDURAI CENTER - ERODE",
+        "ACHARIYA SIKSHA MANDIR (ASM)-HSC",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MKM - MOOLAKULAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-MP - MUTHIRAYARPALAYAM, PUDUCHERRY",
+        "AKLAVYA RP - REDDIARPALAYAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-TKM - THAVALAKUPPAM, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (9 to 12) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKSHA MANDIR (ASM)-VL (1 to 8) - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA SIKHA THIRUMANDIRAM (ASTHM) - PATHUKANNU",
+        "SRI SAMPOORNA VIDYALAYAM (SSV)-VL - VILLIANUR, PUDUCHERRY",
+        "ACHARIYA BALA SIKSHA MANDIR (ABSM) - TINDIVANAM",
+        "ACHARIYA SIKSHA MANDIR (ASM) - VILLUPURAM"
+      ],
+      "assignedTeachers": [
+        {
+          "$oid": "694a46e81be3f313ecd1d95e"
+        }
+      ],
+      "modules": [
+        {
+          "$oid": "69a17f680d325de706c4ba88"
+        },
+        {
+          "$oid": "69a17f680d325de706c4ba8c"
+        },
+        {
+          "$oid": "69a17f680d325de706c4ba90"
+        }
+      ],
+      "status": "published",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "enrolledStudents": [],
+      "postedOn": {
+        "$date": "2026-01-06T05:51:10.397Z"
+      },
+      "lastUpdated": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "createdAt": {
+        "$date": "2026-01-06T05:51:10.417Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-23T11:26:48.681Z"
+      },
+      "__v": 0,
+      "_id": {
+        "$oid": "69a521c1189ea99757eefd74"
+      }
+    }
+  ]
+}

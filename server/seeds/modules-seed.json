@@ -1,0 +1,1954 @@
+{
+  "modules": [
+    {
+      "moduleId": "MOD-MATH-08-01",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd65"
+      },
+      "title": "Rational Numbers",
+      "description": "Detailed module exploring Rational Numbers in depth for VIII Grade students.",
+      "sequenceOrder": 1,
+      "moduleNotes": {
+        "fileName": "MOD-MATH-08-01_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-MATH-08-01_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Rational Numbers",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-MATH-08-01_audio.mp3",
+        "title": "Lecture Audio - Rational Numbers",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-MATH-08-1-1"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-MATH-08-02",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd65"
+      },
+      "title": "Linear Equations in One Variable",
+      "description": "Detailed module exploring Linear Equations in One Variable in depth for VIII Grade students.",
+      "sequenceOrder": 2,
+      "moduleNotes": {
+        "fileName": "MOD-MATH-08-02_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-MATH-08-02_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Linear Equations in One Variable",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-MATH-08-02_audio.mp3",
+        "title": "Lecture Audio - Linear Equations in One Variable",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-MATH-08-2-1",
+        "ASS-MATH-08-2-2"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-MATH-08-03",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd65"
+      },
+      "title": "Understanding Quadrilaterals",
+      "description": "Detailed module exploring Understanding Quadrilaterals in depth for VIII Grade students.",
+      "sequenceOrder": 3,
+      "moduleNotes": {
+        "fileName": "MOD-MATH-08-03_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-MATH-08-03_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Understanding Quadrilaterals",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-MATH-08-03_audio.mp3",
+        "title": "Lecture Audio - Understanding Quadrilaterals",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-MATH-08-3-1",
+        "ASS-MATH-08-3-2",
+        "ASS-MATH-08-3-3"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-MATH-08-04",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd65"
+      },
+      "title": "Practical Geometry",
+      "description": "Detailed module exploring Practical Geometry in depth for VIII Grade students.",
+      "sequenceOrder": 4,
+      "moduleNotes": {
+        "fileName": "MOD-MATH-08-04_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-MATH-08-04_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Practical Geometry",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-MATH-08-04_audio.mp3",
+        "title": "Lecture Audio - Practical Geometry",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-MATH-08-4-1",
+        "ASS-MATH-08-4-2",
+        "ASS-MATH-08-4-3",
+        "ASS-MATH-08-4-4"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-MATH-08-05",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd65"
+      },
+      "title": "Data Handling",
+      "description": "Detailed module exploring Data Handling in depth for VIII Grade students.",
+      "sequenceOrder": 5,
+      "moduleNotes": {
+        "fileName": "MOD-MATH-08-05_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-MATH-08-05_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Data Handling",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-MATH-08-05_audio.mp3",
+        "title": "Lecture Audio - Data Handling",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-MATH-08-5-1",
+        "ASS-MATH-08-5-2",
+        "ASS-MATH-08-5-3",
+        "ASS-MATH-08-5-4",
+        "ASS-MATH-08-5-5"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-SCI-08-01",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd68"
+      },
+      "title": "Crop Production and Management",
+      "description": "Detailed module exploring Crop Production and Management in depth for VIII Grade students.",
+      "sequenceOrder": 1,
+      "moduleNotes": {
+        "fileName": "MOD-SCI-08-01_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-SCI-08-01_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Crop Production and Management",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-SCI-08-01_audio.mp3",
+        "title": "Lecture Audio - Crop Production and Management",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-SCI-08-1-1"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-SCI-08-02",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd68"
+      },
+      "title": "Microorganisms: Friend and Foe",
+      "description": "Detailed module exploring Microorganisms: Friend and Foe in depth for VIII Grade students.",
+      "sequenceOrder": 2,
+      "moduleNotes": {
+        "fileName": "MOD-SCI-08-02_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-SCI-08-02_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Microorganisms: Friend and Foe",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-SCI-08-02_audio.mp3",
+        "title": "Lecture Audio - Microorganisms: Friend and Foe",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-SCI-08-2-1",
+        "ASS-SCI-08-2-2"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-SCI-08-03",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd68"
+      },
+      "title": "Synthetic Fibres and Plastics",
+      "description": "Detailed module exploring Synthetic Fibres and Plastics in depth for VIII Grade students.",
+      "sequenceOrder": 3,
+      "moduleNotes": {
+        "fileName": "MOD-SCI-08-03_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-SCI-08-03_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Synthetic Fibres and Plastics",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-SCI-08-03_audio.mp3",
+        "title": "Lecture Audio - Synthetic Fibres and Plastics",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-SCI-08-3-1",
+        "ASS-SCI-08-3-2",
+        "ASS-SCI-08-3-3"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-SCI-08-04",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd68"
+      },
+      "title": "Materials: Metals and Non-Metals",
+      "description": "Detailed module exploring Materials: Metals and Non-Metals in depth for VIII Grade students.",
+      "sequenceOrder": 4,
+      "moduleNotes": {
+        "fileName": "MOD-SCI-08-04_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-SCI-08-04_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Materials: Metals and Non-Metals",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-SCI-08-04_audio.mp3",
+        "title": "Lecture Audio - Materials: Metals and Non-Metals",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-SCI-08-4-1",
+        "ASS-SCI-08-4-2",
+        "ASS-SCI-08-4-3",
+        "ASS-SCI-08-4-4"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-SCI-08-05",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd68"
+      },
+      "title": "Coal and Petroleum",
+      "description": "Detailed module exploring Coal and Petroleum in depth for VIII Grade students.",
+      "sequenceOrder": 5,
+      "moduleNotes": {
+        "fileName": "MOD-SCI-08-05_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-SCI-08-05_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Coal and Petroleum",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-SCI-08-05_audio.mp3",
+        "title": "Lecture Audio - Coal and Petroleum",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-SCI-08-5-1",
+        "ASS-SCI-08-5-2",
+        "ASS-SCI-08-5-3",
+        "ASS-SCI-08-5-4",
+        "ASS-SCI-08-5-5"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-SOC-08-01",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd6b"
+      },
+      "title": "How, When and Where",
+      "description": "Detailed module exploring How, When and Where in depth for VIII Grade students.",
+      "sequenceOrder": 1,
+      "moduleNotes": {
+        "fileName": "MOD-SOC-08-01_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-SOC-08-01_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: How, When and Where",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-SOC-08-01_audio.mp3",
+        "title": "Lecture Audio - How, When and Where",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-SOC-08-1-1"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-SOC-08-02",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd6b"
+      },
+      "title": "Resources",
+      "description": "Detailed module exploring Resources in depth for VIII Grade students.",
+      "sequenceOrder": 2,
+      "moduleNotes": {
+        "fileName": "MOD-SOC-08-02_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-SOC-08-02_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Resources",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-SOC-08-02_audio.mp3",
+        "title": "Lecture Audio - Resources",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-SOC-08-2-1",
+        "ASS-SOC-08-2-2"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-SOC-08-03",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd6b"
+      },
+      "title": "The Indian Constitution",
+      "description": "Detailed module exploring The Indian Constitution in depth for VIII Grade students.",
+      "sequenceOrder": 3,
+      "moduleNotes": {
+        "fileName": "MOD-SOC-08-03_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-SOC-08-03_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: The Indian Constitution",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-SOC-08-03_audio.mp3",
+        "title": "Lecture Audio - The Indian Constitution",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-SOC-08-3-1",
+        "ASS-SOC-08-3-2",
+        "ASS-SOC-08-3-3"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-SOC-08-04",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd6b"
+      },
+      "title": "From Trade to Territory",
+      "description": "Detailed module exploring From Trade to Territory in depth for VIII Grade students.",
+      "sequenceOrder": 4,
+      "moduleNotes": {
+        "fileName": "MOD-SOC-08-04_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-SOC-08-04_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: From Trade to Territory",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-SOC-08-04_audio.mp3",
+        "title": "Lecture Audio - From Trade to Territory",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-SOC-08-4-1",
+        "ASS-SOC-08-4-2",
+        "ASS-SOC-08-4-3",
+        "ASS-SOC-08-4-4"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-SOC-08-05",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd6b"
+      },
+      "title": "Understanding Secularism",
+      "description": "Detailed module exploring Understanding Secularism in depth for VIII Grade students.",
+      "sequenceOrder": 5,
+      "moduleNotes": {
+        "fileName": "MOD-SOC-08-05_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-SOC-08-05_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Understanding Secularism",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-SOC-08-05_audio.mp3",
+        "title": "Lecture Audio - Understanding Secularism",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-SOC-08-5-1",
+        "ASS-SOC-08-5-2",
+        "ASS-SOC-08-5-3",
+        "ASS-SOC-08-5-4",
+        "ASS-SOC-08-5-5"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-ENG-08-01",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd6e"
+      },
+      "title": "The Best Christmas Present in the World",
+      "description": "Detailed module exploring The Best Christmas Present in the World in depth for VIII Grade students.",
+      "sequenceOrder": 1,
+      "moduleNotes": {
+        "fileName": "MOD-ENG-08-01_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-ENG-08-01_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: The Best Christmas Present in the World",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-ENG-08-01_audio.mp3",
+        "title": "Lecture Audio - The Best Christmas Present in the World",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-ENG-08-1-1"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-ENG-08-02",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd6e"
+      },
+      "title": "Grammar: Tenses & Modals",
+      "description": "Detailed module exploring Grammar: Tenses & Modals in depth for VIII Grade students.",
+      "sequenceOrder": 2,
+      "moduleNotes": {
+        "fileName": "MOD-ENG-08-02_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-ENG-08-02_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Grammar: Tenses & Modals",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-ENG-08-02_audio.mp3",
+        "title": "Lecture Audio - Grammar: Tenses & Modals",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-ENG-08-2-1",
+        "ASS-ENG-08-2-2"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-ENG-08-03",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd6e"
+      },
+      "title": "The Tsunami",
+      "description": "Detailed module exploring The Tsunami in depth for VIII Grade students.",
+      "sequenceOrder": 3,
+      "moduleNotes": {
+        "fileName": "MOD-ENG-08-03_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-ENG-08-03_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: The Tsunami",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-ENG-08-03_audio.mp3",
+        "title": "Lecture Audio - The Tsunami",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-ENG-08-3-1",
+        "ASS-ENG-08-3-2",
+        "ASS-ENG-08-3-3"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-ENG-08-04",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd6e"
+      },
+      "title": "Writing: Notice & Letter Writing",
+      "description": "Detailed module exploring Writing: Notice & Letter Writing in depth for VIII Grade students.",
+      "sequenceOrder": 4,
+      "moduleNotes": {
+        "fileName": "MOD-ENG-08-04_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-ENG-08-04_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Writing: Notice & Letter Writing",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-ENG-08-04_audio.mp3",
+        "title": "Lecture Audio - Writing: Notice & Letter Writing",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-ENG-08-4-1",
+        "ASS-ENG-08-4-2",
+        "ASS-ENG-08-4-3",
+        "ASS-ENG-08-4-4"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-ENG-08-05",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd6e"
+      },
+      "title": "How the Camel Got His Hump",
+      "description": "Detailed module exploring How the Camel Got His Hump in depth for VIII Grade students.",
+      "sequenceOrder": 5,
+      "moduleNotes": {
+        "fileName": "MOD-ENG-08-05_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-ENG-08-05_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: How the Camel Got His Hump",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-ENG-08-05_audio.mp3",
+        "title": "Lecture Audio - How the Camel Got His Hump",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-ENG-08-5-1",
+        "ASS-ENG-08-5-2",
+        "ASS-ENG-08-5-3",
+        "ASS-ENG-08-5-4",
+        "ASS-ENG-08-5-5"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-HIN-08-01",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd71"
+      },
+      "title": "Dhwani",
+      "description": "Detailed module exploring Dhwani in depth for VIII Grade students.",
+      "sequenceOrder": 1,
+      "moduleNotes": {
+        "fileName": "MOD-HIN-08-01_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-HIN-08-01_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Dhwani",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-HIN-08-01_audio.mp3",
+        "title": "Lecture Audio - Dhwani",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-HIN-08-1-1"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-HIN-08-02",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd71"
+      },
+      "title": "Hindi Vyakaran: Sangya & Sarvanam",
+      "description": "Detailed module exploring Hindi Vyakaran: Sangya & Sarvanam in depth for VIII Grade students.",
+      "sequenceOrder": 2,
+      "moduleNotes": {
+        "fileName": "MOD-HIN-08-02_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-HIN-08-02_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Hindi Vyakaran: Sangya & Sarvanam",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-HIN-08-02_audio.mp3",
+        "title": "Lecture Audio - Hindi Vyakaran: Sangya & Sarvanam",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-HIN-08-2-1",
+        "ASS-HIN-08-2-2"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-HIN-08-03",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd71"
+      },
+      "title": "Lakh ki Chudiyan",
+      "description": "Detailed module exploring Lakh ki Chudiyan in depth for VIII Grade students.",
+      "sequenceOrder": 3,
+      "moduleNotes": {
+        "fileName": "MOD-HIN-08-03_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-HIN-08-03_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Lakh ki Chudiyan",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-HIN-08-03_audio.mp3",
+        "title": "Lecture Audio - Lakh ki Chudiyan",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-HIN-08-3-1",
+        "ASS-HIN-08-3-2",
+        "ASS-HIN-08-3-3"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-HIN-08-04",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd71"
+      },
+      "title": "Ahamnagar ka Qila",
+      "description": "Detailed module exploring Ahamnagar ka Qila in depth for VIII Grade students.",
+      "sequenceOrder": 4,
+      "moduleNotes": {
+        "fileName": "MOD-HIN-08-04_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-HIN-08-04_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Ahamnagar ka Qila",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-HIN-08-04_audio.mp3",
+        "title": "Lecture Audio - Ahamnagar ka Qila",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-HIN-08-4-1",
+        "ASS-HIN-08-4-2",
+        "ASS-HIN-08-4-3",
+        "ASS-HIN-08-4-4"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-HIN-08-05",
+      "courseId": {
+        "$oid": "69a521c0189ea99757eefd71"
+      },
+      "title": "Hindi Vyakaran: Visheshan",
+      "description": "Detailed module exploring Hindi Vyakaran: Visheshan in depth for VIII Grade students.",
+      "sequenceOrder": 5,
+      "moduleNotes": {
+        "fileName": "MOD-HIN-08-05_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-HIN-08-05_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Hindi Vyakaran: Visheshan",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-HIN-08-05_audio.mp3",
+        "title": "Lecture Audio - Hindi Vyakaran: Visheshan",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-HIN-08-5-1",
+        "ASS-HIN-08-5-2",
+        "ASS-HIN-08-5-3",
+        "ASS-HIN-08-5-4",
+        "ASS-HIN-08-5-5"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-CS-08-01",
+      "courseId": {
+        "$oid": "69a521c1189ea99757eefd74"
+      },
+      "title": "Networking Concepts",
+      "description": "Detailed module exploring Networking Concepts in depth for VIII Grade students.",
+      "sequenceOrder": 1,
+      "moduleNotes": {
+        "fileName": "MOD-CS-08-01_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-CS-08-01_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Networking Concepts",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-CS-08-01_audio.mp3",
+        "title": "Lecture Audio - Networking Concepts",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-CS-08-1-1"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-CS-08-02",
+      "courseId": {
+        "$oid": "69a521c1189ea99757eefd74"
+      },
+      "title": "Log on to MS Access",
+      "description": "Detailed module exploring Log on to MS Access in depth for VIII Grade students.",
+      "sequenceOrder": 2,
+      "moduleNotes": {
+        "fileName": "MOD-CS-08-02_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-CS-08-02_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Log on to MS Access",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-CS-08-02_audio.mp3",
+        "title": "Lecture Audio - Log on to MS Access",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-CS-08-2-1",
+        "ASS-CS-08-2-2"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-CS-08-03",
+      "courseId": {
+        "$oid": "69a521c1189ea99757eefd74"
+      },
+      "title": "Working with Queries & Forms",
+      "description": "Detailed module exploring Working with Queries & Forms in depth for VIII Grade students.",
+      "sequenceOrder": 3,
+      "moduleNotes": {
+        "fileName": "MOD-CS-08-03_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-CS-08-03_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Working with Queries & Forms",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-CS-08-03_audio.mp3",
+        "title": "Lecture Audio - Working with Queries & Forms",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-CS-08-3-1",
+        "ASS-CS-08-3-2",
+        "ASS-CS-08-3-3"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-CS-08-04",
+      "courseId": {
+        "$oid": "69a521c1189ea99757eefd74"
+      },
+      "title": "Introduction to HTML-5",
+      "description": "Detailed module exploring Introduction to HTML-5 in depth for VIII Grade students.",
+      "sequenceOrder": 4,
+      "moduleNotes": {
+        "fileName": "MOD-CS-08-04_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-CS-08-04_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Introduction to HTML-5",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-CS-08-04_audio.mp3",
+        "title": "Lecture Audio - Introduction to HTML-5",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-CS-08-4-1",
+        "ASS-CS-08-4-2",
+        "ASS-CS-08-4-3",
+        "ASS-CS-08-4-4"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    },
+    {
+      "moduleId": "MOD-CS-08-05",
+      "courseId": {
+        "$oid": "69a521c1189ea99757eefd74"
+      },
+      "title": "Basic Python Programming",
+      "description": "Detailed module exploring Basic Python Programming in depth for VIII Grade students.",
+      "sequenceOrder": 5,
+      "moduleNotes": {
+        "fileName": "MOD-CS-08-05_notes.pdf",
+        "filePath": "http://localhost:8000/assets/documents/2026/02/MOD-CS-08-05_notes.pdf",
+        "fileSize": 350000,
+        "mimeType": "application/pdf",
+        "uploadedOn": {
+          "$date": "2026-02-17T03:51:21.136Z"
+        }
+      },
+      "videoTutorial": {
+        "url": "https://www.youtube.com/embed/placeholder",
+        "title": "Tutorial: Basic Python Programming",
+        "duration": "12:30",
+        "thumbnail": ""
+      },
+      "audioContent": {
+        "url": "http://localhost:8000/assets/audio/2026/02/MOD-CS-08-05_audio.mp3",
+        "title": "Lecture Audio - Basic Python Programming",
+        "duration": null,
+        "fileSize": 4500000,
+        "mimeType": "audio/mpeg"
+      },
+      "pptEmbedUrl": "<iframe src=\"https://docs.google.com/presentation/embed\" frameborder=\"0\" width=\"960\" height=\"749\"></iframe>",
+      "infographics": [
+        {
+          "url": "http://localhost:8000/assets/images/placeholder.png",
+          "title": "Topic Visual Summary",
+          "order": 1
+        }
+      ],
+      "credits": 1,
+      "estimatedDuration": "6",
+      "prerequisites": [],
+      "assessments": [
+        "ASS-CS-08-5-1",
+        "ASS-CS-08-5-2",
+        "ASS-CS-08-5-3",
+        "ASS-CS-08-5-4",
+        "ASS-CS-08-5-5"
+      ],
+      "status": "draft",
+      "postedBy": {
+        "$oid": "694932a9d8d3a75733ef4f61"
+      },
+      "isActive": true,
+      "postedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "lastUpdatedOn": {
+        "$date": "2026-02-17T03:51:41.851Z"
+      },
+      "createdAt": {
+        "$date": "2026-02-17T03:51:41.871Z"
+      },
+      "updatedAt": {
+        "$date": "2026-02-17T07:14:04.992Z"
+      },
+      "__v": 0
+    }
+  ]
+}

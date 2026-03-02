@@ -16,14 +16,14 @@ interface User {
   class: string;
   section: string;
   mobileNo: string;
-  credits?: any[];
-  totalCredits?: number;
+  gamification?: { totalCredits: number };
   school: string;
   status: string;
   role?: string;
   department?: string;
   email?: string;
   onboarded?: boolean;
+  avatar?: string;
 }
 
 const AdminUsersPage = () => {
@@ -286,6 +286,7 @@ const AdminUsersPage = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-black text-[11px] uppercase tracking-widest text-white/70">
+                <th className="py-5 px-6 font-medium">Avatar</th>
                 <th className="py-5 px-6 font-medium">Admission Protocol</th>
                 <th className="py-5 px-6 font-medium">Subject Designation</th>
                 <th className="py-5 px-6 font-medium">Strata / Section</th>
@@ -314,6 +315,28 @@ const AdminUsersPage = () => {
                     key={`${user.role || "user"}-${user.id || user._id}`}
                     className="hover:bg-gray-50 transition-colors group"
                   >
+                    <td className="py-5 px-6">
+                      <div className="w-10 h-10 rounded-full border border-gray-200 overflow-hidden bg-gray-50 flex items-center justify-center">
+                        {user.avatar ? (
+                          <img
+                            src={
+                              user.avatar.startsWith("http")
+                                ? user.avatar
+                                : `${axiosInstance.defaults.baseURL?.replace("/api/v1", "")}${user.avatar}`
+                            }
+                            alt={user.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src =
+                                "https://ui-avatars.com/api/?name=" +
+                                encodeURIComponent(user.name);
+                            }}
+                          />
+                        ) : (
+                          <Users className="w-5 h-5 text-gray-400" />
+                        )}
+                      </div>
+                    </td>
                     <td className="py-5 px-6 font-mono text-[12px] text-gray-400">
                       {user.admissionNo || user.admissionno}
                     </td>
@@ -336,7 +359,7 @@ const AdminUsersPage = () => {
                       {user.mobileNo}
                     </td>
                     <td className="py-5 px-6 text-[13px] font-medium text-black tabular-nums">
-                      {user.totalCredits || 0}
+                      {user.gamification?.totalCredits || 0}
                     </td>
                     <td className="py-5 px-6 text-[12px] text-gray-500 capitalize">
                       {user.school}

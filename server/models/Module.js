@@ -8,7 +8,7 @@ const moduleSchema = new mongoose.Schema(
       required: true,
     },
     courseId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId, // Match Course _id (ObjectId)
       ref: "Course",
       required: true,
     },
@@ -87,7 +87,7 @@ const moduleSchema = new mongoose.Schema(
       default: "draft",
     },
     postedBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.Mixed,
       ref: "AdminUser",
     },
     postedOn: {
@@ -102,10 +102,16 @@ const moduleSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    accessedStudents: [
+      {
+        studentId: String,
+        accessedDate: { type: Date, default: Date.now },
+      },
+    ],
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Module", moduleSchema);

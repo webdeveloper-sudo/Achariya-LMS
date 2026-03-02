@@ -402,7 +402,7 @@ exports.getPrincipalDashboard = async (req, res) => {
     const [students, teachers, courses] = await Promise.all([
       Student.find({ school: schoolName })
         .select(
-          "studentName name class section status completion onboarded gamification enrolledCourses badges totalCredits createdAt",
+          "studentName name class section status completion onboarded gamification enrolledCourses createdAt",
         )
         .sort({ "gamification.totalCredits": -1 }),
 
@@ -461,7 +461,7 @@ exports.getPrincipalDashboard = async (req, res) => {
         section: s.section,
         completion: s.completion || 0,
         credits: s.gamification?.totalCredits || 0,
-        badges: s.badges?.length || s.gamification?.badges?.length || 0,
+        badges: s.gamification?.badges?.length || 0,
       }));
 
     // ── Class-wise completion breakdown ───────────────────────────────────
@@ -548,7 +548,7 @@ exports.getSchoolStudents = async (req, res) => {
     const schoolName = await getSchoolName(req.user.id);
     const students = await Student.find({ school: schoolName })
       .select(
-        "studentName name admissionNo class section email mobileNo status onboarded completion gamification badges totalCredits enrolledCourses createdAt",
+        "studentName name admissionNo class section email mobileNo status onboarded completion gamification enrolledCourses createdAt",
       )
       .sort({ class: 1, studentName: 1 });
 
@@ -772,7 +772,7 @@ exports.getSchoolStudentById = async (req, res) => {
     const schoolName = await getSchoolName(req.user.id);
 
     const student = await Student.findById(studentId).select(
-      "studentName name admissionNo class section email mobileNo status onboarded completion school gamification badges totalCredits enrolledCourses createdAt",
+      "studentName name admissionNo class section email mobileNo status onboarded completion school gamification enrolledCourses createdAt",
     );
 
     if (!student) {

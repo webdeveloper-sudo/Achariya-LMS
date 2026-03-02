@@ -194,6 +194,10 @@ exports.uploadFile = async (req, res) => {
       });
 
       if (existingStudent) {
+        const avatarIndex = Math.floor(Math.random() * 10) + 1;
+        const paddedIndex = avatarIndex.toString().padStart(2, "0");
+        const avatarUrl = `/assets/images/profile-avatars/avatar_${paddedIndex}.png`;
+
         // Update existing student
         Object.assign(existingStudent, {
           studentName: studentData.studentName,
@@ -206,11 +210,16 @@ exports.uploadFile = async (req, res) => {
           serialNo: studentData.serialNo || existingStudent.serialNo,
           status: studentData.status || existingStudent.status,
           school_id: studentData.school_id || existingStudent.school_id,
+          avatar: existingStudent.avatar || avatarUrl,
         });
         await existingStudent.save();
         saved++;
       } else {
         // Create new student
+        const avatarIndex = Math.floor(Math.random() * 10) + 1;
+        const paddedIndex = avatarIndex.toString().padStart(2, "0");
+        const avatarUrl = `/assets/images/profile-avatars/avatar_${paddedIndex}.png`;
+
         const newStudent = new Student({
           admissionNo: studentData.admissionNo,
           studentName: studentData.studentName,
@@ -222,8 +231,15 @@ exports.uploadFile = async (req, res) => {
           school,
           serialNo: studentData.serialNo,
           status: studentData.status || "Active",
-          totalCredits: studentData.credits || 0, // Map flat credit to totalCredits
-          credits: [], // Initialize empty array? Or no credits yet.
+          avatar: avatarUrl,
+          gamification: {
+            totalCredits: studentData.credits || 0,
+            rank: "Novice",
+            currentStreak: 0,
+            longestStreak: 0,
+            badges: [],
+          },
+          credits: [], // Ledger
           school_id: studentData.school_id || 1,
         });
         await newStudent.save();
@@ -286,11 +302,16 @@ exports.createStudent = async (req, res) => {
         .json({ message: "Student with this Email already exists" });
     }
 
+    const avatarIndex = Math.floor(Math.random() * 10) + 1;
+    const paddedIndex = avatarIndex.toString().padStart(2, "0");
+    const avatarUrl = `/assets/images/profile-avatars/avatar_${paddedIndex}.png`;
+
     const newStudent = new Student({
       ...studentData,
       studentName: studentData.name, // Ensure consistency
       status: studentData.status || "Active",
       serialNo: studentData.serialNo || Date.now().toString(), // Fallback for serialNo
+      avatar: avatarUrl,
     }); // Schema defaults handle credits/badges
 
     await newStudent.save();
@@ -636,9 +657,7 @@ exports.getPublicProfile = async (req, res) => {
 
     // Find student but exclude sensitive fields
     const student = await Student.findById(studentId)
-      .select(
-        "studentName class section avatar gamification enrolledCourses badges totalCredits currentStreak longestStreak",
-      )
+      .select("studentName class section avatar gamification enrolledCourses")
       .lean();
 
     if (!student) {
@@ -662,8 +681,8 @@ exports.getPublicProfile = async (req, res) => {
         class: student.class,
         section: student.section,
         avatar: student.avatar,
-        credits: student.totalCredits || 0,
-        streak: student.currentStreak || 0,
+        credits: student.gamification?.totalCredits || 0,
+        streak: student.gamification?.currentStreak || 0,
         badges: student.gamification?.badges || [],
         enrolledCount: student.enrolledCourses?.length || 0,
         rank: student.gamification?.rank || "Novice",
@@ -751,10 +770,25 @@ exports.completeOnboarding = async (req, res) => {
     // Assign random avatar if none exists
     if (!student.avatar) {
       const avatarIndex = Math.floor(Math.random() * 10) + 1;
-      student.avatar = `/uploads/avatars/avatar_${avatarIndex}.png`;
+      const paddedIndex = avatarIndex.toString().padStart(2, "0");
+      student.avatar = `/assets/images/profile-avatars/avatar_${paddedIndex}.png`;
     }
 
-    // Initialize/Reset credits for onboarding
+    // Initialize/Reset credits for onboarding in gamification object
+    student.gamification = {
+      totalCredits: 5,
+      rank: "Novice",
+      currentStreak: 1,
+      longestStreak: 1,
+      badges: [
+        {
+          badgeId: "ROOKIE",
+          name: "Rookie",
+          earnedAt: new Date(),
+        },
+      ],
+    };
+
     student.credits = [
       {
         amount: 5,
@@ -762,12 +796,6 @@ exports.completeOnboarding = async (req, res) => {
         date: new Date(),
       },
     ];
-    student.totalCredits = 5;
-
-    // Initialize Badges
-    student.badges = ["Rookie"];
-
-    student.currentStreak = 1;
 
     await student.save();
 
@@ -784,7 +812,8 @@ exports.completeOnboarding = async (req, res) => {
       student: {
         admissionNo: student.admissionNo,
         name: student.studentName,
-        credits: student.totalCredits,
+        avatar: student.avatar,
+        credits: student.gamification.totalCredits,
         status: student.status,
         onboarded: true,
       },
@@ -900,6 +929,12 @@ exports.login = async (req, res) => {
     }
 
     student.gamification.lastActivityDate = now;
+    student.gamification.currentStreak = streakCount;
+
+    // Update longest streak
+    if (streakCount > (student.gamification.longestStreak || 0)) {
+      student.gamification.longestStreak = streakCount;
+    }
 
     // Check Badge Triggers
     await BadgeService.checkStreakBadges(student._id, streakCount);
@@ -923,12 +958,11 @@ exports.login = async (req, res) => {
         admissionNo: student.admissionNo,
         name: student.studentName,
         email: student.email,
-        credits: student.totalCredits,
+        gamification: student.gamification,
         creditHistory: student.credits,
-        badges: student.badges,
-        currentStreak: student.currentStreak,
         lastLoginAt: student.lastLoginAt,
         role: "Student",
+        avatar: student.avatar,
         enrolledCourses: student.enrolledCourses || [],
       },
     });
@@ -1007,6 +1041,7 @@ exports.getDashboard = async (req, res) => {
       profile: {
         name: student.studentName,
         admissionNo: student.admissionNo,
+        avatar: student.avatar,
 
         // Gamification Mappings (Backward Compatibility + New Data)
         credits: student.gamification.totalCredits || 0,
@@ -1034,14 +1069,76 @@ exports.getDashboard = async (req, res) => {
 // 7. Get All Courses (for dashboard)
 exports.getCourses = async (req, res) => {
   try {
-    const courses = await Course.find({}).sort({ createdAt: -1 }); // Adjust sort as needed
+    const studentId = req.user?.id;
+    const allCourses = await Course.find({}).sort({ createdAt: -1 }).lean();
+
+    if (!studentId) {
+      return res.json({ courses: allCourses, count: allCourses.length });
+    }
+
+    // Fetch the student with their enrolledCourses to correctly sort
+    const student = await mongoose
+      .model("Student")
+      .findById(studentId)
+      .select("enrolledCourses")
+      .lean();
+    if (
+      !student ||
+      !student.enrolledCourses ||
+      student.enrolledCourses.length === 0
+    ) {
+      return res.json({ courses: allCourses, count: allCourses.length });
+    }
+
+    // Map enrolled courses for efficient sorting and matching
+    const enrollmentMap = new Map();
+    student.enrolledCourses.forEach((ec) => {
+      enrollmentMap.set(ec.courseId.toString(), {
+        enrolledAt: ec.enrolledAt,
+        progress: ec.progress || 0,
+      });
+    });
+
+    // Strategy: Split into Enrolled and Others, Sort Enrolled, and Re-Merge
+    const enrolled = [];
+    const others = [];
+
+    allCourses.forEach((course) => {
+      const enrollment = enrollmentMap.get(course._id.toString());
+      if (enrollment) {
+        enrolled.push({
+          ...course,
+          isEnrolled: true,
+          progress: enrollment.progress,
+          enrolledAt: enrollment.enrolledAt,
+        });
+      } else {
+        others.push({
+          ...course,
+          isEnrolled: false,
+        });
+      }
+    });
+
+    // Sort enrolled subset by enrollment date (most recent first)
+    enrolled.sort((a, b) => {
+      const dateA = new Date(a.enrolledAt).getTime();
+      const dateB = new Date(b.enrolledAt).getTime();
+      return dateB - dateA; // descending
+    });
+
+    // Re-merge with prioritized enrolled courses first
+    const finalCourses = [...enrolled, ...others];
+
     res.json({
-      courses,
-      count: courses.length,
+      courses: finalCourses,
+      count: finalCourses.length,
     });
   } catch (error) {
     console.error("Error fetching courses:", error);
-    res.status(500).json({ message: "Error fetching courses" });
+    res
+      .status(500)
+      .json({ message: "Error fetching courses: " + error.message });
   }
 };
 

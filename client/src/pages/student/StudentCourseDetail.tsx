@@ -131,7 +131,7 @@ const StudentCourseDetail = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header Section - Standardized Industrial Refinement */}
-      <div className="bg-gray-50 border-b border-gray-100 pb-12 px-6 sm:px-10 relative overflow-hidden">
+      <div className="bg-gray-50 border-b border-gray-100 pb-4 px-6 sm:px-10 relative overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10">
           <Link
             to="/student/courses"
@@ -204,10 +204,10 @@ const StudentCourseDetail = () => {
         )}
 
         {/* Professional Course Banner Section */}
-        <div className="border border-gray-300 rounded-md bg-white mb-12 overflow-hidden shadow-sm">
+        <div className="border border-gray-300 rounded-md bg-white mb-16 overflow-hidden shadow-sm">
           <div className="md:flex min-h-[380px]">
             {/* Hero Thumbnail */}
-            <div className="md:w-5/12 bg-gray-50 relative border-r border-gray-100">
+            <div className="md:w-4/12 bg-gray-50 relative border-r border-gray-100">
               {course.thumbnail ? (
                 <img
                   src={course.thumbnail}
@@ -276,7 +276,7 @@ const StudentCourseDetail = () => {
                         {enrollment?.progress || 0}%
                       </span>
                     </div>
-                    <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                    <div className="w-full bg-gray-300 rounded-full h-1.5 overflow-hidden">
                       <div
                         className="bg-blue-600 h-full rounded-full transition-all duration-1000 ease-out"
                         style={{ width: `${enrollment?.progress || 0}%` }}

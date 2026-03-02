@@ -100,7 +100,9 @@ const PublicProfilePage = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  profile.name.charAt(0)
+                  <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                    <Trophy className="text-gray-300 w-1/2 h-1/2" />
+                  </div>
                 )}
               </div>
               <div className="absolute -bottom-2 -right-2 bg-blue-600 text-white p-2 rounded-md shadow-lg border border-white">

@@ -33,8 +33,9 @@ const StudentDashboard = () => {
     sampleData.enrollments.filter((e) => e.student_id === student.id),
   );
   const [currentStreak, setCurrentStreak] = useState(
-    student.currentStreak || 0,
+    student.gamification?.currentStreak || 0,
   );
+  // console.log(currentStreak);
   const [progressData, setProgressData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,11 +51,21 @@ const StudentDashboard = () => {
         ]);
 
         if (dashboardRes.data?.profile) {
-          setStudent((prev: any) => ({
-            ...prev,
-            ...dashboardRes.data.profile,
-          }));
-          setCurrentStreak(dashboardRes.data.profile.currentStreak || 0);
+          setStudent((prev: any) => {
+            const updated = { ...prev, ...dashboardRes.data.profile };
+            // Update localStorage for consistent navbar experience
+            const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+            localStorage.setItem(
+              "user",
+              JSON.stringify({ ...storedUser, ...dashboardRes.data.profile }),
+            );
+            return updated;
+          });
+          console.log("student res:", dashboardRes.data.profile);
+          setCurrentStreak(
+            dashboardRes.data.profile.gamification?.currentStreak || 0,
+          );
+          console.log("setcurrent streak:", currentStreak);
         }
 
         if (coursesRes.data?.courses) {
@@ -87,11 +98,13 @@ const StudentDashboard = () => {
     return "Good Evening";
   };
 
+  const activeEnrollments = enrollments.filter((e) => e.isEnrolled);
+
   const avgCompletion =
-    enrollments.length > 0
+    activeEnrollments.length > 0
       ? Math.round(
-          enrollments.reduce((sum, e) => sum + (e.progress || 0), 0) /
-            enrollments.length,
+          activeEnrollments.reduce((sum, e) => sum + (e.progress || 0), 0) /
+            activeEnrollments.length,
         )
       : 0;
 
@@ -113,20 +126,24 @@ const StudentDashboard = () => {
         <div className="w-full mx-auto relative z-10">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-12">
             <div className="flex-1">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-blue-900 font-bold tracking-widest text-[14px] uppercase">
-                  Institutional Student Hub
-                </span>
-                <div className=" ">
-                  <GraduationCap className="w-5 h-5 text-blue-900" />
+              <div className="flex items-center gap-6 mb-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-blue-900 font-semibold tracking-widest items-center flex gap-2 text-[14px] uppercase">
+                      <GraduationCap size={22} /> Institutional Student Hub
+                    </span>
+                  </div>
+                  <h1 className="text-4xl sm:text-5xl  font-bold text-gray-900 tracking-tight leading-tight">
+                    <span className="underline decoration-gray-200 underline-offset-8">
+                      {getTimeGreeting()}
+                    </span>
+                    ,{" "}
+                    <span className="text-gray-400 underline decoration-gray-200 underline-offset-8">
+                      {student.name.split(" ")[0]}
+                    </span>
+                  </h1>
                 </div>
               </div>
-              <h1 className="text-4xl sm:text-5xl underline decoration-gray-200 underline-offset-8 font-bold text-gray-900 mb-6 tracking-tight leading-tight">
-                {getTimeGreeting()},{" "}
-                <span className="text-gray-400 underline decoration-gray-200 underline-offset-8">
-                  {student.name.split(" ")[0]}
-                </span>
-              </h1>
               <p className="text-gray-500 text-sm font-medium max-w-xl leading-relaxed ">
                 Strategic objective monitoring and curriculum synchronization.
                 Your current academic trajectory shows consistent performance
@@ -179,21 +196,42 @@ const StudentDashboard = () => {
               </div>
             )} */}
 
-            <div className="flex justify-end items-center gap-6">
-              <div>
-                <div className="flex items-baseline justify-end gap-2">
-                  <h3 className="text-6xl font-bold text-gray-900 tracking-tighter">
+            <div className="flex flex-col items-center gap-4">
+              {/* Avatar + Streak Wrapper */}
+              <div className="relative w-48 h-48 flex items-center justify-center">
+                {/* Avatar */}
+                <div className="w-48 h-48 rounded-2xl overflow-hidden border-2 border-gray-100 shadow-sm bg-gray-50 flex items-center justify-center">
+                  {student.avatar ? (
+                    <img
+                      src={
+                        student.avatar.startsWith("http")
+                          ? student.avatar
+                          : `${axiosInstance.defaults.baseURL?.replace("/api/v1", "")}${student.avatar}`
+                      }
+                      alt={student.name}
+                      className="w-full h-full object-cover rounded-[100%]"
+                    />
+                  ) : (
+                    <GraduationCap className="w-10 h-10 text-blue-900" />
+                  )}
+                </div>
+
+                {/* Streak Badge */}
+                <div className="absolute bottom-2 right-2 translate-x-1/3 translate-y-1/3 w-20 h-20 rounded-full bg-white border-2 border-blue-900 shadow-sm flex flex-col items-center justify-center">
+                  <h3 className="text-4xl font-bold text-gray-900 tracking-tighter leading-none">
                     {currentStreak}
                   </h3>
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                  <span className="text-[8px] font-bold text-gray-400 uppercase tracking-widest">
                     Days
                   </span>
                 </div>
-                <p className="text-[13px] text-blue-900 animate-pulse uppercase tracking-widest mt-1 flex items-end gap-1">
-                  <Flame className="w-7 h-7 text-blue-900 " /> Active Sync
-                  Streak
-                </p>
               </div>
+
+              {/* Streak Label - EXACTLY below profile+badge */}
+              <p className="text-[13px] text-blue-900 uppercase tracking-widest mt-3 flex items-center gap-2">
+                <Flame className="w-5 h-5 text-blue-900" />
+                Active Sync Streak
+              </p>
             </div>
           </div>
           {/* Heatmap Section - Premium GitHub-Style Standalone Row */}
@@ -219,7 +257,7 @@ const StudentDashboard = () => {
         {[
           {
             label: "Curriculum Units",
-            val: enrollments.length,
+            val: activeEnrollments.length,
             icon: BookOpen,
             color: "blue",
             link: "/student/courses",
@@ -235,7 +273,7 @@ const StudentDashboard = () => {
           },
           {
             label: "Academic Credits",
-            val: `${student.credits || 0}`,
+            val: `${student.gamification?.totalCredits || 0}`,
             icon: Wallet,
             color: "blue",
             link: "/student/wallet",
@@ -243,9 +281,9 @@ const StudentDashboard = () => {
           },
           {
             label: "Mastery Badges",
-            val: Array.isArray(student.badges)
-              ? student.badges.length
-              : student.badges || 0,
+            val: Array.isArray(student.gamification?.badges)
+              ? student.gamification.badges.length
+              : 0,
             icon: Award,
             color: "blue",
             suffix: null,

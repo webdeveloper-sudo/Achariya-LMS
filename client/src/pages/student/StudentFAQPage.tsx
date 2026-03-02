@@ -4,9 +4,9 @@ import FAQSection from "../../components/FAQSection";
 
 const StudentFAQPage = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       {/* Header Section - Standardized Industrial Refinement */}
-      <div className="bg-gray-50 border-b border-gray-100 pt-10 pb-16 px-6 sm:px-10 relative overflow-hidden">
+      <div className=" border-b border-gray-100 pt-10 pb-8 px-6 sm:px-10 relative overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10">
      <Link
             to="/student/dashboard"
@@ -58,7 +58,7 @@ const StudentFAQPage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 pb-32 mt-12 relative z-20">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 pb-32 mt-3 relative z-20">
         <div className="grid grid-cols-1 gap-10">
           <FAQSection role="student" />
         </div>

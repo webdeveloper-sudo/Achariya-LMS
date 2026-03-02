@@ -22,6 +22,10 @@ interface Course {
   level: string; // gradesEligible?
   gradesEligible: string[];
   eligibleSchools: any[];
+  // Enrollment data added by backend
+  isEnrolled?: boolean;
+  progress?: number;
+  enrolledAt?: string;
 }
 
 const StudentCourses = () => {
@@ -46,12 +50,14 @@ const StudentCourses = () => {
     fetchCourses();
   }, []);
 
-  const getEnrollmentStatus = (courseId: string) => {
+  const getEnrollmentStatus = (course: Course) => {
+    // Rely on backend data if present, otherwise fallback to store
+    if (course.isEnrolled !== undefined) {
+      return course.isEnrolled ? { progress: course.progress || 0 } : null;
+    }
+
     if (!student || !student.enrolledCourses) return null;
-    const enrolled = student.enrolledCourses.find(
-      (e) => e.courseId === courseId,
-    );
-    return enrolled;
+    return student.enrolledCourses.find((e) => e.courseId === course._id);
   };
 
   if (loading) {
@@ -125,7 +131,7 @@ const StudentCourses = () => {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 pb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
           {courses.map((course) => {
-            const enrollment = getEnrollmentStatus(course._id);
+            const enrollment = getEnrollmentStatus(course);
             const isEnrolled = !!enrollment;
 
             return (

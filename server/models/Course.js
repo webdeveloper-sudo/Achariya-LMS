@@ -44,8 +44,8 @@ const courseSchema = new mongoose.Schema(
     ],
     assignedTeachers: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Teacher", // Matches schemas/Teacher.js ? Prompt says "Teacher/User model".
+        type: mongoose.Schema.Types.Mixed, // Allow both ObjectId and String
+        ref: "Teacher",
       },
     ],
     modules: [
@@ -60,7 +60,7 @@ const courseSchema = new mongoose.Schema(
       default: "draft",
     },
     postedBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.Mixed,
       ref: "AdminUser",
     },
     postedOn: {
@@ -75,10 +75,16 @@ const courseSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    enrolledStudents: [
+      {
+        studentId: String,
+        enrolledDate: { type: Date, default: Date.now },
+      },
+    ],
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Middleware to update lastUpdatedOn

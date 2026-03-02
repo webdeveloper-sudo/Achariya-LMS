@@ -130,7 +130,10 @@ const TeacherStudentDetail = () => {
               </div>
               <div className="px-4 py-2 bg-gray-900 text-white rounded-md text-[11px] flex items-center gap-2 capitalize">
                 <Zap size={12} className="text-yellow-400 fill-yellow-400" />{" "}
-                {student.totalCredits} Institutional Credits
+                {student.gamification?.totalCredits ||
+                  student.totalCredits ||
+                  0}{" "}
+                Institutional Credits
               </div>
             </div>
           </div>

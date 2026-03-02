@@ -719,8 +719,7 @@ exports.getTeacherStudentDetail = async (req, res) => {
         section: student.section,
         admissionNo: student.admissionNo,
         onboarded: student.onboarded,
-        totalCredits:
-          student.gamification?.totalCredits || student.totalCredits || 0,
+        totalCredits: student.gamification?.totalCredits || 0,
         avatar: student.image,
       },
       enrollments: enrollmentDetails,

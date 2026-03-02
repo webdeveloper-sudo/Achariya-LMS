@@ -30,14 +30,12 @@ interface StudentProfile {
   onboarded: boolean;
   completion: number;
   school: string;
-  gamification?: {
+  gamification: {
     totalCredits: number;
     level: number;
-    badges?: { name: string; earnedAt: string }[];
+    badges: any[];
     lastActivityDate?: string;
   };
-  badges?: string[];
-  totalCredits?: number;
   createdAt: string;
 }
 
@@ -121,10 +119,9 @@ const PrincipalStudentDetail = () => {
     );
 
   const { student, enrolledCourses } = data;
-  const credits =
-    student.gamification?.totalCredits ?? student.totalCredits ?? 0;
-  const badges = student.gamification?.badges ?? (student.badges as any) ?? [];
-  const badgeCount = Array.isArray(badges) ? badges.length : 0;
+  const credits = student.gamification.totalCredits || 0;
+  const badges = student.gamification.badges || [];
+  const badgeCount = badges.length;
 
   return (
     <div className="space-y-12 pb-20">

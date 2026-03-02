@@ -57,6 +57,8 @@ const studentSchema = new mongoose.Schema(
       enum: ["Pending", "Active", "Inactive", "Suspended"],
       default: "Pending",
     },
+    // We'll use gamification.totalCredits as the main balance.
+    // This array serves as the transaction log.
     credits: [
       {
         amount: { type: Number, required: true },
@@ -64,11 +66,6 @@ const studentSchema = new mongoose.Schema(
         date: { type: Date, default: Date.now },
       },
     ],
-    totalCredits: {
-      // Helper to store total sum for easier querying
-      type: Number,
-      default: 0,
-    },
     school_id: {
       type: Number,
       default: 1,
@@ -93,20 +90,8 @@ const studentSchema = new mongoose.Schema(
       min: 0,
       max: 100,
     },
-    badges: {
-      type: [String], // Array of badge titles
-      default: [],
-    },
-    currentStreak: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    longestStreak: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
+    // Gamification data is now moved inside the 'gamification' object below.
+    // These top-level fields are removed to prevent data duplication.
     onboarded: {
       type: Boolean,
       default: false,
@@ -114,19 +99,7 @@ const studentSchema = new mongoose.Schema(
     onboardedAt: {
       type: Date,
     },
-    currentStreak: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    longestStreak: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    onboardedAt: {
-      type: Date,
-    },
+
     enrolledCourses: [
       {
         courseId: {

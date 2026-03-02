@@ -98,11 +98,9 @@ const StudentLeaderboard = () => {
                             className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all"
                           />
                         ) : (
-                          <span
-                            className={`font-bold flex items-center justify-center h-full tracking-tighter ${actualRank === 1 ? "text-blue-900 text-4xl" : "text-gray-400 text-3xl"}`}
-                          >
-                            {item.name?.charAt(0)}
-                          </span>
+                          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                            <GraduationCap className="text-gray-400 w-1/2 h-1/2" />
+                          </div>
                         )}
                       </Link>
                     ) : (
@@ -114,11 +112,9 @@ const StudentLeaderboard = () => {
                             className="w-full h-full object-cover grayscale-[20%]"
                           />
                         ) : (
-                          <span
-                            className={`font-bold tracking-tighter ${actualRank === 1 ? "text-blue-900 text-4xl" : "text-gray-400 text-3xl"}`}
-                          >
-                            {item.name?.charAt(0)}
-                          </span>
+                          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                            <GraduationCap className="text-gray-400 w-1/2 h-1/2" />
+                          </div>
                         )}
                       </div>
                     )}
@@ -326,9 +322,13 @@ const StudentLeaderboard = () => {
                   <div className="space-y-4">
                     {leaderboard
                       .slice(3)
-                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                      .slice(
+                        (currentPage - 1) * itemsPerPage,
+                        currentPage * itemsPerPage,
+                      )
                       .map((item: any, index: number) => {
-                        const rank = (currentPage - 1) * itemsPerPage + index + 4;
+                        const rank =
+                          (currentPage - 1) * itemsPerPage + index + 4;
                         const isYou =
                           activeTab === "class"
                             ? item.name === userClass
@@ -368,9 +368,9 @@ const StudentLeaderboard = () => {
                                           className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all"
                                         />
                                       ) : (
-                                        <span className="text-lg flex items-center justify-center h-full tracking-tighter">
-                                          {item.name?.charAt(0)}
-                                        </span>
+                                        <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                                          <GraduationCap className="text-gray-300 w-1/2 h-1/2" />
+                                        </div>
                                       )}
                                     </Link>
                                   ) : item.avatar ? (
@@ -380,9 +380,9 @@ const StudentLeaderboard = () => {
                                       className="w-full h-full object-cover grayscale-[20%]"
                                     />
                                   ) : (
-                                    <span className="text-lg tracking-tighter">
-                                      {item.name?.charAt(0)}
-                                    </span>
+                                    <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                                      <GraduationCap className="text-gray-300 w-1/2 h-1/2" />
+                                    </div>
                                   )}
                                 </div>
                                 <div>
@@ -446,30 +446,47 @@ const StudentLeaderboard = () => {
                   </div>
 
                   {/* Leaderboard Pagination - Industrial Sliding Window */}
-                  {Math.ceil(leaderboard.slice(3).length / itemsPerPage) > 1 && (
+                  {Math.ceil(leaderboard.slice(3).length / itemsPerPage) >
+                    1 && (
                     <div className="mt-16 flex items-center justify-center gap-3">
                       <button
                         onClick={() => {
                           setCurrentPage((p) => Math.max(1, p - 1));
-                          window.scrollTo({ top: 1000, behavior: 'smooth' });
+                          window.scrollTo({ top: 1000, behavior: "smooth" });
                         }}
                         disabled={currentPage === 1}
                         className="p-3 bg-white border border-gray-300 rounded-md text-gray-400 hover:text-blue-900 hover:border-blue-900 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm group"
                       >
-                        <ChevronLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
+                        <ChevronLeft
+                          size={18}
+                          className="group-hover:-translate-x-0.5 transition-transform"
+                        />
                       </button>
 
                       {(() => {
-                        const totalSecondaryPages = Math.ceil(leaderboard.slice(3).length / itemsPerPage);
+                        const totalSecondaryPages = Math.ceil(
+                          leaderboard.slice(3).length / itemsPerPage,
+                        );
                         let pages = [];
                         if (totalSecondaryPages <= 3) {
-                          pages = Array.from({ length: totalSecondaryPages }, (_, i) => i + 1);
+                          pages = Array.from(
+                            { length: totalSecondaryPages },
+                            (_, i) => i + 1,
+                          );
                         } else if (currentPage === 1) {
                           pages = [1, 2, 3];
                         } else if (currentPage === totalSecondaryPages) {
-                          pages = [totalSecondaryPages - 2, totalSecondaryPages - 1, totalSecondaryPages];
+                          pages = [
+                            totalSecondaryPages - 2,
+                            totalSecondaryPages - 1,
+                            totalSecondaryPages,
+                          ];
                         } else {
-                          pages = [currentPage - 1, currentPage, currentPage + 1];
+                          pages = [
+                            currentPage - 1,
+                            currentPage,
+                            currentPage + 1,
+                          ];
                         }
 
                         return pages.map((page) => (
@@ -477,7 +494,10 @@ const StudentLeaderboard = () => {
                             key={page}
                             onClick={() => {
                               setCurrentPage(page);
-                              window.scrollTo({ top: 1000, behavior: 'smooth' });
+                              window.scrollTo({
+                                top: 1000,
+                                behavior: "smooth",
+                              });
                             }}
                             className={`w-12 h-12 rounded-md font-black text-[12px] transition-all border shadow-sm ${
                               currentPage === page
@@ -492,13 +512,26 @@ const StudentLeaderboard = () => {
 
                       <button
                         onClick={() => {
-                          setCurrentPage((p) => Math.min(Math.ceil(leaderboard.slice(3).length / itemsPerPage), p + 1));
-                          window.scrollTo({ top: 1000, behavior: 'smooth' });
+                          setCurrentPage((p) =>
+                            Math.min(
+                              Math.ceil(
+                                leaderboard.slice(3).length / itemsPerPage,
+                              ),
+                              p + 1,
+                            ),
+                          );
+                          window.scrollTo({ top: 1000, behavior: "smooth" });
                         }}
-                        disabled={currentPage === Math.ceil(leaderboard.slice(3).length / itemsPerPage)}
+                        disabled={
+                          currentPage ===
+                          Math.ceil(leaderboard.slice(3).length / itemsPerPage)
+                        }
                         className="p-3 bg-white border border-gray-300 rounded-md text-gray-400 hover:text-blue-900 hover:border-blue-900 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm group"
                       >
-                        <ChevronRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
+                        <ChevronRight
+                          size={18}
+                          className="group-hover:translate-x-0.5 transition-transform"
+                        />
                       </button>
                     </div>
                   )}

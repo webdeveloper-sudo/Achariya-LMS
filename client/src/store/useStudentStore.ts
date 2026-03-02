@@ -15,13 +15,17 @@ interface Student {
   admissionNo: string;
   name: string;
   email: string;
-  credits: number;
+  gamification: {
+    totalCredits: number;
+    currentStreak: number;
+    longestStreak: number;
+    badges: any[];
+    rank?: string;
+  };
   creditHistory?: any[];
-  badges: string[];
-  currentStreak: number;
-  longestStreak?: number;
   lastLoginAt: string;
   role: string;
+  avatar?: string;
   enrolledCourses: EnrolledCourse[];
 }
 

@@ -32,13 +32,15 @@ const TeacherCreditsPage = () => {
                 studentEnrollments.length,
             )
           : 0;
+
+      const badgeCount = student.gamification?.badges?.length || 0;
       const estimatedCredits =
-        Math.floor(avgCompletion * 1.5) + student.badges * 20;
+        Math.floor(avgCompletion * 1.5) + badgeCount * 20;
 
       return {
         ...student,
         credits: estimatedCredits,
-        badges: student.badges,
+        badges: badgeCount,
       };
     })
     .sort((a, b) => b.credits - a.credits);

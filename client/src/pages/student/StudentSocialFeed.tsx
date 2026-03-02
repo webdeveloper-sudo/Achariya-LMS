@@ -289,9 +289,7 @@ const StudentSocialFeed = () => {
                                         className="w-full h-full object-cover"
                                       />
                                     ) : (
-                                      <span className="text-2xl">
-                                        {item.actorName?.charAt(0)}
-                                      </span>
+                                      <UserCircle className="text-gray-300 w-1/2 h-1/2" />
                                     )}
                                   </div>
                                 </Link>
@@ -395,8 +393,16 @@ const StudentSocialFeed = () => {
                                     {item.interactions?.comments?.map(
                                       (comment: any, idx: number) => (
                                         <div key={idx} className="flex gap-4">
-                                          <div className="w-10 h-10 rounded-md bg-gray-50 flex items-center justify-center text-[12px] font-bold text-gray-900 border border-gray-300 shadow-sm uppercase shadow-inner">
-                                            {comment.userName?.charAt(0)}
+                                          <div className="w-10 h-10 rounded-md bg-gray-50 flex items-center justify-center text-[12px] font-bold text-gray-900 border border-gray-300 shadow-sm overflow-hidden uppercase shadow-inner">
+                                            {comment.userAvatar ? (
+                                              <img
+                                                src={comment.userAvatar}
+                                                alt={comment.userName}
+                                                className="w-full h-full object-cover"
+                                              />
+                                            ) : (
+                                              <UserCircle className="text-gray-300 w-1/2 h-1/2" />
+                                            )}
                                           </div>
                                           <div className="flex-1 bg-gray-50/50 p-5 rounded-md border border-gray-200 shadow-sm">
                                             <div className="flex items-center justify-between mb-2">
@@ -424,8 +430,16 @@ const StudentSocialFeed = () => {
                                     {(student?.role === "teacher" ||
                                       student?.role === "principal") && (
                                       <div className="flex gap-4 mt-8 pt-6 border-t border-gray-50">
-                                        <div className="w-10 h-10 rounded-md bg-blue-900 flex items-center justify-center text-[12px] font-bold text-white uppercase shadow-lg shadow-blue-200">
-                                          {student?.name?.charAt(0)}
+                                        <div className="w-10 h-10 rounded-md bg-blue-900 flex items-center justify-center text-[12px] font-bold text-white overflow-hidden uppercase shadow-lg shadow-blue-200">
+                                          {student?.avatar ? (
+                                            <img
+                                              src={student.avatar}
+                                              alt={student.name}
+                                              className="w-full h-full object-cover"
+                                            />
+                                          ) : (
+                                            <UserCircle className="text-white/50 w-1/2 h-1/2" />
+                                          )}
                                         </div>
                                         <div className="flex-1 relative">
                                           <input

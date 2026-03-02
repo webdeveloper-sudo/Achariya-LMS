@@ -303,12 +303,22 @@ router.post("/students/bulk", uploadBulk.single("file"), async (req, res) => {
           status: "Active",
         };
 
+        const avatarIndex = Math.floor(Math.random() * 10) + 1;
+        const paddedIndex = avatarIndex.toString().padStart(2, "0");
+        const avatarUrl = `/assets/images/profile-avatars/avatar_${paddedIndex}.png`;
+
         if (student) {
-          Object.assign(student, data);
+          Object.assign(student, {
+            ...data,
+            avatar: student.avatar || avatarUrl,
+          });
           await student.save();
           updated++;
         } else {
-          await Student.create(data);
+          await Student.create({
+            ...data,
+            avatar: avatarUrl,
+          });
           saved++;
         }
       } catch (err) {

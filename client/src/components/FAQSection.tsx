@@ -51,7 +51,7 @@ const FAQSection = ({ role }: FAQSectionProps) => {
 
   return (
     <div className="bg-white rounded-md shadow-xl p-10 border border-gray-200 relative overflow-hidden group text-center sm:text-left">
-      <div className="flex items-center gap-6 mb-12 relative z-10">
+      {/* <div className="flex items-center gap-6 mb-12 relative z-10">
         <div
           className="p-3 rounded-md shadow-sm border"
           style={{
@@ -69,7 +69,7 @@ const FAQSection = ({ role }: FAQSectionProps) => {
             Institutional verified guidance and protocol documentation
           </p>
         </div>
-      </div>
+      </div> */}
 
       <div className="space-y-6 relative z-10">
         {faqs.map((faq, index) => (

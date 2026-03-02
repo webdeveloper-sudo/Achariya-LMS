@@ -39,6 +39,9 @@ const questionSchema = new mongoose.Schema(
     explanation: {
       type: String,
     },
+    hint: {
+      type: String, // New field for hints
+    },
     // New Fields for Enhanced Question Types
     pairs: [
       {
@@ -66,7 +69,7 @@ const assessmentSchema = new mongoose.Schema(
       required: true,
     },
     courseId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId, // Match Course _id (ObjectId)
       ref: "Course",
       required: true,
     },
@@ -103,10 +106,7 @@ const assessmentSchema = new mongoose.Schema(
     },
     accessedStudents: [
       {
-        studentId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Student",
-        },
+        studentId: String,
         admissionNo: String,
         attempts: {
           type: Number,
@@ -116,8 +116,14 @@ const assessmentSchema = new mongoose.Schema(
         lastAttemptedAt: Date,
       },
     ],
+    totalStudentsAttempted: [
+      {
+        studentId: String,
+        timeOfAttempted: { type: Date, default: Date.now },
+      },
+    ],
     postedBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.Mixed,
       ref: "AdminUser",
     },
   },

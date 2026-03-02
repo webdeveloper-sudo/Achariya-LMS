@@ -534,13 +534,13 @@ const StudentRivals = () => {
                   },
                   {
                     label: "Credit Capital",
-                    left: student?.credits || 0,
+                    left: student?.gamification?.totalCredits || 0,
                     right: selectedRival.gamification?.totalCredits || 0,
                     icon: Zap,
                   },
                   {
                     label: "System Streak",
-                    left: `${student?.currentStreak || 0}D`,
+                    left: `${student?.gamification?.currentStreak || 0}D`,
                     right: `${Math.floor(Math.random() * 10)}D`,
                     icon: Flame,
                   },

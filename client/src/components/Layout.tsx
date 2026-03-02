@@ -1,4 +1,6 @@
 import GlobalQuizListener from "./GlobalQuizListener";
+import axiosInstance from "../api/axiosInstance";
+import { useStudentStore } from "../store/useStudentStore";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   LogOut,
@@ -21,13 +23,17 @@ import {
   Folder,
   ChevronLeft,
   ChevronRight,
+  UserCircle,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const { student } = useStudentStore();
+  const localUser = JSON.parse(localStorage.getItem("user") || "{}");
+  // Merge store state if available for reactivity
+  const user = student ? { ...localUser, ...student } : localUser;
   const role = user.selectedRole || user.role;
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -195,7 +201,7 @@ const Layout = () => {
                   <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tighter leading-none uppercase">
                     Achariya <span className={theme.text}>Portal</span>
                   </h1>
-                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1.5 flex items-center gap-2">
+                  <p className="text-[11px] text-gray-600 uppercase mt-1.5 flex items-center gap-2">
                     <span
                       className={`w-1.5 h-1.5 rounded-full ${theme.bg} animate-pulse`}
                     ></span>
@@ -216,20 +222,28 @@ const Layout = () => {
                   className="flex items-center gap-4 px-4 py-2 rounded-xl hover:bg-slate-50 transition-all"
                 >
                   <div className="relative">
-                    <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-white shadow-[0_0_15px_rgba(0,0,0,0.05)] transition-transform group-hover:scale-105">
-                      <img
-                        src={user.avatar || "/achariya-logo.jpg"}
-                        alt={user.name}
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-white shadow-[0_0_15px_rgba(0,0,0,0.05)] transition-transform group-hover:scale-105 bg-slate-100 flex items-center justify-center">
+                      {user.avatar ? (
+                        <img
+                          src={
+                            user.avatar.startsWith("http")
+                              ? user.avatar
+                              : `${axiosInstance.defaults.baseURL?.replace("/api/v1", "")}${user.avatar}`
+                          }
+                          alt={user.name}
+                          className="w-full h-full object-cover rounded-[100%]"
+                        />
+                      ) : (
+                        <UserCircle className="text-slate-300 w-1/2 h-1/2" />
+                      )}
                     </div>
                     <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full shadow-sm"></div>
                   </div>
                   <div className="flex flex-col text-left">
-                    <span className="text-sm font-black text-slate-800 hidden md:inline leading-none uppercase tracking-tight">
+                    <span className="text-sm font-semibold text-slate-800 hidden md:inline leading-none uppercase tracking-tight">
                       {user.name || user.email}
                     </span>
-                    <span className="text-[9px] font-bold text-slate-400 hidden md:inline mt-1.5 uppercase tracking-widest">
+                    <span className="text-[10px] text-slate-400 hidden md:inline mt-1.5 uppercase tracking-widest">
                       Institutional Account
                     </span>
                   </div>

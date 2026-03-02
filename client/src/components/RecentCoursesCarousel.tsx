@@ -14,6 +14,7 @@ interface Course {
   description: string;
   thumbnail?: string;
   subjectCode?: string;
+  isEnrolled?: boolean;
   progress?: number;
 }
 
@@ -154,41 +155,57 @@ const RecentCoursesCarousel: React.FC<RecentCoursesCarouselProps> = ({
                     {course.subjectCode || "CORE"}
                   </span>
                 </div>
+                {course.isEnrolled && (
+                  <div className="absolute bottom-4 right-4 bg-blue-900 text-white text-[10px] font-bold px-3 py-1.5 rounded shadow-lg flex items-center gap-1.5 border border-blue-800 animate-in fade-in duration-500">
+                    <PlayCircle size={12} />
+                    ACTIVE
+                  </div>
+                )}
               </div>
 
               <div className="p-6 flex flex-col flex-grow">
                 <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-1 group-hover:text-blue-900 transition-colors tracking-tight">
                   {course.title}
                 </h3>
-                <p className="text-gray-500 text-[13px] mb-2">
-                  {(course.description || "").slice(0, 100)} ...
+                <p className="text-gray-500 text-[13px] mb-2 line-clamp-2">
+                  {course.description}
                 </p>
 
                 <div className="mt-auto space-y-4">
-                  <div className="space-y-2">
-                    {/* <div className="flex justify-between text-[12px]  uppercase tracking-widest">
-                      <span className="text-gray-600">Sync status</span>
-                      <span className="text-blue-900">
-                        {course.progress || 0}%
-                      </span>
-                    </div> */}
-                    <div className="w-full h-1.5 bg-gray-50 rounded-full overflow-hidden border border-gray-100">
-                      <div
-                        className="h-full bg-blue-900 rounded-full transition-all duration-1000 shadow-[2px_0_10px_rgba(30,58,138,0.2)]"
-                        style={{ width: `${course.progress || 0}%` }}
-                      />
+                  {course.isEnrolled && (
+                    <div className="space-y-2">
+                      <div className="w-full h-1.5 bg-gray-50 rounded-full overflow-hidden border border-gray-100">
+                        <div
+                          className="h-full bg-blue-900 rounded-full transition-all duration-1000 shadow-[2px_0_10px_rgba(30,58,138,0.2)]"
+                          style={{ width: `${course.progress || 0}%` }}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   <div className="flex  items-center justify-between py-2 px-3 border border-gray-400">
                     <div className="flex items-center gap-2 text-gray-600">
-                      <Clock
-                        size={14}
-                        className="group-hover:text-blue-900 transition-colors"
-                      />
-                      <span className="text-[14px]  uppercase tracking-widest">
-                        Resume Module
-                      </span>
+                      {course.isEnrolled ? (
+                        <>
+                          <Clock
+                            size={14}
+                            className="group-hover:text-blue-900 transition-colors"
+                          />
+                          <span className="text-[14px]  uppercase tracking-widest">
+                            Resume Module
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <BookOpen
+                            size={14}
+                            className="group-hover:text-blue-900 transition-colors"
+                          />
+                          <span className="text-[14px] uppercase tracking-widest">
+                            View Details
+                          </span>
+                        </>
+                      )}
                     </div>
                     <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 text-gray-400 group-hover:bg-blue-900 group-hover:text-white group-hover:border-blue-900 transition-all duration-300 ring-4 ring-transparent group-hover:ring-blue-50">
                       <ChevronRight
